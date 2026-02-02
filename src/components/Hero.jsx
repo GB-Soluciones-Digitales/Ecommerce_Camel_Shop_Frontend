@@ -19,9 +19,10 @@ const HeroSlider = () => {
     const fetchSlides = async () => {
       try {
         const res = await heroService.getPublicSlides();
-        setSlides(res.data);
+        setSlides(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         console.error("Error cargando hero slides", error);
+        setSlides([]); 
       } finally {
         setLoading(false);
       }
@@ -72,7 +73,7 @@ const HeroSlider = () => {
         loop={slides.length > 1}
         className="h-full w-full hero-swiper"
       >
-        {slides.map((slide) => (
+        {Array.isArray(slides) && slides.map((slide) => (
           <SwiperSlide key={slide.id} className="relative h-full w-full">
             
             <div className="absolute inset-0">
