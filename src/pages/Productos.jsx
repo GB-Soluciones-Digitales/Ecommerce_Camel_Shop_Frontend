@@ -32,10 +32,17 @@ const ProductosPage = () => {
           productoService.getProductosActivos(),
           categoriaService.getCategorias(),
         ]);
-        setProductos(prodRes.data);
-        setCategorias(catRes.data);
-      } catch (error) { console.error(error); } 
-      finally { setLoading(false); }
+
+        setProductos(Array.isArray(prodRes.data) ? prodRes.data : []);
+        setCategorias(Array.isArray(catRes.data) ? catRes.data : []);
+        
+      } catch (error) { 
+        console.error("Error cargando datos de Camel Shop:", error);
+        setProductos([]);
+        setCategorias([]);
+      } finally { 
+        setLoading(false); 
+      }
     };
     loadData();
   }, []);
@@ -78,7 +85,7 @@ const ProductosPage = () => {
           >
             Todas
           </button>
-          {categorias.map(cat => (
+          {Array.isArray(categorias) && categorias.map(cat => (
             <button 
               key={cat.id} 
               onClick={() => setSelectedCategory(cat.id)}
