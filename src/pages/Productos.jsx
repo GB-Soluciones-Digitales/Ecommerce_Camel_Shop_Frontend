@@ -29,10 +29,11 @@ const ProductosPage = () => {
       try {
         setLoading(true);
         const [prodRes, catRes] = await Promise.all([
+          
           productoService.getProductosActivos(),
           categoriaService.getCategorias(),
         ]);
-
+        console.log("Productos recibidos:", prodRes.data);
         setProductos(Array.isArray(prodRes.data) ? prodRes.data : []);
         setCategorias(Array.isArray(catRes.data) ? catRes.data : []);
         
