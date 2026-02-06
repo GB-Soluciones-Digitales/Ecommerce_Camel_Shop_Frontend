@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { productoService } from '../services/productoService';
+import { useSearchParams, Link } from 'react-router-dom';
 import { categoriaService } from '../services/categoriaService';
 import { fileService } from '../services/fileService';
 import { FiShoppingCart, FiSearch } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 const ProductosPage = () => {
-  const [productos, setProductos] = useState([]);
+const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [filteredProductos, setFilteredProductos] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  
+  const [searchParams] = useSearchParams();
+  const categoriaQuery = searchParams.get('categoria');
   
   // Paleta Local
   const colors = {
@@ -29,24 +32,36 @@ const ProductosPage = () => {
       try {
         setLoading(true);
         const [prodRes, catRes] = await Promise.all([
-          
           productoService.getProductosActivos(),
           categoriaService.getCategorias(),
         ]);
-        console.log("Productos recibidos:", prodRes.data);
-        setProductos(Array.isArray(prodRes.data) ? prodRes.data : []);
-        setCategorias(Array.isArray(catRes.data) ? catRes.data : []);
         
+        const fetchedProductos = Array.isArray(prodRes.data) ? prodRes.data : [];
+        const fetchedCategorias = Array.isArray(catRes.data) ? catRes.data : [];
+        
+        setProductos(fetchedProductos);
+        setCategorias(fetchedCategorias);
+
+        // --- LÓGICA DE AUTO-FILTRADO DESDE LANDING ---
+        if (categoriaQuery && fetchedCategorias.length > 0) {
+          // Buscamos la categoría cuyo nombre coincida con el slug de la URL
+          const targetCategory = fetchedCategorias.find(
+            cat => cat.nombre.toLowerCase() === categoriaQuery.toLowerCase()
+          );
+          if (targetCategory) {
+            setSelectedCategory(targetCategory.id);
+          }
+        }
+        // ---------------------------------------------
+
       } catch (error) { 
         console.error("Error cargando datos de Camel Shop:", error);
-        setProductos([]);
-        setCategorias([]);
       } finally { 
         setLoading(false); 
       }
     };
     loadData();
-  }, []);
+  }, [categoriaQuery]);
 
   useEffect(() => {
     let filtered = [...productos];
