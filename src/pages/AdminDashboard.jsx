@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { productoService } from '../services/productoService';
 import { categoriaService } from '../services/categoriaService';
-import { FiEdit2, FiTrash2, FiPlus, FiSearch, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiPlus, FiSearch, FiToggleLeft, FiToggleRight, FiImage } from 'react-icons/fi';
 import ProductoModal from '../components/ProductoModal'; 
 import { fileService } from '../services/fileService';
 
