@@ -2,25 +2,26 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiCheck } from 'react-icons/fi';
 import HeroSlider from '../components/Hero';
 import { Helmet } from 'react-helmet-async';
+import { fileService } from '../services/fileService';
 
 const LandingPage = () => {
   const categories = [
-    {
-      title: "Vestidos",
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800",
-      slug: "vestidos" 
-    },
-    {
-      title: "Remeras",
-      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800",
-      slug: "remeras"
-    },
-    {
-      title: "Pantalones",
-      image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?q=80&w=800",
-      slug: "pantalones"
-    }
-  ];
+  {
+    title: "Remeras",
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800",
+    slug: "remeras"
+  },
+  {
+    title: "Pantalones",
+    image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?q=80&w=800",
+    slug: "pantalones"
+  },
+  {
+    title: "Buzos", 
+    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800",
+    slug: "buzos"
+  }
+];
 
   return (
     <div className="font-sans bg-[#f9f5f0]">
