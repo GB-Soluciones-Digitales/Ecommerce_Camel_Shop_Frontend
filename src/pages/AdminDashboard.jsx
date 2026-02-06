@@ -129,8 +129,18 @@ const AdminDashboard = () => {
                       </button>
                     </td>
                     <td className="px-6 py-4 text-right space-x-2">
-                      <button onClick={() => openModal(producto)} className="text-gray-400 hover:text-[#4a3b2a] transition p-1"><FiEdit2 size={18}/></button>
-                      <button onClick={() => handleDelete(producto.id)} className="text-gray-400 hover:text-red-600 transition p-1"><FiTrash2 size={18}/></button>
+                      <button 
+                        onClick={() => handleOpenModal(producto)} // <--- Antes decía openModal
+                        className="text-gray-400 hover:text-[#4a3b2a] transition p-1"
+                      >
+                        <FiEdit2 size={18}/>
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(producto.id)} 
+                        className="text-gray-400 hover:text-red-600 transition p-1"
+                      >
+                        <FiTrash2 size={18}/>
+                      </button>
                     </td>
                   </tr>
                 ))}

@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiCheck } from 'react-icons/fi';
 import HeroSlider from '../components/Hero';
 import { Helmet } from 'react-helmet-async';
-import { fileService } from '../services/fileService';
 
 const LandingPage = () => {
   const categories = [
