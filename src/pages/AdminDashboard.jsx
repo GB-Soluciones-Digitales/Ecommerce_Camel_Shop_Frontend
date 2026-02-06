@@ -104,10 +104,19 @@ const AdminDashboard = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-gray-100 overflow-hidden border border-gray-200">
-                          {fileService.getImageUrl ? (
-                            <img src={fileService.getImageUrl(producto.imagenes?.[0])} alt="" className="h-full w-full object-cover" />
+                          {producto.imagenes?.[0] ? (
+                            <img 
+                              src={producto.imagenes[0].startsWith('http') 
+                                ? producto.imagenes[0] 
+                                : fileService.getImageUrl(producto.imagenes[0])} 
+                              alt={producto.nombre} 
+                              className="h-full w-full object-cover"
+                              onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Camel'; }}
+                            />
                           ) : (
-                            <FiImage className="h-full w-full p-2 text-gray-300" />
+                            <div className="h-full w-full flex items-center justify-center bg-gray-100">
+                              <FiImage className="text-gray-300" size={20} />
+                            </div>
                           )}
                         </div>
                         <span className={`font-bold ${colors.textMain}`}>{producto.nombre}</span>
@@ -130,7 +139,7 @@ const AdminDashboard = () => {
                     </td>
                     <td className="px-6 py-4 text-right space-x-2">
                       <button 
-                        onClick={() => handleOpenModal(producto)} // <--- Antes decía openModal
+                        onClick={() => handleOpenModal(producto)} 
                         className="text-gray-400 hover:text-[#4a3b2a] transition p-1"
                       >
                         <FiEdit2 size={18}/>

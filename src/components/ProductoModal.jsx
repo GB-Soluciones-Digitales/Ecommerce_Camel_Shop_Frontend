@@ -40,7 +40,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colo
 
   const updateStock = (colorIndex, talle, value) => {
     const newVars = [...variantes];
-    newVars[colorIndex].stock[talle] = parseInt(value) || 0;
+    newVars[colorIndex].stock[talle] = value === '' ? 0 : Number(value);
     setVariantes(newVars);
   };
 
@@ -143,7 +143,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colo
                             <input 
                               type="number" 
                               className="w-10 text-center border rounded py-1 text-xs focus:border-[#4a3b2a] outline-none"
-                              value={v.stock[talle] || ''}
+                              value={v.stock?.[talle] || ''} 
                               onChange={(e) => updateStock(idx, talle, e.target.value)}
                             />
                           </div>
