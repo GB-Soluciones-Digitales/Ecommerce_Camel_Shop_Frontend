@@ -27,44 +27,36 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (producto, cantidad = 1) => {
     setCartItems((prevItems) => {
-      const newItemSize = producto.selectedSize || 'unico';
+      const uniqueId = producto.variantId || `${producto.id}-${producto.selectedColor || 'Unico'}-${producto.selectedSize || 'Unico'}`;
       
-      const existingItemIndex = prevItems.findIndex((item) => 
-        item.id === producto.id && (item.selectedSize || 'unico') === newItemSize
-      );
+      const existingItemIndex = prevItems.findIndex((item) => {
+         const itemUniqueId = item.variantId || `${item.id}-${item.selectedColor || 'Unico'}-${item.selectedSize || 'Unico'}`;
+         return itemUniqueId === uniqueId;
+      });
 
       if (existingItemIndex >= 0) {
         const newItems = [...prevItems];
         newItems[existingItemIndex].cantidad += cantidad;
         return newItems;
       } else {
-        return [...prevItems, { ...producto, cantidad }];
+        return [...prevItems, { ...producto, cantidad, variantId: uniqueId }];
       }
     });
     setShowCart(true); 
   };
 
-  const removeFromCart = (id, selectedSize) => {
-    setCartItems(prev => prev.filter(item => {
-      if (selectedSize && item.selectedSize) {
-        return !(item.id === id && item.selectedSize === selectedSize);
-      }
-      return item.id !== id;
-    }));
+  const removeFromCart = (variantId) => {
+    setCartItems(prev => prev.filter(item => (item.variantId || item.id) !== variantId));
   };
   
-  const updateQuantity = (id, cantidad, selectedSize) => {
+  const updateQuantity = (variantId, cantidad) => {
     if (cantidad <= 0) { 
-      removeFromCart(id, selectedSize); 
+      removeFromCart(variantId); 
       return; 
     }
-    setCartItems(prev => prev.map(item => {
-      const isMatch = selectedSize 
-        ? (item.id === id && item.selectedSize === selectedSize)
-        : (item.id === id);
-      
-      return isMatch ? { ...item, cantidad } : item;
-    }));
+    setCartItems(prev => prev.map(item => 
+      (item.variantId || item.id) === variantId ? { ...item, cantidad } : item
+    ));
   };
 
   const clearCart = () => {

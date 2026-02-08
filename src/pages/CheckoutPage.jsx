@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext';
 import { pedidoService } from '../services/pedidoService';
 import { fileService } from '../services/fileService'
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiShield, FiTruck, FiCreditCard, FiCheck } from 'react-icons/fi';
+import { FiArrowLeft, FiShield, FiTruck, FiCreditCard, FiCheck, FiImage } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
 
 const CheckoutPage = () => {
@@ -36,6 +36,8 @@ const CheckoutPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,13 +45,20 @@ const CheckoutPage = () => {
       const pedidoPayload = {
         ...formData,
         items: cartItems.map(item => ({
-          productoId: item.id, cantidad: item.cantidad, talle: item.selectedSize || 'Único'
+          productoId: item.id,
+          cantidad: item.cantidad,
+          talle: `${item.selectedColor || ''} - ${item.selectedSize || 'Único'}` 
         }))
       };
+      
       const response = await pedidoService.crearPedido(pedidoPayload);
       const pedidoId = response.data.id;
       
-      const mensaje = `Hola! Acabo de realizar el pedido *#${pedidoId}* en la web.\n\n*Cliente:* ${formData.nombreCliente}\n*Envío:* ${formData.direccionEnvio}\n*Pago:* ${formData.metodoPago}\n\n*Resumen:*\n${cartItems.map(item => `• ${item.cantidad}x ${item.nombre} (${item.selectedSize})`).join('\n')}\n\n*Total: $${getCartTotal().toLocaleString()}*`;
+      const resumenProductos = cartItems.map(item => 
+        `• ${item.cantidad}x ${item.nombre}\n   Color: ${item.selectedColor || 'N/A'} | Talle: ${item.selectedSize || 'Único'}`
+      ).join('\n');
+
+      const mensaje = `Hola! Acabo de realizar el pedido *#${pedidoId}* en la web.\n\n*Cliente:* ${formData.nombreCliente}\n*Envío:* ${formData.direccionEnvio}\n*Pago:* ${formData.metodoPago}\n\n*Resumen:*\n${resumenProductos}\n\n*Total: $${getCartTotal().toLocaleString()}*`;
 
       clearCart();
       window.location.href = `https://wa.me/5493434676232?text=${encodeURIComponent(mensaje)}`;
@@ -132,12 +141,19 @@ const CheckoutPage = () => {
               
               <div className="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="flex gap-4 py-4 border-b border-gray-50 last:border-0">
+                  <div key={item.variantId || item.id} className="flex gap-4 py-4 border-b border-gray-50 last:border-0">
                     <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                      <img src={fileService.getImageUrl(item.imagenes?.[0])} alt={item.nombre} className="w-full h-full object-cover" />
+                      {item.imagenes?.[0] ? (
+                         <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover" />
+                      ) : (
+                         <FiImage className="w-full h-full p-4 text-gray-300"/>
+                      )}
                     </div>
                     <div className="flex-1">
                       <h4 className={`font-bold line-clamp-1 ${colors.textMain}`}>{item.nombre}</h4>
+                      <div className="text-xs text-gray-600 mt-1 mb-1">
+                         {item.selectedColor} | {item.selectedSize}
+                      </div>
                       <div className="text-sm text-gray-500 flex justify-between mt-1">
                         <span>{item.cantidad} x ${item.precio}</span>
                         <span className={`font-bold ${colors.textMain}`}>${(item.cantidad * item.precio).toLocaleString()}</span>

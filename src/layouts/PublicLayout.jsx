@@ -22,6 +22,8 @@ const PublicLayout = () => {
     bgOverlay: 'bg-[#d8bf9f]',
     buttonMain: 'bg-[#4a3b2a] hover:bg-black text-[#d8bf9f]',
   };
+  
+  const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f9f5f0] font-sans">
@@ -59,16 +61,25 @@ const PublicLayout = () => {
                   </div>
                 ) : (
                   cartItems.map((item) => (
-                    <div key={item.id} className="flex gap-4">
+                    <div key={item.variantId || item.id} className="flex gap-4">
                       <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
-                        <img src={fileService.getImageUrl(item.imagenes?.[0])} alt={item.nombre} className="w-full h-full object-cover"/>
+                        {item.imagenes?.[0] ? (
+                           <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover"/>
+                        ) : (
+                           <FiImage className="w-full h-full p-4 text-gray-300"/>
+                        )}
                       </div>
                       <div className="flex-1 flex flex-col justify-between">
                         <div>
                           <h3 className={`font-bold line-clamp-1 ${theme.textMain}`}>{item.nombre}</h3>
-                          <div className="flex items-center mt-1">
+                          <div className="flex flex-wrap items-center mt-1 gap-1">
+                            {item.selectedColor && (
+                              <span className="text-xs font-bold text-[#4a3b2a] bg-[#d8bf9f]/30 px-2 py-0.5 rounded border border-[#d8bf9f]">
+                                {item.selectedColor}
+                              </span>
+                            )}
                             {item.selectedSize && (
-                              <span className="text-xs font-bold text-[#4a3b2a] bg-[#d8bf9f]/30 px-2 py-0.5 rounded mr-2 border border-[#d8bf9f]">
+                              <span className="text-xs font-bold text-[#4a3b2a] bg-[#d8bf9f]/30 px-2 py-0.5 rounded border border-[#d8bf9f]">
                                 {item.selectedSize}
                               </span>
                             )}
@@ -78,11 +89,11 @@ const PublicLayout = () => {
                         
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center border border-gray-300 rounded-lg">
-                            <button onClick={() => updateQuantity(item.id, item.cantidad - 1)} className="px-2 py-1 text-gray-600 hover:bg-gray-100"><FiMinus size={14}/></button>
+                            <button onClick={() => updateQuantity(item.variantId, item.cantidad - 1)} className="px-2 py-1 text-gray-600 hover:bg-gray-100"><FiMinus size={14}/></button>
                             <span className={`px-2 text-sm font-bold w-8 text-center ${theme.textMain}`}>{item.cantidad}</span>
-                            <button onClick={() => updateQuantity(item.id, item.cantidad + 1)} className="px-2 py-1 text-gray-600 hover:bg-gray-100"><FiPlus size={14}/></button>
+                            <button onClick={() => updateQuantity(item.variantId, item.cantidad + 1)} className="px-2 py-1 text-gray-600 hover:bg-gray-100"><FiPlus size={14}/></button>
                           </div>
-                          <button onClick={() => removeFromCart(item.id)} className="text-red-400 hover:text-red-600 p-1 transition"><FiTrash2 size={18}/></button>
+                          <button onClick={() => removeFromCart(item.variantId)} className="text-red-400 hover:text-red-600 p-1 transition"><FiTrash2 size={18}/></button>
                         </div>
                       </div>
                     </div>

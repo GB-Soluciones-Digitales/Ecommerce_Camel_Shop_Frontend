@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useCart } from '../context/CartContext';
 import { productoService } from '../services/productoService';
-import { useSearchParams, Link } from 'react-router-dom';
 import { categoriaService } from '../services/categoriaService';
 import { fileService } from '../services/fileService';
-import { FiShoppingCart, FiSearch } from 'react-icons/fi';
+import { FiShoppingCart, FiSearch, FiFilter } from 'react-icons/fi';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 const ProductosPage = () => {
-const [productos, setProductos] = useState([]);
+  const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [filteredProductos, setFilteredProductos] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -18,13 +17,12 @@ const [productos, setProductos] = useState([]);
   const [searchParams] = useSearchParams();
   const categoriaQuery = searchParams.get('categoria');
   
-  // Paleta Local
   const colors = {
     bgPage: 'bg-[#f9f5f0]',
     textMain: 'text-[#4a3b2a]',
-    buttonActive: 'bg-[#4a3b2a] text-[#d8bf9f] border-[#4a3b2a]',
-    buttonInactive: 'bg-[#d8bf9f]/30 text-gray-600 hover:bg-[#d8bf9f]/10 border-gray-200',
-    cardButton: 'bg-[#4a3b2a] hover:bg-black text-[#d8bf9f]'
+    accent: 'text-[#d8bf9f]',
+    buttonActive: 'bg-[#4a3b2a] text-[#d8bf9f]',
+    buttonInactive: 'bg-white text-gray-500 border border-gray-200 hover:border-[#4a3b2a] hover:text-[#4a3b2a]',
   };
 
   useEffect(() => {
@@ -42,20 +40,14 @@ const [productos, setProductos] = useState([]);
         setProductos(fetchedProductos);
         setCategorias(fetchedCategorias);
 
-        // --- LÓGICA DE AUTO-FILTRADO DESDE LANDING ---
         if (categoriaQuery && fetchedCategorias.length > 0) {
-          // Buscamos la categoría cuyo nombre coincida con el slug de la URL
           const targetCategory = fetchedCategorias.find(
             cat => cat.nombre.toLowerCase() === categoriaQuery.toLowerCase()
           );
-          if (targetCategory) {
-            setSelectedCategory(targetCategory.id);
-          }
+          if (targetCategory) setSelectedCategory(targetCategory.id);
         }
-        // ---------------------------------------------
-
       } catch (error) { 
-        console.error("Error cargando datos de Camel Shop:", error);
+        console.error("Error cargando datos:", error);
       } finally { 
         setLoading(false); 
       }
@@ -70,42 +62,46 @@ const [productos, setProductos] = useState([]);
     setFilteredProductos(filtered);
   }, [searchTerm, selectedCategory, productos]);
 
+  // Helper para imágenes
+  const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
+
   return (
-    <div className={`min-h-screen ${colors.bgPage} py-8 px-4 sm:px-6 lg:px-8`}>
-      
+    <div className={`min-h-screen ${colors.bgPage} pb-20`}>
       <Helmet>
-        <title>Catálogo Completo | Camel Shop</title>
-        <meta name="description" content="Explorá nuestra variedad de indumentaria. Filtrá por remeras, pantalones o calzado y encontrá tu estilo ideal." />
+        <title>Catálogo | Camel Shop</title>
+        <meta name="description" content="Explorá nuestra colección de moda urbana." />
       </Helmet>
 
-      <div className="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <h1 className={`text-3xl font-bold ${colors.textMain}`}>Nuestra Colección</h1>
-        
-        <div className="relative w-full md:w-96">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Buscar prenda..." 
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#4a3b2a] focus:border-[#4a3b2a] outline-none shadow-sm transition"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      {/* HEADER & FILTROS STICKY */}
+      <div className="sticky top-0 z-30 bg-[#f9f5f0]/95 backdrop-blur-md border-b border-[#4a3b2a]/5 py-4 px-4 sm:px-6 lg:px-8 shadow-sm">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center justify-between">
+          <h1 className={`text-2xl font-black uppercase tracking-tight ${colors.textMain}`}>Colección</h1>
+          
+          <div className="relative w-full md:w-80 group">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#4a3b2a] transition" />
+            <input 
+              type="text" 
+              placeholder="Buscar..." 
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full focus:ring-1 focus:ring-[#4a3b2a] focus:border-[#4a3b2a] outline-none text-sm transition"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto mb-8 overflow-x-auto pb-2 no-scrollbar">
-        <div className="flex gap-2">
+        {/* CATEGORÍAS SCROLLABLE */}
+        <div className="max-w-7xl mx-auto mt-4 overflow-x-auto pb-2 no-scrollbar flex gap-2">
           <button 
             onClick={() => setSelectedCategory(null)}
-            className={`px-5 py-2 rounded-full font-bold transition whitespace-nowrap border ${!selectedCategory ? colors.buttonActive : colors.buttonInactive}`}
+            className={`px-5 py-1.5 rounded-full text-sm font-bold transition whitespace-nowrap ${!selectedCategory ? colors.buttonActive : colors.buttonInactive}`}
           >
-            Todas
+            Todo
           </button>
           {Array.isArray(categorias) && categorias.map(cat => (
             <button 
               key={cat.id} 
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-5 py-2 rounded-full font-bold transition whitespace-nowrap border ${selectedCategory === cat.id ? colors.buttonActive : colors.buttonInactive}`}
+              className={`px-5 py-1.5 rounded-full text-sm font-bold transition whitespace-nowrap ${selectedCategory === cat.id ? colors.buttonActive : colors.buttonInactive}`}
             >
               {cat.nombre}
             </button>
@@ -113,52 +109,62 @@ const [productos, setProductos] = useState([]);
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* GRID DE PRODUCTOS */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         {loading ? (
-           <p className="col-span-full text-center py-20 text-gray-500">Cargando catálogo...</p>
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+             {[1,2,3,4,5,6,7,8].map(i => (
+               <div key={i} className="animate-pulse">
+                 <div className="bg-gray-200 aspect-[3/4] rounded-xl mb-3"></div>
+                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                 <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+               </div>
+             ))}
+           </div>
         ) : filteredProductos.length === 0 ? (
-           <div className="col-span-full text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
-             <p className="text-gray-500 text-lg">No encontramos productos con esa búsqueda.</p>
-             <button onClick={() => {setSearchTerm(''); setSelectedCategory(null)}} className="mt-4 text-[#4a3b2a] font-bold hover:underline">Ver todo</button>
+           <div className="text-center py-20">
+             <div className="inline-block p-4 bg-white rounded-full mb-4 shadow-sm"><FiFilter size={32} className="text-gray-300"/></div>
+             <p className="text-gray-500 font-medium">No hay productos que coincidan.</p>
+             <button onClick={() => {setSearchTerm(''); setSelectedCategory(null)}} className="mt-2 text-[#4a3b2a] font-bold text-sm underline">Limpiar filtros</button>
            </div>
         ) : (
-          filteredProductos.map(producto => (
-            <div key={producto.id} className="bg-[#d8bf9f]/30 rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition group relative flex flex-col">
-                <Link to={`/producto/${producto.id}`} className="block relative aspect-[4/5] bg-gray-100 overflow-hidden">
-                    <img 
-                        src={fileService.getImageUrl(producto.imagenes?.[0])} 
-                        alt={producto.nombre} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                    />
-                    {producto.stock === 0 && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white font-bold uppercase tracking-widest">
-                            Agotado
-                        </div>
-                    )}
-                    
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <span className="bg-white text-[#4a3b2a] px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition">
-                        Ver Detalle
-                    </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+            {filteredProductos.map((producto) => (
+              <div key={producto.id} className="group flex flex-col">
+                <Link to={`/producto/${producto.id}`} className="block relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 mb-4">
+                  <img 
+                    src={getImgUrl(producto.imagenes?.[0])} 
+                    alt={producto.nombre} 
+                    className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  {producto.stock === 0 && (
+                    <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+                      <span className="bg-black text-white px-3 py-1 text-xs font-bold uppercase tracking-wider">Agotado</span>
                     </div>
+                  )}
+                  {/* Botón flotante "Quick Add" solo visual por ahora */}
+                  <div className="absolute bottom-4 right-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300">
+                    <span className="bg-white text-[#4a3b2a] p-3 rounded-full shadow-lg flex items-center justify-center hover:bg-[#4a3b2a] hover:text-[#d8bf9f]">
+                      <FiShoppingCart />
+                    </span>
+                  </div>
                 </Link>
 
-                <div className="p-4 flex flex-col flex-1">
-                    <Link to={`/producto/${producto.id}`}>
-                        <h3 className={`font-bold ${colors.textMain} mb-1 hover:text-black transition line-clamp-1`}>{producto.nombre}</h3>
-                    </Link>
-                    
-                    <p className="text-sm text-gray-500 mb-3 line-clamp-2 flex-1">{producto.descripcion}</p>
-                    
-                    <div className="flex items-center justify-between mt-auto">
-                        <span className={`text-xl font-bold ${colors.textMain}`}>${parseFloat(producto.precio).toLocaleString()}</span>
-                        <Link to={`/producto/${producto.id}`} className={`p-3 rounded-xl ${colors.cardButton} transition shadow-md`}>
-                            <FiShoppingCart size={18} />
-                        </Link>
-                    </div>
+                <div className="flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="text-sm font-bold text-[#4a3b2a] uppercase tracking-wide line-clamp-1 group-hover:text-black transition">
+                      <Link to={`/producto/${producto.id}`}>{producto.nombre}</Link>
+                    </h3>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-2 line-clamp-1">{producto.categoriaNombre}</p>
+                  <p className="text-lg font-black text-[#4a3b2a] mt-auto">
+                    ${parseFloat(producto.precio).toLocaleString()}
+                  </p>
                 </div>
-            </div>
-          ))
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>
