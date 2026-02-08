@@ -62,27 +62,26 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colo
     e.preventDefault();
     setUploading(true);
     try {
-      let finalImageUrl = editingProduct?.imagenUrl;
+      let finalImageUrl = '';
+      
       if (selectedFile) {
         const uploadRes = await fileService.uploadImage(selectedFile);
         finalImageUrl = uploadRes.filename;
+      } else {
+        finalImageUrl = editingProduct?.imagenes?.[0] || ''; 
       }
 
-      // Calculamos el total sumando todos los talles de todos los colores
       const totalStock = variantes.reduce((acc, v) => {
-        const stockVariante = Object.values(v.stock || {}).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
-        return acc + stockVariante;
+        return acc + Object.values(v.stock).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
       }, 0);
 
-      // Preparamos el payload para el backend
-      // IMPORTANTE: Mapeamos 'stock' del front a 'stockPorTalle' del DTO Java
       const payload = {
         ...formData,
-        imagenUrl: finalImageUrl,
+        imagenes: finalImageUrl ? [finalImageUrl] : [], 
         stock: totalStock,
         variantes: variantes.map(v => ({
             color: v.color,
-            stockPorTalle: v.stock // El backend espera este nombre
+            stockPorTalle: v.stock
         })),
         precio: parseFloat(formData.precio),
         categoriaId: parseInt(formData.categoriaId)

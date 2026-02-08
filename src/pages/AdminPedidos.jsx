@@ -42,10 +42,16 @@ const AdminOrders = () => {
         pedidoService.getPedidosAdmin(),
         productoService.getAllProductos()
       ]);
-      setPedidos(pedRes.data);
-      setProductos(prodRes.data);
+      
+      // BLINDAJE: Validamos que sean arrays antes de setear el estado
+      setPedidos(Array.isArray(pedRes.data) ? pedRes.data : []);
+      setProductos(Array.isArray(prodRes.data) ? prodRes.data : []);
+      
     } catch (error) {
       console.error("Error cargando datos", error);
+      // En caso de error, reseteamos a arrays vacíos para evitar el crash
+      setPedidos([]);
+      setProductos([]);
     } finally {
       setLoading(false);
     }
@@ -135,8 +141,11 @@ const AdminOrders = () => {
     return <span className={`px-2 py-1 rounded text-xs font-bold border ${styles[estado] || 'bg-gray-100'}`}>{estado}</span>;
   };
 
-  const filteredOrders = pedidos.filter(p => {
-    const matchSearch = p.nombreCliente.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.toString().includes(searchTerm);
+  // BLINDAJE: Verificamos que pedidos sea un array antes de filtrar
+  const safePedidos = Array.isArray(pedidos) ? pedidos : [];
+
+  const filteredOrders = safePedidos.filter(p => {
+    const matchSearch = p.nombreCliente?.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.toString().includes(searchTerm);
     const matchEstado = filtroEstado === 'TODOS' || p.estado === filtroEstado;
     return matchSearch && matchEstado;
   });
