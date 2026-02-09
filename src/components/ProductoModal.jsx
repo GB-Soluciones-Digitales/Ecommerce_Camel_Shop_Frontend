@@ -6,9 +6,8 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
   const tallesRopa = ['U', 'S', 'M', 'L', 'XL', 'XXL'];
   const [uploading, setUploading] = useState(false);
   
-  // Manejo de Imágenes
-  const [existingImages, setExistingImages] = useState([]); // URLs ya guardadas
-  const [newFiles, setNewFiles] = useState([]); // Archivos nuevos para subir { file, preview }
+  const [existingImages, setExistingImages] = useState([]); 
+  const [newFiles, setNewFiles] = useState([]);
 
   const [formData, setFormData] = useState({
     nombre: '', descripcion: '', precio: '', categoriaId: '',
@@ -25,11 +24,9 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         categoriaId: editingProduct.categoriaId,
       });
       
-      // Cargamos imágenes existentes
       setExistingImages(editingProduct.imagenes || []);
-      setNewFiles([]); // Limpiamos archivos nuevos al abrir
+      setNewFiles([]);
 
-      // Mapeamos variantes
       const variantesFormateadas = editingProduct.variantes?.map(v => ({
         color: v.color || '',
         stock: v.stockPorTalle || {} 
@@ -44,7 +41,6 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     }
   }, [editingProduct, categorias, show]);
 
-  // --- Lógica de Variantes ---
   const addColorRow = () => setVariantes([...variantes, { color: '', stock: {} }]);
   
   const removeColorRow = (index) => setVariantes(variantes.filter((_, i) => i !== index));
@@ -64,7 +60,6 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     setVariantes(newVars);
   };
 
-  // --- Lógica de Imágenes ---
   const handleFileSelect = (e) => {
     if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0];
@@ -81,35 +76,25 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
       setExistingImages(prev => prev.filter(img => img !== url));
   };
 
-  // Helper para mostrar imagen de fondo
-  const getBackgroundUrl = () => {
-      if (newFiles.length > 0) return newFiles[0].preview;
-      if (existingImages.length > 0) return existingImages[0].startsWith('http') ? existingImages[0] : fileService.getImageUrl(existingImages[0]);
-      return '';
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
     try {
-      // 1. Subir imágenes nuevas
       const uploadedUrls = [];
       for (const item of newFiles) {
           const uploadRes = await fileService.uploadImage(item.file);
           uploadedUrls.push(uploadRes.filename);
       }
 
-      // 2. Combinar con las existentes
       const finalImages = [...existingImages, ...uploadedUrls];
 
-      // 3. Calcular Stock Total
       const totalStock = variantes.reduce((acc, v) => {
         return acc + Object.values(v.stock).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
       }, 0);
 
       const payload = {
         ...formData,
-        imagenes: finalImages, // Enviamos ARRAY de strings
+        imagenes: finalImages,
         stock: totalStock,
         variantes: variantes.map(v => ({
             color: v.color,
@@ -132,14 +117,6 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3b2a]/80 backdrop-blur-md">
-      
-      {/* FONDO IMERSIVO: Muestra la primera imagen desenfocada detrás */}
-      {getBackgroundUrl() && (
-          <div 
-            className="absolute inset-0 z-0 opacity-20 bg-center bg-cover transition-all duration-500"
-            style={{ backgroundImage: `url(${getBackgroundUrl()})` }}
-          />
-      )}
 
       <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden max-h-[95vh] flex flex-col border border-white/20">
         
