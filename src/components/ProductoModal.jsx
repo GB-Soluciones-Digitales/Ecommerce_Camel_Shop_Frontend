@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { FiX, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiX, FiPlus, FiTrash2, FiImage, FiLayers, FiUploadCloud } from 'react-icons/fi';
 import { fileService } from '../services/fileService';
 
-const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colors }) => {
+const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) => {
   const tallesRopa = ['U', 'S', 'M', 'L', 'XL', 'XXL'];
   const [uploading, setUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  
+  // Manejo de Imágenes
+  const [existingImages, setExistingImages] = useState([]); // URLs ya guardadas
+  const [newFiles, setNewFiles] = useState([]); // Archivos nuevos para subir { file, preview }
 
   const [formData, setFormData] = useState({
     nombre: '', descripcion: '', precio: '', categoriaId: '',
@@ -21,7 +24,12 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colo
         precio: editingProduct.precio,
         categoriaId: editingProduct.categoriaId,
       });
-      // Aseguramos que stockPorTalle se mapee a stock para el frontend
+      
+      // Cargamos imágenes existentes
+      setExistingImages(editingProduct.imagenes || []);
+      setNewFiles([]); // Limpiamos archivos nuevos al abrir
+
+      // Mapeamos variantes
       const variantesFormateadas = editingProduct.variantes?.map(v => ({
         color: v.color || '',
         stock: v.stockPorTalle || {} 
@@ -31,10 +39,12 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colo
     } else {
       setFormData({ nombre: '', descripcion: '', precio: '', categoriaId: categorias[0]?.id || '' });
       setVariantes([{ color: '', stock: {} }]); 
-      setSelectedFile(null);
+      setExistingImages([]);
+      setNewFiles([]);
     }
   }, [editingProduct, categorias, show]);
 
+  // --- Lógica de Variantes ---
   const addColorRow = () => setVariantes([...variantes, { color: '', stock: {} }]);
   
   const removeColorRow = (index) => setVariantes(variantes.filter((_, i) => i !== index));
@@ -46,38 +56,60 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colo
   };
 
   const updateStock = (colorIndex, talle, value) => {
-    // Copia profunda para asegurar inmutabilidad
     const newVars = [...variantes];
     const newStock = { ...newVars[colorIndex].stock };
-    
-    // Convertimos a entero, si es vacío o inválido, guardamos 0
     const numericValue = value === '' ? 0 : parseInt(value, 10);
     newStock[talle] = isNaN(numericValue) ? 0 : numericValue;
-    
     newVars[colorIndex] = { ...newVars[colorIndex], stock: newStock };
     setVariantes(newVars);
+  };
+
+  // --- Lógica de Imágenes ---
+  const handleFileSelect = (e) => {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        const preview = URL.createObjectURL(file);
+        setNewFiles(prev => [...prev, { file, preview }]);
+    }
+  };
+
+  const removeNewFile = (index) => {
+      setNewFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = (url) => {
+      setExistingImages(prev => prev.filter(img => img !== url));
+  };
+
+  // Helper para mostrar imagen de fondo
+  const getBackgroundUrl = () => {
+      if (newFiles.length > 0) return newFiles[0].preview;
+      if (existingImages.length > 0) return existingImages[0].startsWith('http') ? existingImages[0] : fileService.getImageUrl(existingImages[0]);
+      return '';
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
     try {
-      let finalImageUrl = '';
-      
-      if (selectedFile) {
-        const uploadRes = await fileService.uploadImage(selectedFile);
-        finalImageUrl = uploadRes.filename;
-      } else {
-        finalImageUrl = editingProduct?.imagenes?.[0] || ''; 
+      // 1. Subir imágenes nuevas
+      const uploadedUrls = [];
+      for (const item of newFiles) {
+          const uploadRes = await fileService.uploadImage(item.file);
+          uploadedUrls.push(uploadRes.filename);
       }
 
+      // 2. Combinar con las existentes
+      const finalImages = [...existingImages, ...uploadedUrls];
+
+      // 3. Calcular Stock Total
       const totalStock = variantes.reduce((acc, v) => {
         return acc + Object.values(v.stock).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
       }, 0);
 
       const payload = {
         ...formData,
-        imagenes: finalImageUrl ? [finalImageUrl] : [], 
+        imagenes: finalImages, // Enviamos ARRAY de strings
         stock: totalStock,
         variantes: variantes.map(v => ({
             color: v.color,
@@ -99,100 +131,178 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias, colo
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3b2a]/60 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden max-h-[90vh] flex flex-col border border-[#d8bf9f]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3b2a]/80 backdrop-blur-md">
+      
+      {/* FONDO IMERSIVO: Muestra la primera imagen desenfocada detrás */}
+      {getBackgroundUrl() && (
+          <div 
+            className="absolute inset-0 z-0 opacity-20 bg-center bg-cover transition-all duration-500"
+            style={{ backgroundImage: `url(${getBackgroundUrl()})` }}
+          />
+      )}
+
+      <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden max-h-[95vh] flex flex-col border border-white/20">
         
-        <div className={`px-6 py-4 border-b border-[#d8bf9f]/30 flex justify-between items-center bg-[#f9f5f0]`}>
-          <h3 className={`font-bold text-lg text-[#4a3b2a]`}>
-            {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
-          </h3>
-          <button onClick={onClose} className="text-[#4a3b2a] hover:opacity-70"><FiX size={20}/></button>
+        <div className={`px-8 py-5 border-b border-gray-100 flex justify-between items-center bg-white/80 backdrop-blur-sm`}>
+          <div>
+            <h3 className="text-xl font-black text-[#4a3b2a] uppercase tracking-tight">
+                {editingProduct ? 'Editar Producto' : 'Crear Producto'}
+            </h3>
+            <p className="text-xs font-bold text-[#d8bf9f] uppercase tracking-widest">Panel de Gestión</p>
+          </div>
+          <button onClick={onClose} className="bg-gray-100 p-2 rounded-full text-gray-500 hover:text-red-500 hover:bg-red-50 transition"><FiX size={20}/></button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[#4a3b2a] uppercase">Nombre</label>
-              <input required className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#4a3b2a]"
-                value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[#4a3b2a] uppercase">Categoría</label>
-              <select required className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none bg-white focus:border-[#4a3b2a]"
-                value={formData.categoriaId} onChange={e => setFormData({...formData, categoriaId: e.target.value})}>
-                {categorias.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-              </select>
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[#4a3b2a] uppercase">Precio ($)</label>
-              <input required type="number" step="0.01" className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#4a3b2a]"
-                value={formData.precio} onChange={e => setFormData({...formData, precio: e.target.value})} />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[#4a3b2a] uppercase">Imagen Principal</label>
-              <input type="file" onChange={e => setSelectedFile(e.target.files[0])} className="text-sm w-full" />
-            </div>
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8 bg-white/90">
+          
+          {/* SECCIÓN 1: DATOS BÁSICOS & GALERÍA */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+             
+             {/* Galería Visual */}
+             <div className="lg:col-span-1 space-y-3">
+                <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <FiImage /> Galería ({existingImages.length + newFiles.length})
+                </label>
+                
+                <div className="grid grid-cols-2 gap-2">
+                    {/* Imágenes Existentes */}
+                    {existingImages.map((img, i) => (
+                        <div key={i} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-200">
+                            <img src={img.startsWith('http') ? img : fileService.getImageUrl(img)} className="w-full h-full object-cover" alt="preview" />
+                            <button type="button" onClick={() => removeExistingImage(img)} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition shadow-sm"><FiTrash2 size={10}/></button>
+                        </div>
+                    ))}
+                    
+                    {/* Imágenes Nuevas */}
+                    {newFiles.map((item, i) => (
+                        <div key={i} className="relative group aspect-square rounded-xl overflow-hidden border-2 border-[#d8bf9f] border-dashed">
+                            <img src={item.preview} className="w-full h-full object-cover opacity-80" alt="new" />
+                            <button type="button" onClick={() => removeNewFile(i)} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full shadow-sm"><FiX size={10}/></button>
+                            <span className="absolute bottom-1 left-1 bg-[#d8bf9f] text-[#4a3b2a] text-[8px] font-bold px-1 rounded">NUEVA</span>
+                        </div>
+                    ))}
+
+                    {/* Botón Subir */}
+                    <label className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#4a3b2a] hover:bg-gray-50 transition group">
+                        <FiPlus className="text-gray-400 group-hover:text-[#4a3b2a]" size={24}/>
+                        <span className="text-[9px] font-bold text-gray-400 uppercase mt-1">Agregar</span>
+                        <input type="file" onChange={handleFileSelect} className="hidden" accept="image/*" />
+                    </label>
+                </div>
+             </div>
+
+             {/* Datos Principales */}
+             <div className="lg:col-span-2 space-y-5">
+                <div className="grid grid-cols-2 gap-5">
+                    <div className="space-y-1">
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Nombre</label>
+                        <input required className="w-full border-b-2 border-gray-200 focus:border-[#4a3b2a] outline-none py-2 font-bold text-[#4a3b2a] bg-transparent text-lg"
+                            value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} placeholder="Ej: Remera Camel" />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Categoría</label>
+                        <select required className="w-full border-b-2 border-gray-200 focus:border-[#4a3b2a] outline-none py-2 font-bold text-[#4a3b2a] bg-transparent"
+                            value={formData.categoriaId} onChange={e => setFormData({...formData, categoriaId: e.target.value})}>
+                            {categorias.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+                        </select>
+                    </div>
+                </div>
+
+                <div className="space-y-1">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Descripción</label>
+                    <textarea rows="3" className="w-full border border-gray-200 rounded-xl p-3 outline-none focus:border-[#4a3b2a] text-sm text-gray-600 bg-gray-50"
+                        value={formData.descripcion} onChange={e => setFormData({...formData, descripcion: e.target.value})} placeholder="Detalles del producto..." />
+                </div>
+
+                <div className="space-y-1 w-1/3">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Precio</label>
+                    <div className="flex items-center border-b-2 border-gray-200 focus-within:border-[#4a3b2a]">
+                        <span className="font-bold text-[#4a3b2a] mr-2">$</span>
+                        <input required type="number" step="0.01" className="w-full outline-none py-2 font-bold text-[#4a3b2a] text-xl bg-transparent"
+                            value={formData.precio} onChange={e => setFormData({...formData, precio: e.target.value})} />
+                    </div>
+                </div>
+             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-between items-center border-b border-[#d8bf9f]/30 pb-2">
-              <label className="text-sm font-bold text-[#4a3b2a]">GESTIÓN DE STOCK (COLOR Y TALLE)</label>
-              <button type="button" onClick={addColorRow} className="text-xs bg-[#4a3b2a] text-[#d8bf9f] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-black transition">
-                <FiPlus /> Agregar Color
+          {/* SECCIÓN 2: MATRIZ DE STOCK */}
+          <div className="border-t border-gray-100 pt-8 space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2 text-[#4a3b2a]">
+                 <FiLayers size={20} />
+                 <h4 className="font-black uppercase tracking-tight text-lg">Control de Stock</h4>
+              </div>
+              <button type="button" onClick={addColorRow} className="text-xs bg-[#4a3b2a] text-[#d8bf9f] px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black transition font-bold uppercase tracking-wider shadow-lg shadow-[#4a3b2a]/20">
+                <FiPlus /> Nuevo Color
               </button>
             </div>
 
-            <div className="space-y-3">
-              {variantes.map((v, idx) => (
-                <div key={idx} className="p-4 bg-[#f9f5f0] rounded-xl border border-gray-200 relative group">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <div className="md:col-span-1">
-                      <label className="text-[10px] font-bold text-gray-400 block mb-1">COLOR</label>
-                      <input 
-                        placeholder="Ej: Gris"
-                        className="w-full border-b border-gray-300 bg-transparent outline-none focus:border-[#4a3b2a] py-1 text-sm font-bold"
-                        value={v.color}
-                        onChange={(e) => updateVariante(idx, 'color', e.target.value)}
-                      />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {variantes.map((v, idx) => {
+                // Cálculo de total por color para visualización rápida
+                const totalColor = Object.values(v.stock).reduce((sum, val) => sum + (parseInt(val)||0), 0);
+                
+                return (
+                <div key={idx} className="p-5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition group">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="w-2/3">
+                       <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Nombre del Color</label>
+                       <input 
+                         placeholder="Ej: Negro Mate"
+                         className="w-full border-b border-gray-200 focus:border-[#4a3b2a] outline-none font-bold text-[#4a3b2a] py-1 bg-transparent"
+                         value={v.color}
+                         onChange={(e) => updateVariante(idx, 'color', e.target.value)}
+                       />
                     </div>
-                    <div className="md:col-span-3">
-                      <label className="text-[10px] font-bold text-gray-400 block mb-1 text-center md:text-left">STOCK POR TALLE</label>
-                      <div className="flex flex-wrap justify-between gap-2">
-                        {tallesRopa.map(talle => (
-                          <div key={talle} className="flex flex-col items-center">
-                            <span className="text-[10px] font-bold text-[#4a3b2a]">{talle}</span>
-                            <input 
-                              type="number" 
-                              className="w-10 text-center border rounded py-1 text-xs focus:border-[#4a3b2a] outline-none"
-                              value={v.stock?.[talle] || ''} 
-                              onChange={(e) => updateStock(idx, talle, e.target.value)}
-                            />
-                          </div>
-                        ))}
-                        <button type="button" onClick={() => removeColorRow(idx)} className="text-red-400 hover:text-red-600 self-end mb-1 ml-2">
-                          <FiTrash2 size={16}/>
-                        </button>
-                      </div>
+                    <div className="text-right">
+                       <span className="block text-[9px] font-black text-gray-300 uppercase">Total</span>
+                       <span className={`text-lg font-black ${totalColor > 0 ? 'text-[#4a3b2a]' : 'text-red-400'}`}>{totalColor}</span>
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-6 gap-2">
+                    {tallesRopa.map(talle => (
+                      <div key={talle} className="flex flex-col items-center gap-1">
+                        <span className="text-[9px] font-bold text-gray-400">{talle}</span>
+                        <input 
+                          type="number" 
+                          className={`w-full text-center border rounded-md py-1 text-xs font-bold outline-none focus:ring-1 focus:ring-[#d8bf9f] ${v.stock?.[talle] > 0 ? 'bg-[#f9f5f0] border-[#d8bf9f] text-[#4a3b2a]' : 'bg-gray-50 border-gray-100 text-gray-400'}`}
+                          value={v.stock?.[talle] || ''} 
+                          onChange={(e) => updateStock(idx, talle, e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 flex justify-end">
+                     <button type="button" onClick={() => removeColorRow(idx)} className="text-red-300 hover:text-red-500 text-[10px] font-bold uppercase flex items-center gap-1 transition">
+                        <FiTrash2 /> Eliminar Variante
+                     </button>
+                  </div>
                 </div>
-              ))}
+              )})}
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-[#4a3b2a] uppercase">Descripción</label>
-            <textarea rows="3" className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#4a3b2a]"
-              value={formData.descripcion} onChange={e => setFormData({...formData, descripcion: e.target.value})} />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={onClose} className="px-6 py-2 text-gray-500 font-bold hover:bg-gray-100 rounded-xl transition">Cancelar</button>
-            <button type="submit" disabled={uploading} className="bg-[#4a3b2a] text-[#d8bf9f] px-8 py-2 rounded-xl font-bold shadow-lg hover:bg-black transition disabled:opacity-50">
-              {uploading ? 'Guardando...' : 'Confirmar Cambios'}
-            </button>
-          </div>
         </form>
+
+        {/* FOOTER */}
+        <div className="px-8 py-5 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+           <div className="text-sm text-gray-500 font-medium">
+              {uploading ? (
+                  <span className="flex items-center gap-2 text-[#4a3b2a] animate-pulse"><FiUploadCloud /> Subiendo imágenes...</span>
+              ) : (
+                  <span>Listo para guardar</span>
+              )}
+           </div>
+           <div className="flex gap-3">
+             <button type="button" onClick={onClose} className="px-6 py-2.5 text-gray-500 font-bold hover:text-gray-800 transition">Cancelar</button>
+             <button type="submit" onClick={handleSubmit} disabled={uploading} className="bg-[#4a3b2a] text-[#d8bf9f] px-8 py-2.5 rounded-xl font-bold shadow-lg hover:bg-black transition disabled:opacity-50 disabled:cursor-not-allowed">
+               {uploading ? 'Procesando...' : 'Confirmar Cambios'}
+             </button>
+           </div>
+        </div>
+
       </div>
     </div>
   );
