@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { pedidoService } from '../services/pedidoService';
 import { productoService } from '../services/productoService';
 import { fileService } from '../services/fileService';
-import { FiPlus, FiUpload, FiFileText, FiSearch, FiFilter, FiTrash2, FiX, FiCheck, FiPackage, FiAlertCircle } from 'react-icons/fi';
+import { FiPlus, FiUpload, FiFileText, FiSearch, FiFilter, FiTrash2, FiX, FiCheck, FiPackage, FiEye, FiUser, FiMapPin, FiPhone, FiCreditCard, FiAlertCircle } from 'react-icons/fi';
 
 const AdminOrders = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -12,12 +12,17 @@ const AdminOrders = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('TODOS');
 
+  // Estados de Modales
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   
+  // Estado para el nuevo pedido manual
   const [newOrder, setNewOrder] = useState({
     nombreCliente: '', telefono: '', direccionEnvio: '', metodoPago: 'Efectivo', items: [] 
   });
 
+  // Estado para el ítem temporal (Producto > Color > Talle > Cantidad)
   const [tempItem, setTempItem] = useState({ 
     productoId: '', 
     color: '', 
@@ -28,13 +33,16 @@ const AdminOrders = () => {
   // --- LÓGICA DE STOCK INTELIGENTE ---
   const selectedProductObj = productos.find(p => p.id === parseInt(tempItem.productoId));
   
+  // 1. Obtenemos colores disponibles del producto seleccionado
   const availableColors = selectedProductObj?.variantes?.map(v => v.color) || [];
   
+  // 2. Obtenemos el objeto variante del color seleccionado
   const selectedVariantObj = selectedProductObj?.variantes?.find(v => v.color === tempItem.color);
   
+  // 3. Obtenemos los talles y su stock de esa variante
   const availableSizes = selectedVariantObj ? Object.keys(selectedVariantObj.stockPorTalle) : [];
 
-  // Stock específico de la combinación seleccionada
+  // 4. Stock específico de la combinación seleccionada
   const currentStock = (selectedVariantObj && tempItem.talle) 
     ? selectedVariantObj.stockPorTalle[tempItem.talle] 
     : 0;
@@ -49,6 +57,7 @@ const AdminOrders = () => {
         productoService.getAllProductos()
       ]);
       
+      // Blindaje contra respuestas nulas
       setPedidos(Array.isArray(pedRes.data) ? pedRes.data : []);
       setProductos(Array.isArray(prodRes.data) ? prodRes.data : []);
       
@@ -64,7 +73,16 @@ const AdminOrders = () => {
     try {
       await pedidoService.cambiarEstado(id, nuevoEstado);
       loadData();
+      // Si estamos viendo el detalle, actualizamos el estado en el modal también
+      if (selectedOrder && selectedOrder.id === id) {
+         setSelectedOrder(prev => ({ ...prev, estado: nuevoEstado }));
+      }
     } catch (error) { alert("Error al actualizar estado"); }
+  };
+
+  const handleViewOrder = (pedido) => {
+    setSelectedOrder(pedido);
+    setShowDetailModal(true);
   };
 
   const handleFileUpload = async (e, pedidoId) => {
@@ -74,13 +92,18 @@ const AdminOrders = () => {
       await pedidoService.subirFactura(pedidoId, file);
       alert('Comprobante subido con éxito');
       loadData();
+      if (selectedOrder && selectedOrder.id === pedidoId) {
+         // Recargamos el pedido seleccionado para ver el cambio
+         const updatedOrder = await pedidoService.getPedidoById(pedidoId); // Asumiendo que tenés este método o recargás todo
+         setSelectedOrder(updatedOrder.data); // O simplemente cerrás el modal
+      }
     } catch (error) { alert('Error al subir el archivo'); }
   };
 
   const addItemToOrder = () => {
     if (!selectedProductObj) return;
     
-    // Validaciones
+    // Validaciones de Selección
     if (!tempItem.color && availableColors.length > 0) { alert("Seleccioná un color"); return; }
     if (!tempItem.talle && availableSizes.length > 0) { alert("Seleccioná un talle"); return; }
     
@@ -101,7 +124,7 @@ const AdminOrders = () => {
       nombre: selectedProductObj.nombre,
       cantidad: parseInt(tempItem.cantidad),
       precio: selectedProductObj.precio,
-      // Guardamos color y talle por separado y juntos para visualización
+      // Guardamos la info completa
       color: tempItem.color,
       talle: tempItem.talle,
       selectedSize: `${tempItem.color} - ${tempItem.talle}`, 
@@ -109,7 +132,8 @@ const AdminOrders = () => {
     };
     
     setNewOrder({ ...newOrder, items: [...newOrder.items, item] });
-    setTempItem({ productoId: '', color: '', talle: '', cantidad: 1 });
+    // Reseteamos solo la selección de variante, mantenemos el producto por si quiere agregar otro talle
+    setTempItem({ ...tempItem, color: '', talle: '', cantidad: 1 });
   };
 
   const removeItemFromOrder = (index) => {
@@ -133,8 +157,7 @@ const AdminOrders = () => {
         items: newOrder.items.map(i => ({
           productoId: i.productoId,
           cantidad: i.cantidad,
-          // Enviamos el string combinado para que se guarde en la columna 'talle' de la DB vieja
-          // Si actualizaste el backend para recibir 'color' y 'talle' separados, podés agregarlos acá.
+          // Enviamos el string combinado o el objeto según tu DTO de backend
           talle: i.selectedSize, 
           precioUnitario: i.precio
         }))
@@ -143,7 +166,7 @@ const AdminOrders = () => {
       await pedidoService.crearPedidoManual(payload);
       setShowCreateModal(false);
       setNewOrder({ nombreCliente: '', telefono: '', direccionEnvio: '', metodoPago: 'Efectivo', items: [] });
-      loadData(); // Recargar la tabla
+      loadData();
       alert("Pedido creado correctamente");
     } catch (error) { 
       console.error(error);
@@ -162,6 +185,8 @@ const AdminOrders = () => {
     return <span className={`px-2 py-1 rounded text-xs font-bold border ${styles[estado] || 'bg-gray-100'}`}>{estado}</span>;
   };
 
+  const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
+
   const filteredOrders = pedidos.filter(p => {
     const term = searchTerm.toLowerCase();
     const matchSearch = 
@@ -173,7 +198,9 @@ const AdminOrders = () => {
   });
 
   return (
-    <div className="p-6 md:p-8 bg-[#f9f5f0] min-h-screen">
+    <div className="p-6 md:p-8 bg-[#f9f5f0] min-h-screen font-sans">
+      
+      {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-[#4a3b2a] flex items-center gap-2">
@@ -186,7 +213,7 @@ const AdminOrders = () => {
         </button>
       </div>
 
-      {/* Filtros */}
+      {/* FILTROS */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-[#d8bf9f]/20 mb-6 flex flex-col md:flex-row gap-4">
         <div className="flex-1 relative">
            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -214,7 +241,7 @@ const AdminOrders = () => {
         </div>
       </div>
 
-      {/* Tabla */}
+      {/* TABLA DE PEDIDOS */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-[#d8bf9f]/20">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
@@ -225,18 +252,18 @@ const AdminOrders = () => {
                 <th className="px-6 py-4">Fecha</th>
                 <th className="px-6 py-4">Total</th>
                 <th className="px-6 py-4">Estado</th>
-                <th className="px-6 py-4">Comprobante</th>
+                <th className="px-6 py-4 text-center">Detalle</th>
                 <th className="px-6 py-4 text-right">Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
-                <tr><td colSpan="7" className="text-center py-8">Cargando pedidos...</td></tr>
+                <tr><td colSpan="7" className="text-center py-8">Cargando...</td></tr>
               ) : filteredOrders.length === 0 ? (
                 <tr><td colSpan="7" className="text-center py-8 text-gray-500">No hay pedidos registrados.</td></tr>
               ) : (
                 filteredOrders.map((pedido) => (
-                  <tr key={pedido.id} className="hover:bg-[#f9f5f0] transition">
+                  <tr key={pedido.id} className="hover:bg-[#f9f5f0] transition group">
                     <td className="px-6 py-4 font-mono text-xs font-bold text-[#4a3b2a]">#{pedido.id}</td>
                     <td className="px-6 py-4">
                       <div className="font-bold text-gray-900">{pedido.nombreCliente || 'Cliente Mostrador'}</div>
@@ -247,18 +274,14 @@ const AdminOrders = () => {
                     </td>
                     <td className="px-6 py-4 font-bold text-[#4a3b2a]">${pedido.total?.toLocaleString() || '0'}</td>
                     <td className="px-6 py-4">{getStatusBadge(pedido.estado)}</td>
-                    <td className="px-6 py-4">
-                      {pedido.facturaUrl ? (
-                        <a href={fileService.getImageUrl(pedido.facturaUrl)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-green-600 hover:text-green-800 bg-green-50 px-2 py-1 rounded text-xs font-bold transition">
-                          <FiFileText /> Ver Archivo
-                        </a>
-                      ) : (
-                        <label className="cursor-pointer inline-flex items-center gap-1 text-[#4a3b2a] hover:text-black bg-[#d8bf9f]/30 px-2 py-1 rounded text-xs font-bold transition">
-                          <FiUpload /> Subir
-                          <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, pedido.id)} accept="image/*,.pdf" />
-                        </label>
-                      )}
+                    
+                    {/* BOTÓN VER DETALLE (OJO) */}
+                    <td className="px-6 py-4 text-center">
+                        <button onClick={() => handleViewOrder(pedido)} className="text-gray-400 hover:text-[#4a3b2a] p-2 bg-gray-50 hover:bg-white rounded-full transition border border-transparent hover:border-gray-200">
+                            <FiEye size={18} />
+                        </button>
                     </td>
+
                     <td className="px-6 py-4 text-right">
                       <select 
                         className="text-xs border border-gray-200 rounded px-2 py-1 bg-white cursor-pointer outline-none focus:border-[#4a3b2a]"
@@ -280,10 +303,125 @@ const AdminOrders = () => {
         </div>
       </div>
 
-      {/* MODAL CREAR PEDIDO MANUAL */}
+      {/* MODAL 1: DETALLE DE PEDIDO (PARA PREPARAR) */}
+      {showDetailModal && selectedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3b2a]/60 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col border border-[#d8bf9f] max-h-[90vh]" onClick={e => e.stopPropagation()}>
+                
+                {/* Header */}
+                <div className="px-8 py-6 bg-[#f9f5f0] border-b border-[#d8bf9f]/30 flex justify-between items-start">
+                    <div>
+                        <div className="flex items-center gap-3 mb-1">
+                            <h3 className="text-2xl font-black text-[#4a3b2a]">Pedido #{selectedOrder.id}</h3>
+                            {getStatusBadge(selectedOrder.estado)}
+                        </div>
+                        <p className="text-sm text-gray-500">{new Date(selectedOrder.fecha).toLocaleString()}</p>
+                    </div>
+                    <button onClick={() => setShowDetailModal(false)} className="bg-white p-2 rounded-full text-gray-400 hover:text-gray-600 shadow-sm transition"><FiX size={20}/></button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-8">
+                    
+                    {/* Datos Cliente y Envío */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div className="space-y-4">
+                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2">Cliente</h4>
+                            <div className="flex items-start gap-3">
+                                <div className="bg-gray-100 p-2 rounded-lg text-[#4a3b2a]"><FiUser /></div>
+                                <div>
+                                    <p className="font-bold text-gray-800">{selectedOrder.nombreCliente}</p>
+                                    <a href={`https://wa.me/${selectedOrder.telefono?.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-sm text-green-600 hover:underline flex items-center gap-1">
+                                        <FiPhone size={12}/> {selectedOrder.telefono}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2">Envío y Pago</h4>
+                            <div className="space-y-3">
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-gray-100 p-2 rounded-lg text-[#4a3b2a]"><FiMapPin /></div>
+                                    <p className="text-sm text-gray-600 font-medium">{selectedOrder.direccionEnvio}</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-gray-100 p-2 rounded-lg text-[#4a3b2a]"><FiCreditCard /></div>
+                                    <span className="bg-[#f9f5f0] text-[#4a3b2a] text-xs font-bold px-3 py-1 rounded-full border border-[#d8bf9f]/30">
+                                        {selectedOrder.metodoPago}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Items a Preparar */}
+                    <div>
+                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2 mb-4">Items a Preparar</h4>
+                        <div className="space-y-3">
+                            {selectedOrder.detalles?.map((detalle, idx) => (
+                                <div key={idx} className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl bg-white hover:border-[#d8bf9f]/50 transition">
+                                    <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                                        <img 
+                                            src={getImgUrl(detalle.producto?.imagenes?.[0])} 
+                                            alt={detalle.producto?.nombre} 
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=IMG'; }}
+                                        />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h5 className="font-bold text-[#4a3b2a]">{detalle.producto?.nombre}</h5>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="bg-[#4a3b2a] text-[#d8bf9f] text-xs font-bold px-2 py-0.5 rounded">
+                                                {detalle.talleSeleccionado || 'Único'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-xs text-gray-400 uppercase font-bold">Cant.</div>
+                                        <div className="text-xl font-black text-[#4a3b2a]">{detalle.cantidad}</div>
+                                    </div>
+                                    <div className="text-right min-w-[80px]">
+                                        <div className="text-xs text-gray-400 uppercase font-bold">Subtotal</div>
+                                        <div className="font-bold text-gray-800">${detalle.subtotal?.toLocaleString()}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer Modal Detalle */}
+                <div className="px-8 py-5 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
+                    <div className="text-left">
+                        <span className="text-xs font-bold text-gray-400 uppercase block">Total a Cobrar</span>
+                        <span className="text-2xl font-black text-[#4a3b2a]">${selectedOrder.total?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex gap-3">
+                        <div className="relative">
+                            <input type="file" id="modal-upload" className="hidden" onChange={(e) => handleFileUpload(e, selectedOrder.id)} accept="image/*,.pdf"/>
+                            <label htmlFor="modal-upload" className="cursor-pointer bg-white border border-gray-300 text-gray-600 px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-gray-50 transition flex items-center gap-2">
+                                <FiUpload /> {selectedOrder.facturaUrl ? 'Cambiar Factura' : 'Subir Factura'}
+                            </label>
+                        </div>
+                        {selectedOrder.estado === 'PENDIENTE' && (
+                            <button onClick={() => handleEstadoChange(selectedOrder.id, 'CONFIRMADO')} className="bg-[#4a3b2a] text-[#d8bf9f] px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-black transition flex items-center gap-2 shadow-lg">
+                                <FiCheck /> Confirmar Pedido
+                            </button>
+                        )}
+                         {selectedOrder.estado === 'CONFIRMADO' && (
+                            <button onClick={() => handleEstadoChange(selectedOrder.id, 'ENVIADO')} className="bg-purple-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-purple-700 transition flex items-center gap-2 shadow-lg">
+                                <FiPackage /> Marcar Enviado
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* MODAL 2: CREAR PEDIDO MANUAL */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3b2a]/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col border border-[#d8bf9f]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3b2a]/60 backdrop-blur-sm" onClick={() => setShowCreateModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col border border-[#d8bf9f]" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-[#d8bf9f]/30 flex justify-between items-center bg-[#f9f5f0]">
                <h3 className="font-bold text-xl text-[#4a3b2a]">Cargar Pedido Manual</h3>
                <button onClick={() => setShowCreateModal(false)} className="text-[#4a3b2a] hover:opacity-50"><FiX size={24}/></button>
@@ -313,7 +451,7 @@ const AdminOrders = () => {
                    </div>
                  </div>
 
-                 {/* Selector de Productos con STOCK CONTROL */}
+                 {/* Selector de Productos */}
                  <div className="space-y-3">
                    <h4 className="font-bold text-xs text-[#4a3b2a] uppercase tracking-widest border-b border-gray-200 pb-2">Agregar Productos</h4>
                    
@@ -369,7 +507,7 @@ const AdminOrders = () => {
                             type="number" 
                             className="w-full border rounded-lg px-3 py-2 outline-none text-sm" 
                             min="1"
-                            max={currentStock} // Limita por HTML
+                            max={currentStock} // Límite visual
                             value={tempItem.cantidad} 
                             onChange={e => setTempItem({...tempItem, cantidad: e.target.value})} 
                         />
