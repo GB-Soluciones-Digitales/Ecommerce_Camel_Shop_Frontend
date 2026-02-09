@@ -132,7 +132,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8 bg-white/90">
           
-          {/* SECCIÓN 1: DATOS BÁSICOS & GALERÍA */}
+          {/* DATOS BÁSICOS & GALERÍA */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
              
              {/* Galería Visual */}
@@ -202,7 +202,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
              </div>
           </div>
 
-          {/* SECCIÓN 2: MATRIZ DE STOCK */}
+          {/* MATRIZ DE STOCK */}
           <div className="border-t border-gray-100 pt-8 space-y-6">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2 text-[#4a3b2a]">
@@ -216,7 +216,6 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {variantes.map((v, idx) => {
-                // Cálculo de total por color para visualización rápida
                 const totalColor = Object.values(v.stock).reduce((sum, val) => sum + (parseInt(val)||0), 0);
                 
                 return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { pedidoService } from '../services/pedidoService';
 import { productoService } from '../services/productoService';
 import { fileService } from '../services/fileService';
-import { FiPlus, FiUpload, FiFileText, FiSearch, FiFilter, FiTrash2, FiX, FiCheck, FiPackage } from 'react-icons/fi';
+import { FiPlus, FiUpload, FiFileText, FiSearch, FiFilter, FiTrash2, FiX, FiCheck, FiPackage, FiAlertCircle } from 'react-icons/fi';
 
 const AdminOrders = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -14,12 +14,10 @@ const AdminOrders = () => {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   
-  // Estado para el nuevo pedido
   const [newOrder, setNewOrder] = useState({
     nombreCliente: '', telefono: '', direccionEnvio: '', metodoPago: 'Efectivo', items: [] 
   });
 
-  // Estado para el ítem temporal que se está agregando
   const [tempItem, setTempItem] = useState({ 
     productoId: '', 
     color: '', 
@@ -27,11 +25,19 @@ const AdminOrders = () => {
     cantidad: 1 
   });
 
-  // Helpers para los selects dinámicos del modal
+  // --- LÓGICA DE STOCK INTELIGENTE ---
   const selectedProductObj = productos.find(p => p.id === parseInt(tempItem.productoId));
+  
   const availableColors = selectedProductObj?.variantes?.map(v => v.color) || [];
+  
   const selectedVariantObj = selectedProductObj?.variantes?.find(v => v.color === tempItem.color);
+  
   const availableSizes = selectedVariantObj ? Object.keys(selectedVariantObj.stockPorTalle) : [];
+
+  // Stock específico de la combinación seleccionada
+  const currentStock = (selectedVariantObj && tempItem.talle) 
+    ? selectedVariantObj.stockPorTalle[tempItem.talle] 
+    : 0;
 
   useEffect(() => { loadData(); }, []);
 
@@ -43,15 +49,12 @@ const AdminOrders = () => {
         productoService.getAllProductos()
       ]);
       
-      // BLINDAJE: Validamos que sean arrays antes de setear el estado
       setPedidos(Array.isArray(pedRes.data) ? pedRes.data : []);
       setProductos(Array.isArray(prodRes.data) ? prodRes.data : []);
       
     } catch (error) {
       console.error("Error cargando datos", error);
-      // En caso de error, reseteamos a arrays vacíos para evitar el crash
       setPedidos([]);
-      setProductos([]);
     } finally {
       setLoading(false);
     }
@@ -76,15 +79,31 @@ const AdminOrders = () => {
 
   const addItemToOrder = () => {
     if (!selectedProductObj) return;
+    
+    // Validaciones
     if (!tempItem.color && availableColors.length > 0) { alert("Seleccioná un color"); return; }
     if (!tempItem.talle && availableSizes.length > 0) { alert("Seleccioná un talle"); return; }
+    
+    // CONTROL DE STOCK
+    if (availableSizes.length > 0) {
+        if (currentStock === 0) {
+            alert("No hay stock disponible para esta variante.");
+            return;
+        }
+        if (parseInt(tempItem.cantidad) > currentStock) {
+            alert(`Solo hay ${currentStock} unidades disponibles.`);
+            return;
+        }
+    }
 
     const item = {
       productoId: selectedProductObj.id,
       nombre: selectedProductObj.nombre,
       cantidad: parseInt(tempItem.cantidad),
       precio: selectedProductObj.precio,
-      // Guardamos la info de variante para el backend/whatsapp
+      // Guardamos color y talle por separado y juntos para visualización
+      color: tempItem.color,
+      talle: tempItem.talle,
       selectedSize: `${tempItem.color} - ${tempItem.talle}`, 
       imagenUrl: selectedProductObj.imagenes?.[0] || selectedProductObj.imagenUrl
     };
@@ -114,7 +133,9 @@ const AdminOrders = () => {
         items: newOrder.items.map(i => ({
           productoId: i.productoId,
           cantidad: i.cantidad,
-          talle: i.selectedSize, // Enviamos "Color - Talle" como string unificado
+          // Enviamos el string combinado para que se guarde en la columna 'talle' de la DB vieja
+          // Si actualizaste el backend para recibir 'color' y 'talle' separados, podés agregarlos acá.
+          talle: i.selectedSize, 
           precioUnitario: i.precio
         }))
       };
@@ -122,7 +143,7 @@ const AdminOrders = () => {
       await pedidoService.crearPedidoManual(payload);
       setShowCreateModal(false);
       setNewOrder({ nombreCliente: '', telefono: '', direccionEnvio: '', metodoPago: 'Efectivo', items: [] });
-      loadData();
+      loadData(); // Recargar la tabla
       alert("Pedido creado correctamente");
     } catch (error) { 
       console.error(error);
@@ -141,11 +162,12 @@ const AdminOrders = () => {
     return <span className={`px-2 py-1 rounded text-xs font-bold border ${styles[estado] || 'bg-gray-100'}`}>{estado}</span>;
   };
 
-  // BLINDAJE: Verificamos que pedidos sea un array antes de filtrar
-  const safePedidos = Array.isArray(pedidos) ? pedidos : [];
-
-  const filteredOrders = safePedidos.filter(p => {
-    const matchSearch = p.nombreCliente?.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.toString().includes(searchTerm);
+  const filteredOrders = pedidos.filter(p => {
+    const term = searchTerm.toLowerCase();
+    const matchSearch = 
+        (p.nombreCliente && p.nombreCliente.toLowerCase().includes(term)) || 
+        (p.id && p.id.toString().includes(term));
+    
     const matchEstado = filtroEstado === 'TODOS' || p.estado === filtroEstado;
     return matchSearch && matchEstado;
   });
@@ -217,13 +239,13 @@ const AdminOrders = () => {
                   <tr key={pedido.id} className="hover:bg-[#f9f5f0] transition">
                     <td className="px-6 py-4 font-mono text-xs font-bold text-[#4a3b2a]">#{pedido.id}</td>
                     <td className="px-6 py-4">
-                      <div className="font-bold text-gray-900">{pedido.nombreCliente}</div>
-                      <div className="text-xs text-gray-500">{pedido.telefono}</div>
+                      <div className="font-bold text-gray-900">{pedido.nombreCliente || 'Cliente Mostrador'}</div>
+                      <div className="text-xs text-gray-500">{pedido.telefono || '-'}</div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(pedido.fecha).toLocaleDateString()}
+                      {pedido.fecha ? new Date(pedido.fecha).toLocaleDateString() : '-'}
                     </td>
-                    <td className="px-6 py-4 font-bold text-[#4a3b2a]">${pedido.total.toLocaleString()}</td>
+                    <td className="px-6 py-4 font-bold text-[#4a3b2a]">${pedido.total?.toLocaleString() || '0'}</td>
                     <td className="px-6 py-4">{getStatusBadge(pedido.estado)}</td>
                     <td className="px-6 py-4">
                       {pedido.facturaUrl ? (
@@ -291,11 +313,12 @@ const AdminOrders = () => {
                    </div>
                  </div>
 
-                 {/* Selector de Productos */}
+                 {/* Selector de Productos con STOCK CONTROL */}
                  <div className="space-y-3">
                    <h4 className="font-bold text-xs text-[#4a3b2a] uppercase tracking-widest border-b border-gray-200 pb-2">Agregar Productos</h4>
                    
                    <div className="grid grid-cols-1 md:grid-cols-12 gap-2 bg-[#f9f5f0] p-4 rounded-xl border border-[#d8bf9f]/30 items-end">
+                     
                      {/* 1. Producto */}
                      <div className="md:col-span-4">
                         <label className="text-[10px] font-bold text-gray-400 block mb-1">PRODUCTO</label>
@@ -336,20 +359,41 @@ const AdminOrders = () => {
                         </select>
                      </div>
 
-                     {/* 4. Cantidad */}
+                     {/* 4. Cantidad (Con límite de stock) */}
                      <div className="md:col-span-2">
-                        <label className="text-[10px] font-bold text-gray-400 block mb-1">CANT.</label>
-                        <input type="number" className="w-full border rounded-lg px-3 py-2 outline-none text-sm" min="1"
-                          value={tempItem.cantidad} onChange={e => setTempItem({...tempItem, cantidad: e.target.value})} />
+                        <label className="text-[10px] font-bold text-gray-400 block mb-1 flex justify-between">
+                            <span>CANT.</span>
+                            {currentStock > 0 && <span className="text-green-600 font-bold">Max: {currentStock}</span>}
+                        </label>
+                        <input 
+                            type="number" 
+                            className="w-full border rounded-lg px-3 py-2 outline-none text-sm" 
+                            min="1"
+                            max={currentStock} // Limita por HTML
+                            value={tempItem.cantidad} 
+                            onChange={e => setTempItem({...tempItem, cantidad: e.target.value})} 
+                        />
                      </div>
 
                      {/* Botón */}
                      <div className="md:col-span-1">
-                       <button type="button" onClick={addItemToOrder} className="w-full bg-[#4a3b2a] text-[#d8bf9f] py-2 rounded-lg font-bold hover:bg-black transition flex justify-center">
+                       <button 
+                         type="button" 
+                         onClick={addItemToOrder} 
+                         disabled={!tempItem.talle || currentStock === 0 || tempItem.cantidad > currentStock}
+                         className="w-full bg-[#4a3b2a] text-[#d8bf9f] py-2 rounded-lg font-bold hover:bg-black transition flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                       >
                          <FiPlus />
                        </button>
                      </div>
                    </div>
+                   
+                   {/* Mensaje de error de stock */}
+                   {tempItem.talle && currentStock === 0 && (
+                        <p className="text-xs text-red-500 font-bold flex items-center gap-1">
+                            <FiAlertCircle /> No hay stock disponible para esta variante.
+                        </p>
+                   )}
 
                    {/* Lista de Ítems Agregados */}
                    {newOrder.items.length > 0 && (
