@@ -13,16 +13,14 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
+          # ESTA LÍNEA ES LA CLAVE: evita que el bot pise tu token
+          persist-credentials: false
 
       - name: Configurar y Empujar al Espejo
         env:
           OP_TOKEN: ${{ secrets.ORG_PAT }}
         run: |
-          # 1. Limpiamos cualquier rastro de remotos previos y configuramos el nuevo
-          # Usamos x-access-token que es el método más seguro
-          git remote add mirror https://x-access-token:${OP_TOKEN}@github.com/GB-Soluciones-Digitales/Ecommerce_Camel_Shop_Frontend.git
-          
-          # 2. Empujamos todo (ramas, tags y commits)
-          # El flag --mirror es clave para que sean idénticos
+          git remote add mirror "https://x-access-token:${OP_TOKEN}@github.com/GB-Soluciones-Digitales/Ecommerce_Camel_Shop_Frontend.git"
+          git config --local http.https://github.com/.extraheader ""
           git push --mirror mirror
