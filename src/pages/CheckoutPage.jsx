@@ -11,7 +11,6 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  // Colores
   const colors = {
     textMain: 'text-[#4a3b2a]',
     bgAccent: 'bg-[#d8bf9f]',

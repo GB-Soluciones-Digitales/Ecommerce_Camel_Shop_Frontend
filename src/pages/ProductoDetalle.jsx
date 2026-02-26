@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet-async';
 
 import ProductoGaleria from './ProductoGaleria';
 import ProductoInfo from './ProductoInfo';
-import TablaTallesModal from './TablaTallesModal';
+import TablaTallesModal from '../components/TablaTallesModal';
 
 const ProductoDetallePage = () => {
   const { id } = useParams();

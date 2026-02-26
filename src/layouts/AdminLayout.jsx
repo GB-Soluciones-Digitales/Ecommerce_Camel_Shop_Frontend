@@ -77,7 +77,7 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* --- SIDEBAR MOBILE (Overlay) --- */}
+      {/* SIDEBAR MOBILE */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={closeMobileMenu} />
@@ -104,7 +104,7 @@ const AdminLayout = () => {
         </div>
       )}
 
-      {/* --- CONTENIDO PRINCIPAL --- */}
+      {/* CONTENIDO PRINCIPAL */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         <header className={`${COLORS.sidebarBg} text-[#d8bf9f] shadow-md h-16 flex items-center justify-between px-4 md:hidden z-10 flex-shrink-0`}>
           <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 hover:bg-white/10 rounded-lg transition">

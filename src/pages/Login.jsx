@@ -11,7 +11,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Paleta de colores
   const colors = {
     bgPage: 'bg-[#f9f5f0]',
     cardHeader: 'bg-[#4a3b2a]',
@@ -44,7 +43,6 @@ const Login = () => {
       
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#d8bf9f]/20">
         
-        {/* Cabecera Café */}
         <div className={`${colors.cardHeader} p-10 text-center`}>
           <h1 className={`text-3xl font-bold ${colors.textHeader} mb-2 tracking-wide`}>Camel Shop</h1>
           <p className={`${colors.textHeader}/80 font-medium`}>Panel de Control</p>

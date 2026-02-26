@@ -8,7 +8,6 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
 
   if (!isOpen) return null;
 
-  // Lógica de Stock Derivada
   const selectedProduct = productos.find(p => p.id === parseInt(state.tempItem.productoId));
   const availableColors = selectedProduct?.variantes?.map(v => v.color) || [];
   const selectedVariant = selectedProduct?.variantes?.find(v => v.color === state.tempItem.color);

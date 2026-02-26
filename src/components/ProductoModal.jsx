@@ -6,7 +6,6 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
   const tallesRopa = useMemo(() => ['U', 'S', 'M', 'L', 'XL', 'XXL'], []);
   const baseId = useId();
 
-  // 1. Unificamos TODO el estado en un solo objeto para eliminar los "6 setState"
   const [state, setState] = useState({
     nombre: '',
     descripcion: '',
@@ -18,7 +17,6 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     uploading: false
   });
 
-  // 2. Seteamos el estado una única vez cuando el modal se abre
   useEffect(() => {
     if (!show) return;
 
@@ -34,7 +32,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         variantes: editingProduct.variantes?.map(v => ({
           color: v.color || '',
           stock: v.stockPorTalle || {},
-          tempId: crypto.randomUUID() // KEY ESTABLE
+          tempId: crypto.randomUUID()
         })) || [{ color: '', stock: {}, tempId: crypto.randomUUID() }]
       }));
     } else {
@@ -51,7 +49,6 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     }
   }, [editingProduct, categorias, show]);
 
-  // Handlers que actualizan el estado unificado
   const updateVariante = (tempId, field, value) => {
     setState(prev => ({
       ...prev,

@@ -19,7 +19,6 @@ const ProductoGaleria = ({ producto }) => {
 
   return (
     <div className="space-y-4">
-      {/* Slider Principal */}
       <div className="aspect-[3/4] bg-white rounded-2xl overflow-hidden border border-[#4a3b2a]/10 relative group shadow-sm">
         <Swiper
           style={{
@@ -28,7 +27,6 @@ const ProductoGaleria = ({ producto }) => {
           }}
           spaceBetween={10}
           navigation={true}
-          // Verificamos que el swiper de miniaturas esté listo antes de vincularlo
           thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
           modules={[FreeMode, Navigation, Thumbs]}
           className="h-full w-full"
@@ -53,7 +51,7 @@ const ProductoGaleria = ({ producto }) => {
         </Swiper>
       </div>
 
-      {/* Miniaturas (Thumbs) */}
+      {/* Miniaturas */}
       {galleryImages.length > 1 && (
         <Swiper
           onSwiper={setThumbsSwiper}

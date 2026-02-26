@@ -65,7 +65,7 @@ const Footer = () => {
         <div className={`border-t ${theme.border} pt-8 flex flex-col md:flex-row justify-between items-center text-sm ${theme.textLight}`}>
           <p>© 2026 Camel Shop. Todos los derechos reservados.</p>
           <p className="mt-2 md:mt-0 font-medium">
-            Hecho por <a href="https://portfoliobrianbattauz.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-black hover:underline transition">GB Soluciones Digitales.</a>
+            Hecho por <a href="https://www.gbsolucionesdigitales.com.ar" target="_blank" rel="noopener noreferrer" className="hover:text-black hover:underline transition">GB Soluciones Digitales.</a>
           </p>
         </div>
       </div>

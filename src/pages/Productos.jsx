@@ -123,7 +123,6 @@ const ProductosPage = () => {
   );
 };
 
-// Componentes internos para reducir el tamaño del archivo principal
 const SkeletonCard = () => (
   <div className="animate-pulse">
     <div className="bg-gray-200 aspect-[3/4] rounded-xl mb-3"></div>
