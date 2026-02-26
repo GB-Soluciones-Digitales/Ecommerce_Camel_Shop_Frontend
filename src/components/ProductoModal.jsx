@@ -137,7 +137,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
              
              {/* Galería Visual */}
              <div className="lg:col-span-1 space-y-3">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                <label htmlFor="" className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                     <FiImage /> Galería ({existingImages.length + newFiles.length})
                 </label>
                 

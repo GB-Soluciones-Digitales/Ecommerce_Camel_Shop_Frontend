@@ -149,7 +149,7 @@ const AdminHero = () => {
                 
                 <div className="relative w-full h-[300px] md:h-[400px] bg-gray-900 rounded-xl overflow-hidden shadow-inner group">
                     {formData.imagenUrl ? (
-                        <img src={fileService.getImageUrl(formData.imagenUrl)} className="w-full h-full object-cover transition duration-700" />
+                        <img src={fileService.getImageUrl(formData.imagenUrl)} className="w-full h-full object-cover transition duration-700" alt='preview'/>
                     ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center text-gray-600 bg-gray-800 gap-2">
                            <FiImage size={40} />
