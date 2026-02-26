@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { heroService } from '../services/heroService';
 import { fileService } from '../services/fileService';
-import { FiPlus, FiEdit2, FiTrash2, FiImage, FiCheckCircle, FiXCircle, FiLayout, FiArrowRight, FiX } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiImage, FiLayout, FiArrowRight, FiX } from 'react-icons/fi';
 
 const AdminHero = () => {
   const [slides, setSlides] = useState([]);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { FiMapPin, FiPhone, FiMail, FiSend, FiTruck, FiRefreshCw, FiCreditCard, FiChevronDown, FiChevronUp, FiHelpCircle } from 'react-icons/fi';
+import { FiMapPin, FiPhone, FiMail, FiSend, FiTruck, FiChevronDown, FiChevronUp, FiHelpCircle } from 'react-icons/fi';
 
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);

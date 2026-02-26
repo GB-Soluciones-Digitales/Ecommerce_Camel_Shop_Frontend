@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiMinus, FiPlus, FiShoppingCart, FiInfo, FiCheck, FiTruck, FiShield, FiAlertCircle } from 'react-icons/fi';
+import { FiMinus, FiPlus, FiShoppingCart, FiInfo, FiAlertCircle } from 'react-icons/fi';
 
 const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
   const [selectedColor, setSelectedColor] = useState(producto.variantes?.[0]?.color || null);

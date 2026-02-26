@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useMemo } from 'react';
 import { productoService } from '../services/productoService';
 import { categoriaService } from '../services/categoriaService';
 import { fileService } from '../services/fileService';
-import { FiShoppingCart, FiSearch, FiFilter } from 'react-icons/fi';
+import { FiSearch, FiFilter } from 'react-icons/fi';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 

@@ -1,6 +1,6 @@
 import React, { useReducer, useId } from 'react';
-import { FiX, FiPlus, FiTrash2, FiCheck, FiAlertCircle } from 'react-icons/fi';
-import { orderReducer, initialOrderState } from '../components/orderReducer';
+import { FiX, FiPlus, FiTrash2, FiCheck } from 'react-icons/fi';
+import { orderReducer, initialOrderState } from '../components/OrderReducer';
 
 const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
   const [state, dispatch] = useReducer(orderReducer, initialOrderState);

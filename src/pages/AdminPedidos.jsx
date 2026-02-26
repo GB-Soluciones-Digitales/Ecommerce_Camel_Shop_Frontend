@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { pedidoService } from '../services/pedidoService';
 import { productoService } from '../services/productoService';
-import { fileService } from '../services/fileService';
 import { FiPlus, FiSearch, FiPackage, FiEye } from 'react-icons/fi';
 import CreateOrderModal from './CreateOrderModal';
 import OrderDetailModal from './OrderDetailModal';
