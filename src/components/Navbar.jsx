@@ -1,112 +1,105 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { FiShoppingCart, FiMenu, FiX } from 'react-icons/fi';
+import { FiSearch, FiHeart, FiShoppingBag, FiUser, FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { getCartItemsCount, toggleCart } = useCart();
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path;
-
-  const navLinks = [
-    { name: 'Inicio', path: '/' },
-    { name: 'Catálogo', path: '/productos' },
-    { name: 'Contacto', path: '/contacto' },
-  ];
-
-  const colors = {
-    bg: 'bg-[#d8bf9f]',
-    text: 'text-[#4a3b2a]',
-    textHover: 'hover:text-black',
-    activeText: 'text-black font-extrabold',
-    activeBorder: 'border-black',
-  };
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className={`sticky top-0 z-40 ${colors.bg} backdrop-blur-md border-b border-black/5 shadow-sm transition-all duration-300`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 bg-brand-primary ${scrolled ? 'py-3' : 'py-6'}`}>
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+        <div className="flex justify-between items-center">
           
-          <Link to="/" className="flex items-center gap-2 group transition-opacity hover:opacity-80">
-            <img 
-              src="/Logo.png" 
-              alt="Camel Shop Logo" 
-              className="h-14 w-auto object-contain drop-shadow-sm" 
-            />
+          {/* LOGO TIPOGRÁFICO SERIF */}
+          <Link to="/" className={`text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-muted`}>
+            CAMEL<span className='text-brand-dark text-5xl'>.</span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-sm tracking-wide transition-all duration-200 border-b-2 py-1 ${
-                  isActive(link.path)
-                    ? `${colors.activeText} ${colors.activeBorder}`
-                    : `${colors.text} border-transparent ${colors.textHover} hover:border-black/20`
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+          {/* ENLACES CENTRALES (Desktop) */}
+          <div className="hidden md:flex items-center space-x-10">
+            <Link to="/" className={`text-sm tracking-widest uppercase font-medium transition-colors text-brand-muted hover:text-brand-secondary`}>
+              Inicio
+            </Link>
             
-            <div className="h-6 w-px bg-black/10 mx-2"></div>
-
-            <button 
-              onClick={toggleCart}
-              className={`relative p-2 ${colors.text} hover:text-black hover:bg-black/5 rounded-full transition duration-300 group`}
+            {/* Dropdown Colección */}
+            <div 
+              className="relative py-4"
+              onMouseEnter={() => setShowDropdown(true)}
+              onMouseLeave={() => setShowDropdown(false)}
             >
-              <FiShoppingCart size={24} className="group-hover:scale-110 transition-transform" />
+              <button className={`flex items-center gap-1 text-sm tracking-widest uppercase font-medium transition-colors text-brand-muted hover:text-brand-secondary`}>
+                Colección <FiChevronDown className={`transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {/* Menú Desplegable */}
+              <div className={`absolute top-full left-1/2 -translate-x-1/2 w-56 bg-crema border border-brand-primary/30 shadow-xl rounded-xl py-3 transition-all duration-300 ${showDropdown ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
+                <Link to="/productos?categoria=remeras" className="block px-6 py-2.5 text-sm text-brand-dark hover:bg-brand-primary/20 transition-colors">Remeras & Tops</Link>
+                <Link to="/productos?categoria=pantalones" className="block px-6 py-2.5 text-sm text-brand-dark hover:bg-brand-primary/20 transition-colors">Pantalones & Denim</Link>
+                <Link to="/productos?categoria=buzos" className="block px-6 py-2.5 text-sm text-brand-dark hover:bg-brand-primary/20 transition-colors">Buzos & Camperas</Link>
+                <div className="h-px bg-brand-primary/30 my-2 mx-4"></div>
+                <Link to="/productos" className={`block px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-brand-primary/20 transition-colors`}>Ver Todo</Link>
+              </div>
+            </div>
+
+            <Link to="/contacto" className={`text-sm tracking-widest uppercase font-medium transition-colors text-brand-muted  hover:text-brand-secondary`}>
+              Contacto
+            </Link>
+          </div>
+
+          <div className={`hidden md:flex items-center space-x-6 text-brand-muted`}>
+            <button className={` hover:text-brand-secondary transition-colors`} aria-label="Buscar"><FiSearch size={22} strokeWidth={1.5} /></button>
+            <button className={` hover:text-brand-secondary transition-colors`} aria-label="Favoritos"><FiHeart size={22} strokeWidth={1.5} /></button>
+            
+            <button onClick={toggleCart} className={`relative  hover:text-brand-secondary transition-colors`} aria-label="Carrito">
+              <FiShoppingBag size={22} strokeWidth={1.5} />
               {getCartItemsCount() > 0 && (
-                <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-[#d8bf9f] shadow-sm ring-2 ring-[#d8bf9f] animate-pulse-short">
+                <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-brand-dark text-[9px] font-bold text-crema">
                   {getCartItemsCount()}
                 </span>
               )}
             </button>
+            
+            <Link to="/admin" className={` hover:text-brand-secondary transition-colors`} aria-label="Usuario"><FiUser size={22} strokeWidth={1.5} /></Link>
           </div>
 
-          <div className="md:hidden flex items-center gap-4">
-            <button 
-              onClick={toggleCart}
-              className={`relative p-2 ${colors.text}`}
-            >
-              <FiShoppingCart size={24} />
+          {/* MENU MOBILE */}
+          <div className={`md:hidden flex items-center gap-5 text-brand-muted`}>
+            <button onClick={toggleCart} className="relative">
+              <FiShoppingBag size={24} strokeWidth={1.5} />
               {getCartItemsCount() > 0 && (
-                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-black ring-2 ring-[#d8bf9f]"></span>
+                <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-brand-dark"></span>
               )}
             </button>
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`${colors.text} hover:text-black transition p-1 rounded-md active:bg-black/10`}
-            >
-              {isOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+            <button onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <FiX size={28} strokeWidth={1.5} /> : <FiMenu size={28} strokeWidth={1.5} />}
             </button>
           </div>
         </div>
       </div>
 
-      <div 
-        className={`md:hidden ${colors.bg} border-t border-black/5 absolute w-full shadow-xl transition-all duration-300 ease-in-out overflow-hidden ${
-          isOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
-        }`}
-      >
-        <div className="px-4 pt-2 pb-6 space-y-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                isActive(link.path)
-                  ? 'bg-black/10 text-black font-bold'
-                  : `${colors.text} hover:bg-black/5 hover:text-black`
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+      {/* DROPDOWN MOBILE */}
+      <div className={`md:hidden absolute w-full bg-crema border-t border-brand-primary/30 shadow-2xl transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className="px-6 py-8 flex flex-col space-y-6">
+          <Link to="/" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Inicio</Link>
+          <Link to="/productos" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Colección</Link>
+          <Link to="/contacto" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Contacto</Link>
+          <div className="h-px bg-brand-primary/30 w-full"></div>
+          <div className="flex gap-6 text-[#2c241b] pt-2">
+            <FiSearch size={24} strokeWidth={1.5} />
+            <FiHeart size={24} strokeWidth={1.5} />
+            <Link to="/admin"><FiUser size={24} strokeWidth={1.5} /></Link>
+          </div>
         </div>
       </div>
     </nav>

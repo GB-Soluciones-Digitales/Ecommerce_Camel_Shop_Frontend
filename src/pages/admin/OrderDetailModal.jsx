@@ -1,6 +1,6 @@
 import React from 'react';
 import { FiX, FiUser, FiPhone, FiMapPin, FiCreditCard, FiUpload, FiCheck, FiPackage } from 'react-icons/fi';
-import { fileService } from '../services/fileService';
+import { fileService } from '../../services/fileService';
 
 const OrderDetailModal = ({ isOpen, pedido, onClose, onStatusChange, onFileUpload }) => {
   if (!isOpen || !pedido) return null;

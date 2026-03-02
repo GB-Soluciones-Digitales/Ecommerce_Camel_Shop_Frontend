@@ -49,9 +49,9 @@ Desarrollada con **React** y **Tailwind CSS**, enfocada en brindar una experienc
 
 - **Core:** React 18 + Vite
 - **Estilos:** Tailwind CSS + Framer Motion
-- **Routing:** React Router DOM v6 (manejo de Query Params)
-- **HTTP Client:** Axios (interceptores para tokens JWT)
-- **UI Components:** React Icons, Swiper (carousels)
+- **Routing:** React Router DOM v6
+- **HTTP Client:** Axios
+- **UI Components:** React Icons, Swiper
 - **Estado Global:** React Context API
 
 ---
@@ -70,7 +70,6 @@ cd Ecommerce_Camel_Shop_Frontend
 ```bash
 npm install
 
-# En caso de conflictos por dependencias legacy
 npm install --legacy-peer-deps
 ```
 
@@ -78,7 +77,6 @@ npm install --legacy-peer-deps
 
 Crear un archivo .env en la raíz del proyecto:
 ```bash
-# URL del Backend (Local o Producción en Railway)
 VITE_API_URL=https://tu-backend-production.up.railway.app/api
 ```
 
@@ -107,12 +105,5 @@ Se priorizó la experiencia Mobile First, con botones grandes, navegación intui
 El frontend está optimizado para su despliegue en Vercel.
 
 Requiere un archivo vercel.json para el correcto manejo de rutas en SPAs (Single Page Applications).
-
----
-
-## 👤 Autor
-
-Brian Battauz
-2026
 
 ---

@@ -1,79 +1,55 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiArrowRight, FiCheck } from 'react-icons/fi';
-import HeroSlider from '../components/Hero';
 import { Helmet } from 'react-helmet-async';
+import HeroSlider from '../components/Hero';
 
 const LandingPage = () => {
   const categories = [
-  {
-    title: "Remeras",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800",
-    slug: "remeras"
-  },
-  {
-    title: "Pantalones",
-    image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?q=80&w=800",
-    slug: "pantalones"
-  },
-  {
-    title: "Buzos", 
-    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800",
-    slug: "buzos"
-  }
-];
+    { title: "Cápsula de Invierno", image: "https://images.unsplash.com/photo-1599703678443-4fdafa9e1d0a?q=80&w=1125&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "abrigos", span: "md:col-span-2 md:row-span-2 h-[500px] md:h-[700px]" },
+    { title: "Esenciales", image: "https://plus.unsplash.com/premium_photo-1664202526075-7436b5325ef3?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "remeras", span: "h-[350px] md:h-auto" },
+    { title: "Vestidos", image: "https://plus.unsplash.com/premium_photo-1673977132687-53990d8cc715?q=80&w=679&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "pantalones", span: "h-[350px] md:h-auto" }
+  ];
 
   return (
-    <div className="font-sans bg-[#f9f5f0]">
-      <Helmet>
-        <title>Inicio | Camel Shop - Estilo Urbano Premium</title>
-      </Helmet>
+    <div className="font-sans bg-crema min-h-screen">
+      <Helmet><title>CAMEL | Moda y Estilo</title></Helmet>
 
       <HeroSlider />
 
-      <section className="py-16 bg-[#f9f5f0] border-t border-[#4a3b2a]/5">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { title: "Envío Rápido", desc: "Despachamos en 24hs a todo el país." },
-            { title: "Calidad Premium", desc: "Telas seleccionadas y confección detallada." },
-            { title: "Compra Segura", desc: "Tus datos protegidos con los más altos estándares." }
-          ].map((item, i) => (
-            <div key={i} className="flex gap-4 items-start p-4">
-              <div className="bg-[#d8bf9f]/30 p-3 rounded-full text-[#4a3b2a]">
-                <FiCheck size={24} />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg text-[#4a3b2a]">{item.title}</h3>
-                <p className="text-[#4a3b2a]/70">{item.desc}</p>
-              </div>
-            </div>
-          ))}
+      <section className="border-y border-brand-muted py-4 bg-crema">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex flex-wrap justify-center md:justify-between items-center gap-6 text-[10px] md:text-xs tracking-[0.2em] uppercase text-brand-primary">
+          <span>Envíos a todo el país</span><span className="hidden md:inline">•</span>
+          <span>Calidad Garantizada</span><span className="hidden md:inline">•</span>
+          <span>Diseños Elegantes</span>
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          {categories.map((cat, i) => (
-            <Link 
-              key={i} 
-              to={`/productos?categoria=${cat.slug}`} 
-              className="relative h-[600px] group overflow-hidden"
-            >
-              <img 
-                src={cat.image} 
-                alt={cat.title} 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/50 transition-colors duration-300" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                <h2 className="text-4xl font-bold tracking-tighter uppercase mb-4 drop-shadow-md">
-                  {cat.title}
-                </h2>
-                <div className="flex items-center gap-2 bg-[#d8bf9f] text-[#4a3b2a] px-6 py-3 rounded-full font-bold opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                  VER COLECCIÓN <FiArrowRight />
-                </div>
-              </div>
+      <section className="py-12 md:py-20 bg-crema">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+          
+          <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
+            <div>
+              <h2 className="text-4xl md:text-6xl font-serif font-medium text-brand-dark tracking-tight">Descubre</h2>
+              <p className="text-brand-primary mt-2 font-medium tracking-wide uppercase text-sm">Nuestras selecciones</p>
+            </div>
+            <Link to="/productos" className="border-b border-brand-dark text-brand-dark pb-1 text-sm font-bold uppercase tracking-widest hover:text-brand-primary hover:border-brand-primary transition-colors">
+              Ver Catálogo Completo
             </Link>
-          ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {categories.map((cat, i) => (
+              <Link key={i} to={`/productos?categoria=${cat.slug}`} className={`relative group overflow-hidden bg-brand-light ${cat.span} block rounded-sm`}>
+                <img src={cat.image} alt={cat.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/40 via-transparent to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="absolute bottom-0 left-0 p-8 md:p-10">
+                  <h3 className="text-3xl md:text-4xl font-serif text-brand-light mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{cat.title}</h3>
+                  <div className="h-[1px] w-0 bg-brand-light group-hover:w-12 transition-all duration-500"></div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
         </div>
       </section>
     </div>

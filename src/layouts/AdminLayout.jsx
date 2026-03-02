@@ -11,18 +11,11 @@ const MENU_ITEMS = [
   { path: '/admin/hero', icon: <FiLayout />, label: 'Hero Slider' },
 ];
 
-const COLORS = {
-  sidebarBg: 'bg-[#4a3b2a]',
-  sidebarText: 'text-[#d8bf9f]',
-  mainBg: 'bg-[#f9f5f0]',
-  activeItemBg: 'bg-[#d8bf9f]',
-  activeItemText: 'text-[#4a3b2a]',
-  hoverItem: 'hover:bg-[#d8bf9f]/10 hover:text-[#d8bf9f]',
-  borderColor: 'border-[#d8bf9f]/10'
-};
-
 const NavLinks = ({ location, onCloseMobileMenu }) => (
-  <div className="space-y-2">
+  <div className="space-y-1">
+    <div className="px-4 py-3 mb-2">
+      <p className="text-[10px] font-bold text-brand-secondary uppercase tracking-[0.2em]">Menú Principal</p>
+    </div>
     {MENU_ITEMS.map((item) => {
       const isActive = location.pathname === item.path;
       return (
@@ -30,10 +23,10 @@ const NavLinks = ({ location, onCloseMobileMenu }) => (
           key={item.path}
           to={item.path}
           onClick={onCloseMobileMenu} 
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium tracking-wide ${
             isActive
-              ? `${COLORS.activeItemBg} ${COLORS.activeItemText} shadow-lg shadow-black/20 font-bold transform translate-x-1`
-              : `${COLORS.sidebarText}/70 ${COLORS.hoverItem}`
+              ? `bg-brand-primary/20 text-brand-muted font-bold border-l-2 border-brand-primary`
+              : `text-brand-secondary hover:bg-brand-primary/10 hover:text-brand-muted border-l-2 border-transparent`
           }`}
         >
           {item.icon}
@@ -57,21 +50,21 @@ const AdminLayout = () => {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <div className={`flex h-screen ${COLORS.mainBg} overflow-hidden font-sans`}>
+    <div className="flex h-screen bg-crema overflow-hidden font-sans">
       
       {/* SIDEBAR DESKTOP */}
-      <aside className={`w-64 ${COLORS.sidebarBg} ${COLORS.sidebarText} flex-col shadow-2xl z-20 hidden md:flex border-r ${COLORS.borderColor}`}>
-        <div className={`p-6 border-b ${COLORS.borderColor} flex items-center gap-3`}>
-          <div className={`w-8 h-8 ${COLORS.activeItemBg} rounded-lg flex items-center justify-center font-bold ${COLORS.activeItemText} shadow-md`}>C</div>
-          <span className="text-lg font-bold tracking-wide">Camel Admin</span>
+      <aside className="w-64 bg-brand-dark flex-col shadow-2xl z-20 hidden md:flex border-r border-brand-secondary/30">
+        <div className="p-8 border-b border-brand-secondary/20 flex items-center justify-center">
+          <span className="text-2xl font-serif font-black text-brand-muted tracking-tighter">CAMEL.</span>
+          <span className="ml-2 text-[10px] text-brand-secondary uppercase tracking-widest mt-1">Admin</span>
         </div>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className="flex-1 px-4 py-6 overflow-y-auto">
           <NavLinks location={location} onCloseMobileMenu={closeMobileMenu} />
         </nav>
 
-        <div className={`p-4 border-t ${COLORS.borderColor}`}>
-          <button onClick={handleLogout} className={`flex items-center gap-3 px-4 py-2 w-full ${COLORS.sidebarText}/60 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors text-sm font-medium`}>
+        <div className="p-6 border-t border-white/5">
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted hover:bg-brand-secondary/10 rounded-lg transition-colors text-sm font-medium tracking-wide">
             <FiLogOut /> Cerrar Sesión
           </button>
         </div>
@@ -80,23 +73,20 @@ const AdminLayout = () => {
       {/* SIDEBAR MOBILE */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={closeMobileMenu} />
-          <aside className={`absolute top-0 left-0 w-64 h-full ${COLORS.sidebarBg} ${COLORS.sidebarText} flex flex-col shadow-2xl animate-slide-in`}>
-            <div className={`p-4 border-b ${COLORS.borderColor} flex items-center justify-between`}>
-              <div className="flex items-center gap-2">
-                <div className={`w-8 h-8 ${COLORS.activeItemBg} rounded-lg flex items-center justify-center font-bold ${COLORS.activeItemText}`}>C</div>
-                <span className="font-bold">Camel Admin</span>
-              </div>
-              <button onClick={closeMobileMenu} className="p-2 hover:bg-white/10 rounded-full">
+          <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-sm transition-opacity" onClick={closeMobileMenu} />
+          <aside className="absolute top-0 left-0 w-64 h-full bg-brand-dark flex flex-col shadow-2xl">
+            <div className="p-6 border-b border-white/5 flex items-center justify-between">
+              <span className="text-xl font-serif font-black text-[#F9F6F0] tracking-tighter">CAMEL.</span>
+              <button onClick={closeMobileMenu} className="p-2 text-brand-secondary hover:text-brand-muted rounded-full transition">
                 <FiX size={24} />
               </button>
             </div>
-            <nav className="flex-1 p-4 overflow-y-auto">
+            <nav className="flex-1 px-4 py-6 overflow-y-auto">
               <NavLinks location={location} onCloseMobileMenu={closeMobileMenu} />
             </nav>
 
-            <div className={`p-4 border-t ${COLORS.borderColor}`}>
-              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full bg-red-500/10 text-red-300 rounded-lg font-medium">
+            <div className="p-6 border-t border-white/5">
+              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted bg-brand-secondary/10 rounded-lg text-sm font-medium transition">
                 <FiLogOut /> Cerrar Sesión
               </button>
             </div>
@@ -106,14 +96,14 @@ const AdminLayout = () => {
 
       {/* CONTENIDO PRINCIPAL */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        <header className={`${COLORS.sidebarBg} text-[#d8bf9f] shadow-md h-16 flex items-center justify-between px-4 md:hidden z-10 flex-shrink-0`}>
-          <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 hover:bg-white/10 rounded-lg transition">
+        <header className="bg-brand-dark text-brand-muted h-16 flex items-center justify-between px-4 md:hidden">
+          <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 hover:bg-brand-secondary/20 rounded-lg transition">
             <FiMenu size={24} />
           </button>
-          <span className="font-bold text-lg">Panel de Control</span>
-          <div className="w-8 h-8 bg-[#d8bf9f] text-[#4a3b2a] rounded-full flex items-center justify-center font-bold text-xs">A</div>
+          <span className="font-serif font-bold text-lg tracking-tight">CAMEL. Admin</span>
+          <div className="w-8 h-8 bg-brand-primary text-brand-dark rounded-full flex items-center justify-center font-bold text-xs uppercase">AD</div>
         </header>
-        <main className={`flex-1 overflow-x-hidden overflow-y-auto ${COLORS.mainBg} p-4 md:p-8 scroll-smooth`}>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-crema p-4 md:p-8 scroll-smooth">
           <Outlet />
         </main>
       </div>
