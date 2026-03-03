@@ -10,8 +10,8 @@ const Footer = () => {
           
           {/* Logo y Bio */}
           <div className="col-span-1 md:col-span-1">
-            <Link to="/" className="text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-dark mb-6 block">
-              CAMEL.
+            <Link to="/" className="text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-primary mb-6 block">
+              CAMEL<span className='text-brand-dark text-5xl'>.</span>
             </Link>
             <p className="text-brand-secondary text-sm leading-relaxed font-medium pr-4">
               Definiendo el estilo urbano con calidad premium y diseños exclusivos. Envíos a todo el país.
@@ -42,7 +42,7 @@ const Footer = () => {
           <div>
             <h4 className="font-bold text-[10px] uppercase tracking-widest text-brand-dark mb-6">Social</h4>
             <div className="flex gap-4">
-              <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full border border-brand-muted flex items-center justify-center text-brand-dark hover:bg-brand-dark hover:text-crema hover:border-brand-dark transition-all duration-300">
+              <a href="https://www.instagram.com/camelmodafem/" aria-label="Instagram" className="w-10 h-10 rounded-full border border-brand-muted flex items-center justify-center text-brand-dark hover:bg-brand-dark hover:text-crema hover:border-brand-dark transition-all duration-300">
                 <FiInstagram size={18}/>
               </a>
               <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-full border border-brand-muted flex items-center justify-center text-brand-dark hover:bg-brand-dark hover:text-crema hover:border-brand-dark transition-all duration-300">
