@@ -133,14 +133,31 @@ const Navbar = () => {
       {/* DROPDOWN MOBILE */}
       <div className={`md:hidden absolute w-full bg-crema border-t border-brand-primary/30 shadow-2xl transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="px-6 py-8 flex flex-col space-y-6">
+          <form onSubmit={handleSearch} className="flex gap-2 border-b border-brand-primary/30 pb-2">
+            <FiSearch size={20} className="text-brand-dark" />
+            <input 
+              type="text" 
+              placeholder="¿Qué estás buscando?" 
+              className="bg-transparent outline-none w-full text-brand-dark"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </form>
           <Link to="/" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Inicio</Link>
-          <Link to="/productos" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Colección</Link>
+          <div className="flex flex-col space-y-3">
+             <p className="text-xs uppercase tracking-widest text-brand-muted">Colección</p>
+             {categorias.map(cat => (
+               <Link key={cat.id} to={`/productos?categoria=${cat.nombre.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-lg text-brand-dark pl-4 capitalize">
+                 {cat.nombre}
+               </Link>
+             ))}
+          </div>
+
           <Link to="/contacto" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Contacto</Link>
           <div className="h-px bg-brand-primary/30 w-full"></div>
-          <div className="flex gap-6 text-[#2c241b] pt-2">
-            <FiSearch size={24} strokeWidth={1.5} />
+          <div className="flex gap-8 text-brand-dark pt-2">
             <FiHeart size={24} strokeWidth={1.5} />
-            <Link to="/admin"><FiUser size={24} strokeWidth={1.5} /></Link>
+            <Link to="/admin" onClick={() => setIsOpen(false)}><FiUser size={24} strokeWidth={1.5} /></Link>
           </div>
         </div>
       </div>
