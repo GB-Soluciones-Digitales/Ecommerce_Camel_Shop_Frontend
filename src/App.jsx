@@ -7,17 +7,17 @@ import PublicLayout from './layouts/PublicLayout';
 import AdminLayout from './layouts/AdminLayout';
 
 import LandingPage from './pages/LandingPage';       
-import ProductosPage from './pages/Productos';       
-import ProductoDetallePage from './pages/ProductoDetalle'; 
+import ProductosPage from './pages/producto/Productos';       
+import ProductoDetallePage from './pages/producto/ProductoDetalle'; 
 import Contacto from './pages/Contacto';             
 import CheckoutPage from './pages/CheckoutPage';     
-import Login from './pages/Login';                   
+import Login from './pages/admin/Login';                   
 
-import AdminDashboard from './pages/AdminDashboard'; 
-import AdminCategorias from './pages/AdminCategorias';
-import AdminUsuarios from './pages/AdminUsuarios';
-import AdminOrders from './pages/AdminPedidos'; 
-import AdminHero from './pages/AdminHero';
+import AdminDashboard from './pages/admin/AdminDashboard'; 
+import AdminCategorias from './pages/admin/AdminCategorias';
+import AdminUsuarios from './pages/admin/AdminUsuarios';
+import AdminOrders from './pages/admin/AdminPedidos'; 
+import AdminHero from './pages/admin/AdminHero';
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {

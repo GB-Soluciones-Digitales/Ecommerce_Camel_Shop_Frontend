@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { userService } from '../services/userService'; 
+import { userService } from '../../services/userService'; 
 import { FiUser, FiShield, FiKey, FiCheckCircle, FiXCircle } from 'react-icons/fi';
-import PasswordModal from '../components/PasswordModal';
+import PasswordModal from '../../components/PasswordModal';
 
 const AdminUsuarios = () => {
   const [state, setState] = useState({

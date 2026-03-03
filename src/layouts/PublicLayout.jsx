@@ -1,12 +1,11 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer'; 
 import WhatsAppButton from '../components/WhatsAppButton';
 import { useCart } from '../context/CartContext';
 import { fileService } from '../services/fileService';
-import { FiX, FiMinus, FiPlus, FiTrash2, FiShoppingCart, FiArrowRight } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { FiX, FiMinus, FiPlus, FiTrash2, FiShoppingCart, FiArrowRight, FiImage } from 'react-icons/fi';
 
 const PublicLayout = () => {
   const { cartItems, showCart, setShowCart, updateQuantity, removeFromCart, getCartTotal } = useCart();
@@ -17,17 +16,10 @@ const PublicLayout = () => {
     navigate('/checkout');
   };
 
-  const theme = {
-    textMain: 'text-[#4a3b2a]',
-    bgOverlay: 'bg-[#d8bf9f]',
-    buttonMain: 'bg-[#4a3b2a] hover:bg-black text-[#d8bf9f]',
-  };
-  
   const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f9f5f0] font-sans">
-      
+    <div className="min-h-screen flex flex-col bg-crema font-sans">
       <Navbar />
 
       <main className="flex-grow">
@@ -35,65 +27,71 @@ const PublicLayout = () => {
       </main>
       
       <Footer />
-
       <WhatsAppButton />
 
+      {/* Carrito Lateral */}
       {showCart && (
-        <div className="fixed inset-0 z-[60] overflow-hidden">
-          <div className="absolute inset-0 bg-[#4a3b2a]/60 backdrop-blur-sm transition-opacity" onClick={() => setShowCart(false)} />
+        <div className="fixed inset-0 z-[100] overflow-hidden">
+          <div className="absolute inset-0 bg-brand-dark/40 backdrop-blur-sm transition-opacity" onClick={() => setShowCart(false)} />
           
           <div className="absolute inset-y-0 right-0 max-w-md w-full flex">
-            <div className="w-full bg-white shadow-2xl flex flex-col h-full animate-slide-in">
+            <div className="w-full bg-crema shadow-2xl flex flex-col h-full transform transition-transform border-l border-brand-muted">
               
-              <div className={`flex items-center justify-between p-6 border-b border-[#4a3b2a]/10 ${theme.bgOverlay}`}>
-                <h2 className={`text-xl font-bold ${theme.textMain}`}>Tu Pedido</h2>
-                <button onClick={() => setShowCart(false)} className={`p-2 hover:bg-[#4a3b2a]/10 rounded-full ${theme.textMain}`}>
+              {/* Header Carrito */}
+              <div className="flex items-center justify-between p-6 border-b border-brand-muted bg-brand-light">
+                <h2 className="text-2xl font-serif text-brand-dark uppercase tracking-tight">Tu Carrito</h2>
+                <button onClick={() => setShowCart(false)} className="p-2 hover:bg-brand-muted/30 rounded-full text-brand-dark transition-colors">
                   <FiX size={24}/>
                 </button>
               </div>
 
+              {/* Items */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {cartItems.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-                    <FiShoppingCart size={48} className="opacity-20 mb-4 text-[#4a3b2a]" />
-                    <p className="text-[#4a3b2a]">Tu carrito está vacío</p>
-                    <button onClick={() => setShowCart(false)} className={`font-bold hover:underline mt-2 ${theme.textMain}`}>Ir al catálogo</button>
+                  <div className="flex flex-col items-center justify-center h-full text-brand-secondary space-y-4">
+                    <FiShoppingCart size={48} strokeWidth={1} className="opacity-50" />
+                    <p className="text-sm font-medium uppercase tracking-widest">Tu carrito está vacio</p>
+                    <button onClick={() => {setShowCart(false); navigate('/productos');}} className="font-bold text-brand-dark border-b border-brand-dark pb-1 hover:text-brand-primary hover:border-brand-primary transition-colors text-xs uppercase tracking-widest mt-4">
+                        Descubrir Colección
+                    </button>
                   </div>
                 ) : (
                   cartItems.map((item) => (
-                    <div key={item.variantId || item.id} className="flex gap-4">
-                      <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                    <div key={item.variantId || item.id} className="flex gap-5 group">
+                      <div className="w-24 h-32 bg-brand-light rounded-none overflow-hidden flex-shrink-0 border border-brand-muted relative">
                         {item.imagenes?.[0] ? (
-                           <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover"/>
+                           <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"/>
                         ) : (
-                           <FiImage className="w-full h-full p-4 text-gray-300"/>
+                           <FiImage className="w-full h-full p-6 text-brand-muted"/>
                         )}
                       </div>
-                      <div className="flex-1 flex flex-col justify-between">
+                      <div className="flex-1 flex flex-col justify-between py-1">
                         <div>
-                          <h3 className={`font-bold line-clamp-1 ${theme.textMain}`}>{item.nombre}</h3>
-                          <div className="flex flex-wrap items-center mt-1 gap-1">
+                          <div className="flex justify-between items-start gap-2">
+                              <h3 className="font-serif font-bold text-brand-dark text-lg leading-tight line-clamp-2">{item.nombre}</h3>
+                              <button onClick={() => removeFromCart(item.variantId)} className="text-brand-secondary hover:text-red-500 transition-colors"><FiTrash2 size={18}/></button>
+                          </div>
+                          <div className="flex flex-wrap items-center mt-2 gap-2">
                             {item.selectedColor && (
-                              <span className="text-xs font-bold text-[#4a3b2a] bg-[#d8bf9f]/30 px-2 py-0.5 rounded border border-[#d8bf9f]">
-                                {item.selectedColor}
+                              <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest">
+                                Color: {item.selectedColor}
                               </span>
                             )}
                             {item.selectedSize && (
-                              <span className="text-xs font-bold text-[#4a3b2a] bg-[#d8bf9f]/30 px-2 py-0.5 rounded border border-[#d8bf9f]">
-                                {item.selectedSize}
+                              <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest before:content-['|'] before:mx-2 before:text-brand-muted">
+                                Talle: {item.selectedSize}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-gray-500 mt-1">${parseFloat(item.precio).toLocaleString()}</p>
                         </div>
                         
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center border border-gray-300 rounded-lg">
-                            <button onClick={() => updateQuantity(item.variantId, item.cantidad - 1)} className="px-2 py-1 text-gray-600 hover:bg-gray-100"><FiMinus size={14}/></button>
-                            <span className={`px-2 text-sm font-bold w-8 text-center ${theme.textMain}`}>{item.cantidad}</span>
-                            <button onClick={() => updateQuantity(item.variantId, item.cantidad + 1)} className="px-2 py-1 text-gray-600 hover:bg-gray-100"><FiPlus size={14}/></button>
+                        <div className="flex items-end justify-between mt-4">
+                          <div className="flex items-center border border-brand-muted bg-brand-light">
+                            <button onClick={() => updateQuantity(item.variantId, item.cantidad - 1)} className="p-2 text-brand-dark hover:bg-brand-muted/30 transition-colors"><FiMinus size={12}/></button>
+                            <span className="w-8 text-center text-sm font-medium text-brand-dark">{item.cantidad}</span>
+                            <button onClick={() => updateQuantity(item.variantId, item.cantidad + 1)} className="p-2 text-brand-dark hover:bg-brand-muted/30 transition-colors"><FiPlus size={12}/></button>
                           </div>
-                          <button onClick={() => removeFromCart(item.variantId)} className="text-red-400 hover:text-red-600 p-1 transition"><FiTrash2 size={18}/></button>
+                          <p className="font-bold text-brand-dark text-lg">${parseFloat(item.precio).toLocaleString()}</p>
                         </div>
                       </div>
                     </div>
@@ -101,14 +99,15 @@ const PublicLayout = () => {
                 )}
               </div>
 
+              {/* Checkout Footer */}
               {cartItems.length > 0 && (
-                <div className="border-t border-[#4a3b2a]/10 p-6 bg-[#f9f5f0]">
-                  <div className="flex justify-between items-center mb-6">
-                    <span className="text-gray-500 font-medium">Total</span>
-                    <span className={`text-2xl font-bold ${theme.textMain}`}>${getCartTotal().toLocaleString()}</span>
+                <div className="border-t border-brand-muted p-6 bg-brand-light/50">
+                  <div className="flex justify-between items-end mb-6">
+                    <span className="text-brand-secondary font-bold uppercase tracking-widest text-[10px]">Total Estimado</span>
+                    <span className="text-3xl font-serif font-bold text-brand-dark">${getCartTotal().toLocaleString()}</span>
                   </div>
-                  <button onClick={handleCheckout} className={`w-full ${theme.buttonMain} font-bold py-4 rounded-xl shadow-lg transition flex justify-center items-center gap-2`}>
-                    Iniciar Compra <FiArrowRight />
+                  <button onClick={handleCheckout} className="w-full bg-brand-dark text-brand-light font-bold text-xs uppercase tracking-[0.2em] py-5 hover:bg-brand-primary transition-colors flex justify-center items-center gap-3">
+                    Finalizar Compra <FiArrowRight size={16} />
                   </button>
                 </div>
               )}

@@ -14,37 +14,37 @@ const PasswordModal = ({ isOpen, user, onClose, onConfirm, isSaving }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-brand-dark/60 backdrop-blur-sm font-sans" role="dialog" aria-modal="true">
+      <div className="bg-crema shadow-2xl w-full max-w-sm border border-brand-muted" onClick={(e) => e.stopPropagation()}>
         
-        <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-          <h3 className="font-bold text-gray-800">Cambiar Contraseña</h3>
+        <div className="px-6 py-5 border-b border-brand-muted flex justify-between items-center bg-white/50">
+          <h3 className="font-serif font-bold text-lg text-brand-dark">Cambiar Clave</h3>
           <button 
             onClick={onClose} 
-            className="text-gray-400 hover:text-gray-600 p-1"
+            className="text-brand-secondary hover:text-brand-dark transition-colors p-1"
             aria-label="Cerrar modal"
           >
             <FiX size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="text-center mb-4">
-             <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <div className="text-center mb-6">
+             <div className="w-14 h-14 border border-brand-primary text-brand-primary rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
                 <FiKey />
              </div>
-             <p className="text-sm text-gray-500">
-                Ingresá la nueva clave para <strong>{user.username}</strong>
+             <p className="text-sm text-brand-secondary">
+                Nueva clave para <strong className="text-brand-dark">{user.username}</strong>
              </p>
           </div>
 
-          <div className="space-y-1">
-            <label htmlFor={inputId} className="text-xs font-bold text-gray-400 uppercase">Nueva Contraseña</label>
+          <div className="space-y-2">
+            <label htmlFor={inputId} className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">Contraseña</label>
             <input 
               id={inputId}
               type="password" 
-              placeholder="Mínimo 4 caracteres..." 
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition"
+              placeholder="••••••••" 
+              className="w-full bg-transparent border-b border-brand-muted py-2 outline-none focus:border-brand-dark text-brand-dark transition-colors tracking-widest placeholder:tracking-normal placeholder:text-brand-muted"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -56,9 +56,9 @@ const PasswordModal = ({ isOpen, user, onClose, onConfirm, isSaving }) => {
           <button 
             type="submit" 
             disabled={isSaving || !password.trim()}
-            className="w-full bg-blue-600 hover:bg-black text-white font-bold py-3 rounded-lg transition shadow-lg disabled:opacity-50"
+            className="w-full bg-brand-dark hover:bg-black text-crema text-xs font-bold uppercase tracking-widest py-4 transition-colors disabled:opacity-50 mt-4"
           >
-            {isSaving ? 'Guardando...' : 'Confirmar Cambio'}
+            {isSaving ? 'Guardando...' : 'Confirmar'}
           </button>
         </form>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { categoriaService } from '../services/categoriaService';
+import { categoriaService } from '../../services/categoriaService';
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiLayers } from 'react-icons/fi';
 
 const AdminCategorias = () => {

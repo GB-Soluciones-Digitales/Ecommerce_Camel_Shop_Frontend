@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { pedidoService } from '../services/pedidoService';
-import { productoService } from '../services/productoService';
+import { pedidoService } from '../../services/pedidoService';
+import { productoService } from '../../services/productoService';
 import { FiPlus, FiSearch, FiPackage, FiEye } from 'react-icons/fi';
-import CreateOrderModal from './CreateOrderModal';
-import OrderDetailModal from './OrderDetailModal';
+import CreateOrderModal from '../admin/CreateOrderModal';
+import OrderDetailModal from '../admin/OrderDetailModal';
 
 const AdminOrders = () => {
   const [data, setData] = useState({ pedidos: [], productos: [], loading: true });
