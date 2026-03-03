@@ -156,7 +156,6 @@ const Navbar = () => {
           <Link to="/contacto" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Contacto</Link>
           <div className="h-px bg-brand-primary/30 w-full"></div>
           <div className="flex gap-8 text-brand-dark pt-2">
-            <FiHeart size={24} strokeWidth={1.5} />
             <Link to="/admin" onClick={() => setIsOpen(false)}><FiUser size={24} strokeWidth={1.5} /></Link>
           </div>
         </div>
