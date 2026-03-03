@@ -131,7 +131,7 @@ const Navbar = () => {
       </div>
 
       {/* DROPDOWN MOBILE */}
-      <div className={`md:hidden absolute w-full bg-crema border-t border-brand-primary/30 shadow-2xl transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+      <div className={`md:hidden absolute w-full bg-crema border-t border-brand-primary/30 shadow-2xl transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="px-6 py-8 flex flex-col space-y-6">
           <form onSubmit={handleSearch} className="flex gap-2 border-b border-brand-primary/30 pb-2">
             <FiSearch size={20} className="text-brand-dark" />
@@ -143,9 +143,9 @@ const Navbar = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </form>
-          <Link to="/" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Inicio</Link>
+          <Link to="/" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark tracking-widest">Inicio</Link>
           <div className="flex flex-col space-y-3">
-             <p className="text-xs uppercase tracking-widest text-brand-muted">Colección</p>
+             <p className="text-xl font-serif text-brand-dark tracking-widest">Colección</p>
              {categorias.map(cat => (
                <Link key={cat.id} to={`/productos?categoria=${cat.nombre.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-lg text-brand-dark pl-4 capitalize">
                  {cat.nombre}
