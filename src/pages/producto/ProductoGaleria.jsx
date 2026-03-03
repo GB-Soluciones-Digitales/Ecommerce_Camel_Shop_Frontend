@@ -53,7 +53,7 @@ const ProductoGaleria = ({ producto }) => {
       )}
 
       {/* Imagen Principal */}
-      <div className="flex-1 bg-brand-light relative h-[500px] md:h-[700px]">
+      <div className="flex-1 bg-brand-light relative h-125 w-125 md:h-175 md:w-175 sm:h-215 sm:w-215">
         <Swiper
           style={{
             '--swiper-navigation-color': 'var(--color-brand-dark)',

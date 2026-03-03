@@ -82,7 +82,7 @@ const ProductosPage = () => {
           <p className="text-brand-primary uppercase tracking-[0.2em] text-sm font-medium">Piezas esenciales para el día a día</p>
         </div>
 
-        {/* Barra de Filtros Minimalista */}
+        {/* Barra de Filtros */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 border-y border-brand-muted py-6">
           <div className="flex overflow-x-auto w-full md:w-auto gap-3 pb-2 md:pb-0 hide-scrollbar">
             <button 
