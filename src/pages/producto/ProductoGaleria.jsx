@@ -53,7 +53,7 @@ const ProductoGaleria = ({ producto }) => {
       )}
 
       {/* Imagen Principal */}
-      <div className="flex-1 bg-brand-light relative h-125 w-125 md:h-175 md:w-175 sm:h-215 sm:w-215">
+      <div className="flex-1 bg-brand-light relative w-full h-80 md:h-[500px] lg:h-[80vh] max-h-[750px] rounded-[2rem]">
         <Swiper
           style={{
             '--swiper-navigation-color': 'var(--color-brand-dark)',
@@ -71,7 +71,7 @@ const ProductoGaleria = ({ producto }) => {
               <img 
                 src={getImgUrl(img)} 
                 alt={`${producto.nombre} - Vista ${index + 1}`} 
-                className="w-full h-full object-cover object-center mix-blend-multiply"
+                className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105 cursor-zoom-in"
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </SwiperSlide>
