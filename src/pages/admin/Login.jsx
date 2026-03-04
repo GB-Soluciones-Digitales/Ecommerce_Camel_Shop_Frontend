@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
-import { FiArrowRight, FiAlertCircle } from 'react-icons/fi';
+import { FiArrowRight, FiAlertCircle, FiArrowLeft } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
@@ -26,16 +26,21 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] flex flex-col justify-center items-center p-4 font-sans">
+    <div className="min-h-screen bg-crema flex flex-col justify-center items-center p-4 font-sans">
       <Helmet>
         <title>Workspace | CAMEL.</title>
       </Helmet>
 
       <div className="w-full max-w-md">
+        <nav className="mb-10">
+          <Link to="/" className="inline-flex items-center text-[12px] font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
+            <FiArrowLeft className="mr-2" size={16} /> Volver al inicio
+          </Link>
+        </nav>
         
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-serif font-bold text-[#2c241b] tracking-tighter mb-2">CAMEL.</h1>
-          <p className="text-[10px] font-bold text-[#a48e78] uppercase tracking-[0.3em]">Workspace Privado</p>
+          <h1 className="text-4xl font-serif font-bold tracking-tighter text-brand-primary mb-2">CAMEL<span className='text-brand-dark text-5xl'>.</span></h1>
+          <p className="text-[12px] font-bold text-[#a48e78] uppercase tracking-[0.3em]">Espacio Privado</p>
         </div>
 
         <div className="bg-white p-10 shadow-2xl shadow-[#eaddd7]/50 border border-[#eaddd7]/50">

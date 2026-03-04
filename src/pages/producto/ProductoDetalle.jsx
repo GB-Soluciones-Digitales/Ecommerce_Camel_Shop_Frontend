@@ -34,13 +34,13 @@ const ProductoDetallePage = () => {
   if (!producto) return <div className="min-h-screen bg-crema flex items-center justify-center font-serif text-2xl text-brand-primary">Pieza no encontrada.</div>;
 
   return (
-    <div className="min-h-screen bg-crema pt-24 pb-20 px-6 lg:px-12 font-sans">
+    <div className="min-h-screen bg-crema font-sans pb-24 pt-32">
       <Helmet><title>{`${producto.nombre} | CAMEL.`}</title></Helmet>
 
       <div className="max-w-[1400px] mx-auto">
         <nav className="mb-10">
-          <Link to="/productos" className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
-            <FiArrowLeft className="mr-2" size={14} /> Volver a la colección
+          <Link to="/productos" className="inline-flex items-center text-sm font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
+            <FiArrowLeft className="mr-2" size={18} /> Volver a la colección
           </Link>
         </nav>
 
