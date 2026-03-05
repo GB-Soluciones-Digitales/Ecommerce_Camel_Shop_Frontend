@@ -37,14 +37,12 @@ const ProductoGaleria = ({ producto }) => {
         >
           {galleryImages.map((img, index) => (
             <SwiperSlide key={`${producto.id}-main-${index}`} className="h-full w-full">
-              <div className="swiper-zoom-container h-full w-full">
-                <img 
-                  src={getImgUrl(img)} 
-                  alt={`${producto.nombre} - Vista ${index + 1}`} 
-                  className="w-full h-full object-cover"
-                  loading={index === 0 ? "eager" : "lazy"}
-                />
-              </div>
+              <img
+                src={getImgUrl(img)}
+                alt={`${producto.nombre} - Vista ${index + 1}`}
+                className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105 cursor-zoom-in"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
