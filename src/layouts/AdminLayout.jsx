@@ -25,8 +25,8 @@ const NavLinks = ({ location, onCloseMobileMenu }) => (
           onClick={onCloseMobileMenu} 
           className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium tracking-wide ${
             isActive
-              ? `bg-brand-primary/20 text-brand-muted font-bold border-l-2 border-brand-primary`
-              : `text-brand-secondary hover:bg-brand-primary/10 hover:text-brand-muted border-l-2 border-transparent`
+              ? `bg-brand-primary/20 text-brand-light font-bold border-l-2 border-brand-muted`
+              : `text-brand-secondary hover:bg-brand-primary/50 hover:text-brand-muted border-l-2 border-transparent`
           }`}
         >
           {item.icon}
@@ -64,7 +64,7 @@ const AdminLayout = () => {
         </nav>
 
         <div className="p-6 border-t border-white/5">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted hover:bg-brand-secondary rounded-lg transition-colors text-sm font-medium tracking-wide">
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted hover:bg-brand-primary/50 rounded-lg transition-colors text-sm font-medium tracking-wide">
             <FiLogOut /> Cerrar Sesión
           </button>
         </div>
@@ -73,7 +73,7 @@ const AdminLayout = () => {
       {/* SIDEBAR MOBILE */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-brand-primary backdrop-blur-sm transition-opacity" onClick={closeMobileMenu} />
+          <div className="absolute inset-0 bg-brand-primary/80 backdrop-blur-sm transition-opacity" onClick={closeMobileMenu} />
           <aside className="absolute top-0 left-0 w-64 h-full bg-brand-primary flex flex-col shadow-2xl">
             <div className="p-6 border-b border-white/5 flex items-center justify-between">
               <span className="text-xl font-serif font-black text-brand-muted tracking-tighter">CAMEL<span className='text-brand-dark text-5xl'>.</span></span>
@@ -86,7 +86,7 @@ const AdminLayout = () => {
             </nav>
 
             <div className="p-6 border-t border-white/5">
-              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted bg-brand-secondary rounded-lg text-sm font-medium transition">
+              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted hover:bg-brand-primary/50 rounded-lg text-sm font-medium transition">
                 <FiLogOut /> Cerrar Sesión
               </button>
             </div>
@@ -96,12 +96,14 @@ const AdminLayout = () => {
 
       {/* CONTENIDO PRINCIPAL */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        <header className="bg-brand-dark text-brand-muted h-16 flex items-center justify-between px-4 md:hidden">
+        <header className="bg-brand-primary text-brand-muted h-16 flex items-center justify-between px-4 md:hidden">
           <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 hover:bg-brand-secondary/20 rounded-lg transition">
             <FiMenu size={24} />
           </button>
-          <span className="text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-muted">CAMEL<span className='text-brand-dark text-5xl'>.</span></span>
-          <span className="ml-2 text-[10px] text-brand-secondary uppercase tracking-widest mt-1">Admin</span>
+          <div className="p-8 border-b border-brand-secondary/20 flex items-center justify-center">
+            <span className="text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-muted">CAMEL<span className='text-brand-dark text-5xl'>.</span></span>
+            <span className="ml-2 text-[10px] text-brand-secondary uppercase tracking-widest mt-1">Admin</span>
+          </div>
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-crema p-4 md:p-8 scroll-smooth">
           <Outlet />

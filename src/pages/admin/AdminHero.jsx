@@ -83,42 +83,41 @@ const AdminHero = () => {
 
   if (loading) return <div className="p-8 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-camel-600"></div></div>;
 
+  // ... lógica igual ...
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <FiLayout /> Configurar Hero Slider
-        </h2>
-        <button onClick={() => openModal()} className="bg-camel-600 hover:bg-camel-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg transition transform hover:-translate-y-0.5">
-          <FiPlus /> Nuevo Slide
+    <div className="p-8 bg-crema min-h-screen font-sans">
+      <div className="flex justify-between items-center mb-10">
+        <div>
+          <h2 className="text-3xl font-serif font-bold text-brand-dark flex items-center gap-3">
+            <FiLayout className="text-brand-primary" /> Hero Slider
+          </h2>
+          <p className="text-brand-secondary">Impacto visual de la página principal</p>
+        </div>
+        <button onClick={() => openModal()} className="bg-brand-dark hover:bg-black text-crema px-6 py-3 rounded-xl flex items-center gap-2 shadow-xl transition-all font-bold uppercase text-xs tracking-[0.2em]">
+          <FiPlus /> Crear Slide
         </button>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {slides.map((slide) => (
-          <div key={slide.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 items-center hover:shadow-md transition">
-            <div className="w-full md:w-32 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative group">
+          <div key={slide.id} className="bg-white p-5 rounded-[2rem] shadow-sm border border-brand-muted flex flex-col md:flex-row gap-6 items-center hover:shadow-md transition-all">
+            <div className="w-full md:w-40 h-24 bg-brand-light rounded-2xl overflow-hidden flex-shrink-0 relative group border border-brand-muted">
               {slide.imagenUrl ? (
-                <img src={fileService.getImageUrl(slide.imagenUrl)} alt="Slide" className="w-full h-full object-cover" />
+                <img src={fileService.getImageUrl(slide.imagenUrl)} className="w-full h-full object-cover" alt="Slide" />
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-400"><FiImage size={24} /></div>
+                <div className="flex items-center justify-center h-full text-brand-primary"><FiImage size={24} /></div>
               )}
-              <div className="absolute top-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">
-                #{slide.orden}
-              </div>
             </div>
 
-            <div className="flex-1 space-y-1 text-center md:text-left w-full">
-              <div className="flex items-center justify-center md:justify-start gap-2">
-                <h3 className="font-bold text-gray-800">{slide.titulo || '(Sin Título)'}</h3>
-                {!slide.activo && <span className="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">PAUSADO</span>}
-              </div>
-              <p className="text-xs text-gray-500 line-clamp-1">{slide.subtitulo} - {slide.descripcion}</p>
+            <div className="flex-1 space-y-1 text-center md:text-left">
+              <h3 className="font-serif font-bold text-xl text-brand-dark">{slide.titulo || '(Sin Título)'}</h3>
+              <p className="text-xs text-brand-secondary uppercase tracking-widest">{slide.subtitulo}</p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button onClick={() => openModal(slide)} className="text-gray-400 hover:text-camel-600 p-2 rounded-full hover:bg-camel-50 transition"><FiEdit2 size={18}/></button>
-              <button onClick={() => handleDelete(slide.id)} className="text-gray-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition"><FiTrash2 size={18}/></button>
+            <div className="flex items-center gap-3">
+              {!slide.activo && <span className="bg-red-50 text-red-600 text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-tighter">Oculto</span>}
+              <button onClick={() => openModal(slide)} className="text-brand-primary hover:text-brand-dark p-3 rounded-full hover:bg-brand-light transition"><FiEdit2 size={20}/></button>
+              <button onClick={() => handleDelete(slide.id)} className="text-brand-primary hover:text-red-600 p-3 rounded-full hover:bg-red-50 transition"><FiTrash2 size={20}/></button>
             </div>
           </div>
         ))}
