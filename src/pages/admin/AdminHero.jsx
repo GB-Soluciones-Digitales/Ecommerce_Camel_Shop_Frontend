@@ -130,55 +130,68 @@ const AdminHero = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-8 relative flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/60 backdrop-blur-md overflow-y-auto">
+          <div className="bg-crema rounded-[2.5rem] shadow-2xl w-full max-w-4xl my-8 relative flex flex-col max-h-[95vh] border border-brand-muted/50 overflow-hidden font-sans">
             
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="font-bold text-xl text-gray-800">{editingSlide ? 'Editar Slide' : 'Nuevo Slide'}</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 p-1"><FiX size={24}/></button>
+            {/* Header del Modal */}
+            <div className="px-8 py-6 border-b border-brand-muted flex justify-between items-center bg-white">
+              <div>
+                <h3 className="font-serif font-bold text-2xl text-brand-dark">
+                  {editingSlide ? 'Editar Slide' : 'Nuevo Slide'}
+                </h3>
+                <p className="text-brand-secondary text-sm">Personaliza la primera impresión de tu web</p>
+              </div>
+              <button 
+                onClick={() => setShowModal(false)} 
+                className="text-brand-primary hover:text-brand-dark p-2 hover:bg-brand-light rounded-full transition-all"
+              >
+                <FiX size={28}/>
+              </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-8">
+            <div className="flex-1 overflow-y-auto p-8 space-y-10">
               
-              <div className="space-y-2">
-                <div className="flex justify-between items-end">
-                  <label className="text-xs font-bold text-camel-600 uppercase tracking-wider">Vista Previa en Vivo</label>
-                  <span className="text-xs text-gray-400">Así se verá en la web</span>
+              {/* Vista Previa mejorada */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-end px-1">
+                  <label className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em]">Vista Previa en Vivo</label>
+                  <span className="text-[10px] text-brand-secondary italic">Visualización en tiempo real</span>
                 </div>
                 
-                <div className="relative w-full h-[300px] md:h-[400px] bg-gray-900 rounded-xl overflow-hidden shadow-inner group">
+                <div className="relative w-full h-[300px] md:h-[420px] bg-brand-dark rounded-[2rem] overflow-hidden shadow-2xl group border-4 border-white">
                     {formData.imagenUrl ? (
-                        <img src={fileService.getImageUrl(formData.imagenUrl)} className="w-full h-full object-cover transition duration-700" alt='preview'/>
+                        <img src={fileService.getImageUrl(formData.imagenUrl)} className="w-full h-full object-cover transition duration-1000" alt='preview'/>
                     ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-600 bg-gray-800 gap-2">
-                           <FiImage size={40} />
-                           <span className="text-sm">Subí una imagen para ver el fondo</span>
+                        <div className="w-full h-full flex flex-col items-center justify-center text-brand-muted bg-brand-secondary/20 gap-3">
+                            <FiImage size={48} className="opacity-50" />
+                            <span className="text-sm font-medium tracking-wide">Sube una imagen para previsualizar</span>
                         </div>
                     )}
                     
-                    <div className="absolute inset-0 bg-black/40"></div>
+                    {/* Overlay Gradiente */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
-                    <div className="absolute inset-0 p-8 md:p-12 flex items-center">
-                        <div className={`w-full text-white space-y-4
+                    <div className="absolute inset-0 p-10 md:p-16 flex items-center">
+                        <div className={`w-full text-white space-y-5
                             ${formData.alineacion === 'right' ? 'ml-auto text-right items-end flex flex-col' : ''}
                             ${formData.alineacion === 'center' ? 'mx-auto text-center items-center flex flex-col' : ''}
                             ${formData.alineacion === 'left' ? 'items-start flex flex-col' : ''}
                         `}>
                             {formData.subtitulo && (
-                                <span className="inline-block px-3 py-1 border border-white/30 rounded-full text-xs font-medium tracking-wider uppercase backdrop-blur-sm">
+                                <span className="inline-block px-4 py-1.5 border border-white/40 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase backdrop-blur-md bg-white/10">
                                     {formData.subtitulo}
                                 </span>
                             )}
                             
-                            <h1 className="text-3xl md:text-5xl font-bold leading-tight drop-shadow-lg">
+                            <h1 className="text-4xl md:text-6xl font-serif font-bold leading-[1.1] drop-shadow-2xl">
                                 {formData.titulo || 'Tu Título Principal'}
                             </h1>
                             
-                            <p className="text-sm md:text-base text-gray-200 max-w-lg drop-shadow-md">
-                                {formData.descripcion || 'Aquí irá la descripción corta de tu promoción o colección.'}
+                            <p className="text-sm md:text-lg text-white/90 max-w-lg drop-shadow-md font-light">
+                                {formData.descripcion || 'Aquí irá la descripción de tu nueva colección.'}
                             </p>
 
-                            <button className="inline-flex items-center gap-2 bg-camel-600 text-white px-6 py-3 rounded-full font-bold text-sm shadow-lg mt-2">
+                            <button className="inline-flex items-center gap-3 bg-white text-brand-dark px-8 py-3.5 rounded-full font-bold text-xs uppercase tracking-widest shadow-xl mt-4 transform hover:scale-105 transition">
                                 {formData.botonTexto} <FiArrowRight />
                             </button>
                         </div>
@@ -186,87 +199,108 @@ const AdminHero = () => {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Formulario */}
+              <form onSubmit={handleSubmit} className="space-y-8">
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-500 uppercase">Título Principal</label>
-                    <input className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-camel-500 focus:ring-1 focus:ring-camel-500 transition" 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-brand-dark uppercase tracking-widest px-1">Título Principal</label>
+                    <input className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all font-serif text-lg" 
                       placeholder="Ej: Nueva Colección"
                       value={formData.titulo} onChange={e => setFormData({...formData, titulo: e.target.value})} />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-500 uppercase">Subtítulo (Badge)</label>
-                    <input className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-camel-500 focus:ring-1 focus:ring-camel-500 transition" 
-                      placeholder="Ej: Verano 2026"
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-brand-dark uppercase tracking-widest px-1">Subtítulo (Badge)</label>
+                    <input className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all" 
+                      placeholder="Ej: Edición Limitada"
                       value={formData.subtitulo} onChange={e => setFormData({...formData, subtitulo: e.target.value})} />
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-500 uppercase">Descripción</label>
-                    <textarea rows="2" className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-camel-500 focus:ring-1 focus:ring-camel-500 transition" 
-                      placeholder="Texto descriptivo..."
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-brand-dark uppercase tracking-widest px-1">Descripción Corta</label>
+                    <textarea rows="2" className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all" 
+                      placeholder="Escribe un mensaje cautivador..."
                       value={formData.descripcion} onChange={e => setFormData({...formData, descripcion: e.target.value})} />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                  <div className="space-y-1">
-                     <label className="text-xs font-bold text-gray-500 uppercase">Texto Botón</label>
-                     <input className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" 
-                       value={formData.botonTexto} onChange={e => setFormData({...formData, botonTexto: e.target.value})} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-brand-light/50 p-6 rounded-[2rem] border border-brand-muted">
+                  <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest">Texto Botón</label>
+                      <input className="w-full border border-brand-muted rounded-lg px-3 py-2.5 bg-white outline-none focus:border-brand-primary" 
+                        value={formData.botonTexto} onChange={e => setFormData({...formData, botonTexto: e.target.value})} />
                   </div>
-                  <div className="space-y-1">
-                     <label className="text-xs font-bold text-gray-500 uppercase">Link Destino</label>
-                     <input className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" 
-                       value={formData.botonLink} onChange={e => setFormData({...formData, botonLink: e.target.value})} />
+                  <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest">Link (URL)</label>
+                      <input className="w-full border border-brand-muted rounded-lg px-3 py-2.5 bg-white outline-none focus:border-brand-primary" 
+                        value={formData.botonLink} onChange={e => setFormData({...formData, botonLink: e.target.value})} />
                   </div>
-                  <div className="space-y-1">
-                     <label className="text-xs font-bold text-gray-500 uppercase">Alineación</label>
-                     <select className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" 
-                       value={formData.alineacion} onChange={e => setFormData({...formData, alineacion: e.target.value})}>
-                       <option value="left">Izquierda</option>
-                       <option value="center">Centro</option>
-                       <option value="right">Derecha</option>
-                     </select>
+                  <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest">Alineación</label>
+                      <select className="w-full border border-brand-muted rounded-lg px-3 py-2.5 bg-white outline-none focus:border-brand-primary appearance-none cursor-pointer" 
+                        value={formData.alineacion} onChange={e => setFormData({...formData, alineacion: e.target.value})}>
+                        <option value="left">Izquierda</option>
+                        <option value="center">Centro</option>
+                        <option value="right">Derecha</option>
+                      </select>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-5 items-end">
-                   <div className="space-y-1">
-                      <label className="text-xs font-bold text-gray-500 uppercase">Orden de aparición</label>
-                      <input type="number" className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                  <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-brand-dark uppercase tracking-widest px-1">Orden en el Slider</label>
+                      <input type="number" className="w-32 border border-brand-muted rounded-xl px-4 py-3 bg-white outline-none" 
                         value={formData.orden} onChange={e => setFormData({...formData, orden: parseInt(e.target.value)})} />
-                   </div>
-                   
-                   <label className="flex items-center gap-3 cursor-pointer p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition h-[42px]">
-                      <div className={`w-10 h-5 rounded-full p-0.5 transition-colors duration-300 ${formData.activo ? 'bg-green-500' : 'bg-gray-300'}`}>
-                          <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${formData.activo ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                  </div>
+                  
+                  <label className="flex items-center gap-4 cursor-pointer group">
+                      <div className={`w-14 h-7 rounded-full p-1 transition-all duration-500 ${formData.activo ? 'bg-brand-primary' : 'bg-brand-secondary/30'}`}>
+                          <div className={`w-5 h-5 bg-white rounded-full shadow-lg transform transition-transform duration-500 ${formData.activo ? 'translate-x-7' : 'translate-x-0'}`}></div>
                       </div>
                       <input type="checkbox" className="hidden" checked={formData.activo} onChange={e => setFormData({...formData, activo: e.target.checked})} />
-                      <span className="text-sm font-medium text-gray-700 select-none">Mostrar Slide</span>
-                   </label>
+                      <span className="text-sm font-bold text-brand-dark uppercase tracking-widest">Slide Activo</span>
+                  </label>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-500 uppercase">Imagen de Fondo</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-gray-50 transition cursor-pointer relative">
-                     <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 opacity-0 cursor-pointer" />
-                     {uploading ? (
-                        <span className="text-camel-600 font-bold animate-pulse">Subiendo imagen...</span>
-                     ) : (
-                        <div className="text-gray-500 flex flex-col items-center gap-2">
-                          <FiImage size={24} />
-                          <span className="text-sm">Click o arrastra para cambiar la imagen (1920x800 px)</span>
+                {/* Upload de Imagen */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-brand-dark uppercase tracking-widest px-1">Imagen de Alta Resolución</label>
+                  <div className="border-2 border-dashed border-brand-primary/30 rounded-[2rem] p-10 text-center hover:bg-brand-light transition-all cursor-pointer relative overflow-hidden group">
+                    <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                    {uploading ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-8 h-8 border-4 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                          <span className="text-brand-dark font-bold animate-pulse">Procesando imagen...</span>
                         </div>
-                     )}
+                    ) : (
+                        <div className="text-brand-secondary flex flex-col items-center gap-3">
+                          <div className="bg-brand-muted p-4 rounded-full group-hover:scale-110 transition-transform">
+                            <FiImage size={32} className="text-brand-dark" />
+                          </div>
+                          <div>
+                            <p className="text-brand-dark font-bold text-sm">Click para seleccionar o arrastra la imagen</p>
+                            <p className="text-[10px] uppercase tracking-tighter mt-1 text-brand-primary">Recomendado: 1920x800px • JPG/WEBP</p>
+                          </div>
+                        </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
-                  <button type="button" onClick={() => setShowModal(false)} className="px-6 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition">Cancelar</button>
-                  <button type="submit" disabled={uploading} className="px-8 py-2.5 bg-camel-600 hover:bg-camel-700 text-white rounded-lg font-bold shadow-lg shadow-camel-500/20 transition transform hover:-translate-y-0.5">
-                    {uploading ? 'Procesando...' : 'Guardar Cambios'}
+                {/* Botones de acción Footer */}
+                <div className="flex justify-end gap-4 pt-10 border-t border-brand-muted">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowModal(false)} 
+                    className="px-8 py-3.5 text-brand-secondary hover:text-brand-dark font-bold uppercase text-[10px] tracking-widest transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={uploading} 
+                    className="px-12 py-3.5 bg-brand-dark hover:bg-black text-crema rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-brand-dark/20 transition-all transform hover:-translate-y-1 disabled:opacity-50"
+                  >
+                    {uploading ? 'Cargando...' : 'Publicar Cambios'}
                   </button>
                 </div>
               </form>

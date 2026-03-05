@@ -74,9 +74,9 @@ const AdminCategorias = () => {
         <table className="w-full text-left">
           <thead className="bg-brand-light border-b border-brand-muted">
             <tr>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-brand-dark">Nombre</th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-brand-dark">Descripción</th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-brand-dark text-right">Acciones</th>
+              <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-widest text-brand-dark">Nombre</th>
+              <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-widest text-brand-dark">Descripción</th>
+              <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-widest text-brand-dark text-right">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-brand-light">
@@ -99,12 +99,13 @@ const AdminCategorias = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg">{editingCat ? 'Editar' : 'Nueva'} Categoría</h3>
-              <button onClick={() => setShowModal(false)}><FiX /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/80 backdrop-blur-md">
+          <div className="bg-crema rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden max-h-[95vh] flex flex-col">
+            <div className="px-8 py-5 border-b border-brand-primary/30 flex justify-between items-center">
+              <h3 className="text-xl font-black text-brand-dark uppercase font-serif">{editingCat ? 'Editar' : 'Nueva'} Categoría</h3>
+              <button onClick={() => setShowModal(false)} aria-label="Cerrar modal" className="p-2 rounded-full text-brand-secondary hover:bg-brand-primary/20 hover:text-brand-dark transition"><FiX size={20}/></button>
             </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase">Nombre</label>
@@ -117,8 +118,8 @@ const AdminCategorias = () => {
                   value={descripcion} onChange={e => setDescripcion(e.target.value)} />
               </div>
               <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancelar</button>
-                <button type="submit" className="px-6 py-2 bg-camel-600 text-white rounded-lg hover:bg-camel-700">Guardar</button>
+                <button type="button" onClick={() => setShowModal(false)} className="px-6 py-2.5 text-brand-secondary font-bold hover:text-brand-dark transition">Cancelar</button>
+                <button type="submit" className="bg-brand-dark text-brand-muted px-8 py-2.5 rounded-xl font-bold shadow-lg hover:bg-brand-secondary transition disabled:opacity-50">Guardar</button>
               </div>
             </form>
           </div>

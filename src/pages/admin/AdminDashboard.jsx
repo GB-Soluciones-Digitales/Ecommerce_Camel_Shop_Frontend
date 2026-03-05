@@ -73,13 +73,13 @@ const AdminDashboard = () => {
         </div>
         <button 
           onClick={() => handleOpenModal()} 
-          className="bg-brand-dark hover:bg-black text-brand-muted px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg transition-all transform hover:-translate-y-1 font-bold uppercase tracking-widest text-xs"
+          className="bg-brand-primary hover:bg-brand-dark text-crema px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition-all uppercase text-xs font-bold tracking-widest"
         >
           <FiPlus /> Nuevo Producto
         </button>
       </header>
 
-      <div className="bg-white p-4 rounded-2xl shadow-sm mb-6 flex items-center gap-4 border border-brand-primary/10">
+      <div className="bg-brand-light p-4 rounded-2xl shadow-sm mb-6 flex items-center gap-4 border border-brand-primary/10">
         <div className="relative flex-1">
           <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-primary" />
           <input 
@@ -92,9 +92,9 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm overflow-hidden border border-brand-muted">
+      <div className="bg-brand-light rounded-3xl shadow-sm overflow-hidden border border-brand-muted">
         <table className="w-full text-left">
-          <thead className="bg-brand-light text-brand-dark text-[10px] uppercase font-bold tracking-[0.15em] border-b border-brand-muted">
+          <thead className="bg-brand-light text-brand-dark text-[12px] uppercase font-bold tracking-[0.15em] border-b border-brand-muted">
             <tr>
               <th className="px-6 py-5">Producto</th>
               <th className="px-6 py-5">Categoria</th>
@@ -125,14 +125,14 @@ const AdminDashboard = () => {
                         </div>
                       )}
                     </div>
-                    <span className="font-serif font-bold text-brand-dark text-lg">{producto.nombre}</span>
+                    <span className="font-serif text-brand-dark text-lg">{producto.nombre}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-brand-secondary font-medium">{producto.categoriaNombre}</td>
                 <td className="px-6 py-4 font-bold text-brand-dark">${parseFloat(producto.precio).toLocaleString()}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${producto.stock > 5 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                    {producto.stock} unidades
+                  <span className={`px-2 py-1 rounded-md text-[12px] font-black uppercase tracking-tighter ${producto.stock > 5 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    {producto.stock} u.
                   </span>
                 </td>
                 <td className="px-6 py-4 text-center">

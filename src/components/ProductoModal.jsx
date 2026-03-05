@@ -122,43 +122,40 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
 
         <form id="prod-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-             <section className="lg:col-span-1 space-y-3">
-                <p className="text-xs font-black text-brand-secondary uppercase tracking-widest flex items-center gap-2"><FiImage /> Galería</p>
-                <div className="grid grid-cols-2 gap-2">
-                    {state.existingImages.map((img) => (
-                        <div key={img} className="relative group aspect-square rounded-xl overflow-hidden border">
-                            <img src={img.startsWith('http') ? img : fileService.getImageUrl(img)} className="w-full h-full object-cover" alt="Producto" />
-                            <button type="button" onClick={() => setState(p => ({...p, existingImages: p.existingImages.filter(url => url !== img)}))} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"><FiTrash2 size={10}/></button>
-                        </div>
-                    ))}
-                    <label className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#4a3b2a] transition">
-                        <FiPlus className="text-brand-secondary" size={24}/>
-                        <input type="file" onChange={handleFileSelect} className="hidden" accept="image/*" />
-                    </label>
-                </div>
-             </section>
+            <section className="lg:col-span-1 space-y-3">
+              <p className="text-xs font-black text-brand-secondary uppercase tracking-widest flex items-center gap-2"><FiImage /> Galería</p>
+              <div className="grid grid-cols-2 gap-2">
+                {state.existingImages.map((img) => (
+                  <div key={img} className="relative group aspect-square rounded-xl overflow-hidden border">
+                    <img src={img.startsWith('http') ? img : fileService.getImageUrl(img)} className="w-full h-full object-cover" alt="Producto" />
+                    <button type="button" onClick={() => setState(p => ({...p, existingImages: p.existingImages.filter(url => url !== img)}))} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"><FiTrash2 size={10}/></button>
+                  </div>
+                ))}
+                <label className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#4a3b2a] transition">
+                  <FiPlus className="text-brand-secondary" size={24}/>
+                  <input type="file" onChange={handleFileSelect} className="hidden" accept="image/*" />
+                </label>
+              </div>
+            </section>
 
-             <section className="lg:col-span-2 space-y-5">
-                <div className="grid grid-cols-2 gap-5">
-                    <div className="space-y-1">
-                        <label htmlFor={`${baseId}-nombre`} className="text-xs font-black text-brand-secondary uppercase tracking-widest">Nombre</label>
-                        <input id={`${baseId}-nombre`} required className="w-full border-b-2 border-brand-primary/30 focus:border-brand-dark outline-none py-2 font-bold text-brand-dark bg-transparent text-lg"
-                            value={state.nombre} onChange={e => setState({...state, nombre: e.target.value})} />
-                    </div>
-                    <div className="space-y-1">
-                        <label htmlFor={`${baseId}-cat`} className="text-xs font-black text-brand-secondary uppercase tracking-widest">Categoría</label>
-                        <select id={`${baseId}-cat`} required className="w-full border-b-2 border-brand-primary/30 focus:border-brand-dark outline-none py-2 font-bold text-brand-dark bg-transparent text-lg"
-                            value={state.categoriaId} onChange={e => setState({...state, categoriaId: e.target.value})}>
-                            {categorias.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-                        </select>
-                    </div>
+            <section className="lg:col-span-2 space-y-5">
+              <div className="grid grid-cols-2 gap-5">
+                <div className="space-y-1">
+                  <label htmlFor={`${baseId}-nombre`} className="text-xs font-black text-brand-secondary uppercase tracking-widest">Nombre</label>
+                  <input id={`${baseId}-nombre`} required className="w-full border-b-2 border-brand-primary/30 focus:border-brand-dark outline-none py-2 font-bold text-brand-dark bg-transparent text-lg" value={state.nombre} onChange={e => setState({...state, nombre: e.target.value})} />
                 </div>
                 <div className="space-y-1">
-                    <label htmlFor={`${baseId}-desc`} className="text-xs font-black text-brand-secondary uppercase tracking-widest">Descripción</label>
-                    <textarea id={`${baseId}-desc`} rows="3" className="w-full border border-brand-primary/30 rounded-xl p-3 outline-none focus:border-brand-dark text-sm text-brand-secondary bg-brand-light"
-                        value={state.descripcion} onChange={e => setState({...state, descripcion: e.target.value})} />
+                  <label htmlFor={`${baseId}-cat`} className="text-xs font-black text-brand-secondary uppercase tracking-widest">Categoría</label>
+                  <select id={`${baseId}-cat`} required className="w-full border-b-2 border-brand-primary/30 focus:border-brand-dark outline-none py-2 font-bold text-brand-dark bg-transparent text-lg" value={state.categoriaId} onChange={e => setState({...state, categoriaId: e.target.value})}>
+                    {categorias.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+                  </select>
                 </div>
-             </section>
+              </div>
+              <div className="space-y-1">
+                <label htmlFor={`${baseId}-desc`} className="text-xs font-black text-brand-secondary uppercase tracking-widest">Descripción</label>
+                <textarea id={`${baseId}-desc`} rows="3" className="w-full border border-brand-primary/30 rounded-xl p-3 outline-none focus:border-brand-dark text-sm text-brand-secondary bg-brand-light" value={state.descripcion} onChange={e => setState({...state, descripcion: e.target.value})} />
+              </div>
+            </section>
           </div>
 
           <section className="border-t pt-8 space-y-6">
@@ -167,20 +164,19 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
               {state.variantes.map((v) => (
                 <div key={v.tempId} className="p-5 bg-crema rounded-2xl border border-brand-primary/30 shadow-sm transition">
                   <div className="mb-4">
-                       <label htmlFor={`${v.tempId}-color`} className="text-[10px] font-bold text-brand-secondary block mb-1 uppercase">Color</label>
-                       <input 
-                         id={`${v.tempId}-color`}
-                         className="w-full border-b-2 border-brand-primary/30 focus:border-brand-dark outline-none py-2 font-bold text-brand-dark bg-transparent text-lg"
-                         value={v.color}
-                         onChange={(e) => updateVariante(v.tempId, 'color', e.target.value)}
-                       />
+                    <label htmlFor={`${v.tempId}-color`} className="text-[10px] font-bold text-brand-secondary block mb-1 uppercase">Color</label>
+                    <input 
+                      id={`${v.tempId}-color`}
+                      className="w-full border-b-2 border-brand-primary/30 focus:border-brand-dark outline-none py-2 font-bold text-brand-dark bg-transparent text-lg"
+                      value={v.color}
+                      onChange={(e) => updateVariante(v.tempId, 'color', e.target.value)}
+                    />
                   </div>
                   <div className="grid grid-cols-6 gap-2">
                     {tallesRopa.map(talle => (
                       <div key={`${v.tempId}-${talle}`} className="flex flex-col items-center gap-1">
                         <label htmlFor={`${v.tempId}-${talle}`} className="text-[9px] font-bold text-brand-secondary">{talle}</label>
-                        <input id={`${v.tempId}-${talle}`} type="number" className="w-full text-center border border-brand-primary/30 rounded-md py-1 text-xs font-bold outline-none focus:ring-1 focus:ring-brand-primar"
-                          value={v.stock?.[talle] || ''} onChange={(e) => updateStock(v.tempId, talle, e.target.value)} />
+                        <input id={`${v.tempId}-${talle}`} type="number" className="w-full text-center border border-brand-primary/30 rounded-md py-1 text-xs font-bold outline-none focus:ring-1 focus:ring-brand-primar" value={v.stock?.[talle] || ''} onChange={(e) => updateStock(v.tempId, talle, e.target.value)} />
                       </div>
                     ))}
                   </div>
