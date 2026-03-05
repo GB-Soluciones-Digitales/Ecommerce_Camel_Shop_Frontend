@@ -64,7 +64,7 @@ const AdminLayout = () => {
         </nav>
 
         <div className="p-6 border-t border-white/5">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted hover:bg-brand-secondary/10 rounded-lg transition-colors text-sm font-medium tracking-wide">
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted hover:bg-brand-secondary rounded-lg transition-colors text-sm font-medium tracking-wide">
             <FiLogOut /> Cerrar Sesión
           </button>
         </div>
@@ -73,10 +73,10 @@ const AdminLayout = () => {
       {/* SIDEBAR MOBILE */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-sm transition-opacity" onClick={closeMobileMenu} />
-          <aside className="absolute top-0 left-0 w-64 h-full bg-brand-dark flex flex-col shadow-2xl">
+          <div className="absolute inset-0 bg-brand-primary backdrop-blur-sm transition-opacity" onClick={closeMobileMenu} />
+          <aside className="absolute top-0 left-0 w-64 h-full bg-brand-primary flex flex-col shadow-2xl">
             <div className="p-6 border-b border-white/5 flex items-center justify-between">
-              <span className="text-xl font-serif font-black text-[#F9F6F0] tracking-tighter">CAMEL.</span>
+              <span className="text-xl font-serif font-black text-brand-muted tracking-tighter">CAMEL<span className='text-brand-dark text-5xl'>.</span></span>
               <button onClick={closeMobileMenu} className="p-2 text-brand-secondary hover:text-brand-muted rounded-full transition">
                 <FiX size={24} />
               </button>
@@ -86,7 +86,7 @@ const AdminLayout = () => {
             </nav>
 
             <div className="p-6 border-t border-white/5">
-              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted bg-brand-secondary/10 rounded-lg text-sm font-medium transition">
+              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-brand-secondary hover:text-brand-muted bg-brand-secondary rounded-lg text-sm font-medium transition">
                 <FiLogOut /> Cerrar Sesión
               </button>
             </div>
@@ -100,8 +100,8 @@ const AdminLayout = () => {
           <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 hover:bg-brand-secondary/20 rounded-lg transition">
             <FiMenu size={24} />
           </button>
-          <span className="font-serif font-bold text-lg tracking-tight">CAMEL. Admin</span>
-          <div className="w-8 h-8 bg-brand-primary text-brand-dark rounded-full flex items-center justify-center font-bold text-xs uppercase">AD</div>
+          <span className="text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-muted">CAMEL<span className='text-brand-dark text-5xl'>.</span></span>
+          <span className="ml-2 text-[10px] text-brand-secondary uppercase tracking-widest mt-1">Admin</span>
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-crema p-4 md:p-8 scroll-smooth">
           <Outlet />
