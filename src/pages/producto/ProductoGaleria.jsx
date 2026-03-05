@@ -40,7 +40,7 @@ const ProductoGaleria = ({ producto }) => {
               <img
                 src={getImgUrl(img)}
                 alt={`${producto.nombre} - Vista ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105 cursor-zoom-in"
+                className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105 cursor-zoom-in swiper-zoom-container"
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </SwiperSlide>

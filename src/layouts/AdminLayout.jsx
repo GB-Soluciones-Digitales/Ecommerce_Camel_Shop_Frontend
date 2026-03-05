@@ -14,7 +14,7 @@ const MENU_ITEMS = [
 const NavLinks = ({ location, onCloseMobileMenu }) => (
   <div className="space-y-1">
     <div className="px-4 py-3 mb-2">
-      <p className="text-[10px] font-bold text-brand-secondary uppercase tracking-[0.2em]">Menú Principal</p>
+      <p className="text-sm font-bold text-brand-muted uppercase tracking-[0.2em]">Menú Principal</p>
     </div>
     {MENU_ITEMS.map((item) => {
       const isActive = location.pathname === item.path;
@@ -53,9 +53,9 @@ const AdminLayout = () => {
     <div className="flex h-screen bg-crema overflow-hidden font-sans">
       
       {/* SIDEBAR DESKTOP */}
-      <aside className="w-64 bg-brand-dark flex-col shadow-2xl z-20 hidden md:flex border-r border-brand-secondary/30">
+      <aside className="w-64 bg-brand-primary flex-col shadow-2xl z-20 hidden md:flex border-r border-brand-secondary/30">
         <div className="p-8 border-b border-brand-secondary/20 flex items-center justify-center">
-          <span className="text-2xl font-serif font-black text-brand-muted tracking-tighter">CAMEL.</span>
+          <span className="text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-muted">CAMEL<span className='text-brand-dark text-5xl'>.</span></span>
           <span className="ml-2 text-[10px] text-brand-secondary uppercase tracking-widest mt-1">Admin</span>
         </div>
 
