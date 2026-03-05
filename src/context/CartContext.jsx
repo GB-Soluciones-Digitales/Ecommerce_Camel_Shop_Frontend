@@ -26,6 +26,8 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   const addToCart = (producto, cantidad = 1) => {
+    const cantidadNum = parseInt(cantidad, 10) || 1;
+
     setCartItems((prevItems) => {
       const uniqueId = producto.variantId || `${producto.id}-${producto.selectedColor || 'Unico'}-${producto.selectedSize || 'Unico'}`;
       
@@ -36,10 +38,10 @@ export const CartProvider = ({ children }) => {
 
       if (existingItemIndex >= 0) {
         const newItems = [...prevItems];
-        newItems[existingItemIndex].cantidad += cantidad;
+        newItems[existingItemIndex].cantidad += cantidadNum;
         return newItems;
       } else {
-        return [...prevItems, { ...producto, cantidad, variantId: uniqueId }];
+        return [...prevItems, { ...producto, cantidad: cantidadNum }];
       }
     });
     setShowCart(true); 

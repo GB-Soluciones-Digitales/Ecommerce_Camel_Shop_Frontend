@@ -19,41 +19,8 @@ const ProductoGaleria = ({ producto }) => {
     : [producto.imagenUrl];
 
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-4 h-full">
-      {/* Miniaturas */}
-      {galleryImages.length > 1 && (
-        <div className="w-full md:w-24 flex-shrink-0">
-            <Swiper
-            onSwiper={setThumbsSwiper}
-            spaceBetween={12}
-            slidesPerView={4}
-            direction={'horizontal'}
-            breakpoints={{
-                768: { direction: 'vertical', slidesPerView: 5 }
-            }}
-            watchSlidesProgress={true}
-            modules={[Navigation, Thumbs, FreeMode]}
-            className="h-24 md:h-full w-full"
-            freeMode={true}
-            >
-            {galleryImages.map((img, index) => (
-                <SwiperSlide 
-                key={`${producto.id}-thumb-${index}`}
-                className="cursor-pointer border border-transparent [&.swiper-slide-thumb-active]:border-brand-dark opacity-50 [&.swiper-slide-thumb-active]:opacity-100 transition-all duration-300"
-                >
-                <img 
-                    src={getImgUrl(img)} 
-                    alt={`Thumb ${index}`} 
-                    className="w-full h-full object-cover"
-                />
-                </SwiperSlide>
-            ))}
-            </Swiper>
-        </div>
-      )}
-
-      {/* Imagen Principal */}
-      <div className="flex-1 bg-brand-light relative w-full h-80 md:h-[450px] lg:h-[80vh] max-h-[700px] rounded-[2rem]">
+    <div className="flex flex-col gap-4 w-full h-full">
+      <div className="flex-1 bg-brand-light relative w-full h-80 md:h-[500px] lg:h-[70vh] max-h-[600px] rounded-[2rem] overflow-hidden">
         <Swiper
           style={{
             '--swiper-navigation-color': 'var(--color-brand-dark)',
@@ -78,6 +45,39 @@ const ProductoGaleria = ({ producto }) => {
           ))}
         </Swiper>
       </div>
+
+      {/* Miniaturas */}
+      {galleryImages.length > 1 && (
+        <div className="w-full h-24 flex-shrink-0">
+          <Swiper
+            onSwiper={setThumbsSwiper}
+            spaceBetween={12}
+            slidesPerView={4}
+            direction={'horizontal'}
+            breakpoints={{
+              768: { slidesPerView: 5 },
+              1024: { slidesPerView: 6 }
+            }}
+            watchSlidesProgress={true}
+            modules={[Navigation, Thumbs, FreeMode]}
+            className="h-full w-full"
+            freeMode={true}
+          >
+            {galleryImages.map((img, index) => (
+              <SwiperSlide 
+                key={`${producto.id}-thumb-${index}`}
+                className="cursor-pointer rounded-xl overflow-hidden border-2 border-transparent [&.swiper-slide-thumb-active]:border-brand-dark opacity-60 [&.swiper-slide-thumb-active]:opacity-100 transition-all duration-300"
+              >
+                <img 
+                  src={getImgUrl(img)} 
+                  alt={`Thumb ${index}`} 
+                  className="w-full h-full object-cover"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      )}
     </div>
   );
 };

@@ -57,7 +57,7 @@ const PublicLayout = () => {
                   </div>
                 ) : (
                   cartItems.map((item) => (
-                    <div key={item.variantId || item.id} className="flex gap-5 group">
+                    <div key={String(item.variantId || item.id)} className="flex gap-5 group">
                       <div className="w-24 h-32 bg-brand-light rounded-none overflow-hidden flex-shrink-0 border border-brand-muted relative">
                         {item.imagenes?.[0] ? (
                            <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"/>
@@ -74,12 +74,12 @@ const PublicLayout = () => {
                           <div className="flex flex-wrap items-center mt-2 gap-2">
                             {item.selectedColor && (
                               <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest">
-                                Color: {item.selectedColor}
+                                Color: {typeof item.selectedColor === 'object' ? JSON.stringify(item.selectedColor) : item.selectedColor}
                               </span>
                             )}
                             {item.selectedSize && (
                               <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest before:content-['|'] before:mx-2 before:text-brand-muted">
-                                Talle: {item.selectedSize}
+                                Talle: {typeof item.selectedSize === 'object' ? JSON.stringify(item.selectedSize) : item.selectedSize}
                               </span>
                             )}
                           </div>

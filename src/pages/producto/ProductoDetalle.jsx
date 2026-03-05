@@ -39,8 +39,8 @@ const ProductoDetallePage = () => {
 
       <div className="max-w-[1400px] mx-auto">
         <nav className="mb-10">
-          <Link to="/productos" className="inline-flex items-center text-sm font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
-            <FiArrowLeft className="mr-2" size={18} /> Volver a la colección
+          <Link to="/productos" className="inline-flex items-center text-[12px] font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
+            <FiArrowLeft className="mr-2" size={16} /> Volver a la colección
           </Link>
         </nav>
 
@@ -51,7 +51,14 @@ const ProductoDetallePage = () => {
           <div className="lg:col-span-5 py-4">
             <ProductoInfo 
               producto={producto} 
-              onAddToCart={(variantData, qty) => { addToCart(producto, variantData, qty); setShowCart(true); }}
+              onAddToCart={(variantData, qty) => {
+                const productoParaCarrito = {
+                  ...producto,
+                  ...variantData
+                };
+                addToCart(productoParaCarrito, qty);
+                setShowCart(true);
+              }}
               onOpenSizeChart={() => setShowTablaTalles(true)}
             />
           </div>
