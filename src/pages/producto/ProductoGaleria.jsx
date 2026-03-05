@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs, EffectFade, FreeMode } from 'swiper/modules';
+import { Navigation, Thumbs, EffectFade, FreeMode, Zoom } from 'swiper/modules';
 import { fileService } from '../../services/fileService';
 
 import 'swiper/css';
@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import 'swiper/css/effect-fade';
 import 'swiper/css/free-mode';
+import 'swiper/css/zoom';
 
 const ProductoGaleria = ({ producto }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -19,8 +20,8 @@ const ProductoGaleria = ({ producto }) => {
     : [producto.imagenUrl];
 
   return (
-    <div className="flex flex-col gap-4 w-full h-full">
-      <div className="flex-1 bg-brand-light relative w-full h-80 md:h-[500px] lg:h-[70vh] max-h-[600px] rounded-[2rem] overflow-hidden">
+    <div className="flex flex-col gap-4 w-full">
+      <div className="bg-brand-light relative w-full aspect-[3/4] md:aspect-[4/5] lg:aspect-[2/3] max-h-[85vh] rounded-[2rem] overflow-hidden shadow-sm">
         <Swiper
           style={{
             '--swiper-navigation-color': 'var(--color-brand-dark)',
@@ -29,18 +30,21 @@ const ProductoGaleria = ({ producto }) => {
           spaceBetween={0}
           navigation={true}
           effect="fade"
+          zoom={true}
           thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
-          modules={[EffectFade, Navigation, Thumbs]}
+          modules={[EffectFade, Navigation, Thumbs, Zoom]}
           className="h-full w-full"
         >
           {galleryImages.map((img, index) => (
             <SwiperSlide key={`${producto.id}-main-${index}`} className="h-full w-full">
-              <img 
-                src={getImgUrl(img)} 
-                alt={`${producto.nombre} - Vista ${index + 1}`} 
-                className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105 cursor-zoom-in"
-                loading={index === 0 ? "eager" : "lazy"}
-              />
+              <div className="swiper-zoom-container h-full w-full">
+                <img 
+                  src={getImgUrl(img)} 
+                  alt={`${producto.nombre} - Vista ${index + 1}`} 
+                  className="w-full h-full object-cover"
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
@@ -51,7 +55,7 @@ const ProductoGaleria = ({ producto }) => {
         <div className="w-full h-24 flex-shrink-0">
           <Swiper
             onSwiper={setThumbsSwiper}
-            spaceBetween={12}
+            spaceBetween={10}
             slidesPerView={4}
             direction={'horizontal'}
             breakpoints={{
@@ -71,7 +75,7 @@ const ProductoGaleria = ({ producto }) => {
                 <img 
                   src={getImgUrl(img)} 
                   alt={`Thumb ${index}`} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover aspect-[3/4]"
                 />
               </SwiperSlide>
             ))}
