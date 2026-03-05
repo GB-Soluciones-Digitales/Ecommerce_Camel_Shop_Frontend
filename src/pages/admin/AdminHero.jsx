@@ -93,7 +93,7 @@ const AdminHero = () => {
           </h2>
           <p className="text-brand-secondary">Impacto visual de la página principal</p>
         </div>
-        <button onClick={() => openModal()} className="bg-brand-dark hover:bg-black text-crema px-6 py-3 rounded-xl flex items-center gap-2 shadow-xl transition-all font-bold uppercase text-xs tracking-[0.2em]">
+        <button onClick={() => openModal()} className="bg-brand-primary hover:bg-brand-dark text-brand-muted px-6 py-3 rounded-xl flex items-center gap-2 shadow-xl transition-all font-bold uppercase text-xs tracking-[0.2em]">
           <FiPlus /> Crear Slide
         </button>
       </div>

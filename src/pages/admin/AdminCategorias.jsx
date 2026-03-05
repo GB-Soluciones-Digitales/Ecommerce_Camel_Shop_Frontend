@@ -99,27 +99,36 @@ const AdminCategorias = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/80 backdrop-blur-md">
-          <div className="bg-crema rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden max-h-[95vh] flex flex-col">
-            <div className="px-8 py-5 border-b border-brand-primary/30 flex justify-between items-center">
-              <h3 className="text-xl font-black text-brand-dark uppercase font-serif">{editingCat ? 'Editar' : 'Nueva'} Categoría</h3>
-              <button onClick={() => setShowModal(false)} aria-label="Cerrar modal" className="p-2 rounded-full text-brand-secondary hover:bg-brand-primary/20 hover:text-brand-dark transition"><FiX size={20}/></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/60 backdrop-blur-md">
+          <div className="bg-crema rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-brand-muted">
+            <div className="px-8 py-6 border-b border-brand-muted flex justify-between items-center bg-white">
+              <h3 className="text-2xl font-bold text-brand-dark uppercase font-serif tracking-tight">
+                {editingCat ? 'Editar' : 'Nueva'} Categoría
+              </h3>
+              <button onClick={() => setShowModal(false)} className="p-2 rounded-full text-brand-secondary hover:bg-brand-light transition">
+                <FiX size={24}/>
+              </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase">Nombre</label>
-                <input required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-camel-500 outline-none" 
-                  value={nombre} onChange={e => setNombre(e.target.value)} />
+            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest px-1">Nombre de Categoría</label>
+                <input required className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all font-serif text-lg" 
+                  value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Colección Otoño" />
               </div>
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase">Descripción</label>
-                <textarea className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-camel-500 outline-none" 
-                  value={descripcion} onChange={e => setDescripcion(e.target.value)} />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest px-1">Descripción</label>
+                <textarea rows="3" className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all" 
+                  value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Breve descripción para la web..." />
               </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="px-6 py-2.5 text-brand-secondary font-bold hover:text-brand-dark transition">Cancelar</button>
-                <button type="submit" className="bg-brand-dark text-brand-muted px-8 py-2.5 rounded-xl font-bold shadow-lg hover:bg-brand-secondary transition disabled:opacity-50">Guardar</button>
+              
+              <div className="flex justify-end gap-4 pt-4">
+                <button type="button" onClick={() => setShowModal(false)} className="px-6 py-3 text-brand-secondary font-bold text-xs uppercase tracking-widest hover:text-brand-dark">
+                  Cancelar
+                </button>
+                <button type="submit" className="bg-brand-dark text-crema px-10 py-3 rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all transform hover:-translate-y-1">
+                  Guardar
+                </button>
               </div>
             </form>
           </div>
