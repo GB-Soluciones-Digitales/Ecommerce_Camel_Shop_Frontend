@@ -5,7 +5,7 @@ import { fileService } from '../../services/fileService';
 import { FiSearch, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import Reveal from './Reveal';
+import Reveal from '../..components/Reveal';
 import { sileo } from 'sileo';
 
 const initialState = {
