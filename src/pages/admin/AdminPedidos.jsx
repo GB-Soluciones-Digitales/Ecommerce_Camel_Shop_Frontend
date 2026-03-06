@@ -105,7 +105,7 @@ const AdminOrders = () => {
   return (
     <div className="p-6 md:p-10 bg-crema min-h-screen font-sans">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+        <header className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
               <FiPackage className="text-brand-primary" /> Gestión de Pedidos
@@ -113,10 +113,10 @@ const AdminOrders = () => {
             <p className="text-brand-secondary text-sm mt-1 font-medium">Panel de control de ventas y logística</p>
           </div>
           <button onClick={() => setModals({ ...modals, create: true })} 
-            className="bg-brand-dark text-crema px-6 py-3 rounded-2xl flex items-center gap-3 font-bold text-xs uppercase tracking-widest shadow-2xl hover:bg-black transition transform hover:-translate-y-1">
-            <FiPlus size={18} /> Nuevo Pedido Manual
+            className="bg-brand-dark text-crema px-6 py-3 rounded-2xl flex items-center gap-3 font-bold text-xs uppercase tracking-widest shadow-2xl hover:bg-brand-secondary transition transform hover:-translate-y-1">
+            <FiPlus size={18} /> Nuevo Pedido
           </button>
-        </div>
+        </header>
 
         <div className="bg-white p-2 rounded-[2rem] shadow-sm border border-brand-muted mb-8 flex flex-col md:flex-row gap-2">
           <div className="flex-1 relative">

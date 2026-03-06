@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { productoService } from '../../services/productoService';
 import { categoriaService } from '../../services/categoriaService';
 import { FiEdit2, FiTrash2, FiPlus, FiSearch, FiToggleLeft, FiToggleRight, FiImage } from 'react-icons/fi';
+import { MdDashboard } from "react-icons/md";
 import ProductoModal from '../../components/ProductoModal'; 
 import { fileService } from '../../services/fileService';
 
@@ -68,14 +69,16 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-crema p-8 font-sans">
       <header className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-3xl font-serif font-bold text-brand-dark">Panel de Control</h2>
-          <p className="text-brand-secondary">Gestiona el inventario de piezas</p>
+          <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
+            <MdDashboard className="text-brand-primary" /> Panel de Control
+          </h2>
+          <p className="text-brand-secondary text-sm mt-1 font-medium">Gestiona el inventario de prendas</p>
         </div>
         <button 
           onClick={() => handleOpenModal()} 
-          className="bg-brand-primary hover:bg-brand-dark text-crema px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition-all uppercase text-xs font-bold tracking-widest"
+          className="bg-brand-dark text-crema px-6 py-3 rounded-2xl flex items-center gap-3 font-bold text-xs uppercase tracking-widest shadow-2xl hover:bg-brand-secondary transition transform hover:-translate-y-1"
         >
-          <FiPlus /> Nuevo Producto
+          <FiPlus size={18} /> Nuevo Producto
         </button>
       </header>
 
