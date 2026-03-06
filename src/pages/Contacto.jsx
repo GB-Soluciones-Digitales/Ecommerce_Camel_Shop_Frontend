@@ -109,18 +109,23 @@ const Contacto = () => {
               <p className="text-[#a48e78] mt-2 font-medium">Atención con cita previa para una experiencia personalizada.</p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-12 sm:gap-20">
-              <div>
-                <FaWhatsapp className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm tracking-[0.2em] flex items-center justify-center'>WhatsApp</p>
-                <a href="https://wa.me/5493431234567" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-secondary/40 hover:border-brand-primary pb-1">+54 9 343 123 4567</a>
+            <div className="flex flex-col sm:flex-row gap-12 sm:gap-20 font-sans">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <FaWhatsapp className="text-brand-secondary" size={28} />
+                  <p className="text-brand-secondary text-sm font-black uppercase tracking-[0.2em]">WhatsApp</p>
+                </div>
+                <a href="https://wa.me/5493431234567" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-muted hover:border-brand-primary pb-1 w-fit">+54 9 343 123 4567</a>
               </div>
-              <div>
-                <FiMail className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm tracking-[0.2em] flex items-center justify-center'>Email</p>
-                <a href="mailto:hola@camelshop.com.ar" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-secondary/40 hover:border-brand-primary pb-1">hola@camel.com</a>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <FiMail className="text-brand-secondary" size={28} />
+                  <p className='text-brand-secondary text-sm font-black uppercase tracking-[0.2em]'>Email</p>  
+                </div>
+                <a href="mailto:hola@camelshop.com.ar" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-muted hover:border-brand-primary pb-1 w-fit">hola@camel.com</a>
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Acordeón FAQ Editorial */}
