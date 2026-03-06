@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { FiChevronDown, FiChevronUp, FiMail } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import { sileo } from 'sileo';
 
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,15 @@ const Contacto = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const mensaje = `Hola CAMEL. Mi nombre es ${formData.get('nombre')}. Consulta: ${formData.get('mensaje')}`;
-    window.open(`https://wa.me/5493431234567?text=${encodeURIComponent(mensaje)}`, '_blank');
+    
+    sileo.success({
+      title: "Conectando...",
+      description: "Te estamos redirigiendo a WhatsApp para atención personalizada."
+    });
+
+    setTimeout(() => {
+      window.open(`https://wa.me/5493431234567?text=${encodeURIComponent(mensaje)}`, '_blank');
+    }, 800);
   };
 
   return (

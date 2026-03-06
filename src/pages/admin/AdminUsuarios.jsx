@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { userService } from '../../services/userService'; 
 import { FiUser, FiShield, FiKey, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import PasswordModal from '../../components/PasswordModal';
+import { sileo } from 'sileo';
 
 const AdminUsuarios = () => {
   const [state, setState] = useState({
@@ -31,10 +32,10 @@ const AdminUsuarios = () => {
     try {
       setState(prev => ({ ...prev, saving: true }));
       await userService.cambiarPassword(userId, newPassword);
-      alert(`Contraseña actualizada correctamente`);
+      sileo.success({ title: "Seguridad actualizada", description: "La clave se cambió correctamente." });
       setState(prev => ({ ...prev, isModalOpen: false, selectedUser: null, saving: false }));
     } catch (error) {
-      alert('Error al actualizar la contraseña');
+      sileo.error({ title: "Error de seguridad", description: "No se pudo actualizar la contraseña." });
       setState(prev => ({ ...prev, saving: false }));
     }
   };

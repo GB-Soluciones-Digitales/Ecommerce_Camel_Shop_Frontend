@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { FiMinus, FiPlus, FiAlertCircle } from 'react-icons/fi';
+import { FiMinus, FiPlus, FiShare2 } from 'react-icons/fi';
+import { sileo } from 'sileo';
 
 const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
   const [selectedColor, setSelectedColor] = useState(producto.variantes?.[0]?.color || null);
   const [selectedTalle, setSelectedTalle] = useState(null);
   const [cantidad, setCantidad] = useState(1);
-  const [error, setError] = useState('');
 
   const currentVariant = producto.variantes?.find(v => v.color === selectedColor);
   const availableSizes = currentVariant ? Object.entries(currentVariant.stockPorTalle).filter(([_, q]) => q > 0).map(([t]) => t) : [];
@@ -13,15 +13,39 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
 
   const handleAdd = () => {
     if (producto.variantes?.length > 0 && (!selectedColor || !selectedTalle)) {
-      return setError('Por favor, selecciona color y talle para continuar.');
+      return sileo.info({
+        title: "Falta información",
+        description: "Por favor, seleccioná un color y talle antes de añadir al carrito."
+      });
     }
-    onAddToCart({ selectedColor, selectedSize: selectedTalle, variantId: `${producto.id}-${selectedColor}-${selectedTalle}` }, cantidad);
-    setError('');
+
+    onAddToCart({ 
+      selectedColor, 
+      selectedSize: selectedTalle, 
+      variantId: `${producto.id}-${selectedColor}-${selectedTalle}` 
+    }, cantidad);
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    sileo.info({
+      title: "Enlace copiado",
+      description: "Ya podés compartir esta pieza con quien quieras."
+    });
   };
 
   return (
     <div className="flex flex-col">
-      <span className="text-xs font-bold text-brand-primary uppercase tracking-[0.2em] mb-2">{producto.categoriaNombre}</span>
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-xs font-bold text-brand-primary uppercase tracking-[0.2em]">{producto.categoriaNombre}</span>
+        
+        <button 
+          onClick={handleShare} 
+          className="flex items-center gap-2 text-brand-secondary hover:text-brand-dark transition-colors text-[10px] font-bold uppercase tracking-widest"
+        >
+          <FiShare2 size={14} /> Compartir
+        </button>
+      </div>
       <h1 className="text-4xl md:text-5xl font-serif text-brand-dark leading-tight mb-4">{producto.nombre}</h1>
       <p className="text-2xl text-brand-dark font-medium tracking-wide mb-8">${parseFloat(producto.precio).toLocaleString()}</p>
       
@@ -41,7 +65,7 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
               {producto.variantes.map(v => (
                 <button 
                   key={v.color}
-                  onClick={() => { setSelectedColor(v.color); setSelectedTalle(null); setCantidad(1); setError(''); }}
+                  onClick={() => { setSelectedColor(v.color); setSelectedTalle(null); setCantidad(1);}}
                   className={`px-5 py-2 text-sm font-medium transition-all ${selectedColor === v.color ? 'border-b-2 border-brand-dark text-brand-dark' : 'border-b-2 border-transparent text-brand-primary hover:text-brand-dark'}`}
                 >
                   {v.color}
@@ -66,7 +90,7 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
                     <button
                       key={talle}
                       disabled={!hasStock}
-                      onClick={() => { setSelectedTalle(talle); setCantidad(1); setError(''); }}
+                      onClick={() => { setSelectedTalle(talle); setCantidad(1); }}
                       className={`w-12 h-12 flex items-center justify-center text-sm transition-all
                         ${selectedTalle === talle 
                           ? 'border border-brand-dark bg-brand-dark text-crema' 
@@ -91,7 +115,6 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
 
       {/* Acciones */}
       <div className="mt-10">
-        {error && <div className="mb-4 text-red-800 bg-red-50 p-3 text-xs uppercase tracking-wider flex items-center gap-2 border border-red-100"><FiAlertCircle size={16} /> {error}</div>}
         
         <div className="flex gap-4">
           <div className="flex items-center border border-brand-muted bg-transparent">
@@ -105,7 +128,7 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
             disabled={producto.stock === 0}
             className="flex-1 bg-brand-dark text-crema text-xs font-bold uppercase tracking-[0.2em] py-4 hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {producto.stock === 0 ? 'Sin Stock' : 'Añadir a la Bolsa'}
+            {producto.stock === 0 ? 'Sin Stock' : 'Añadir al Carrito'}
           </button>
         </div>
         

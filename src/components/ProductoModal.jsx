@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
 import { FiX, FiPlus, FiTrash2, FiImage, FiLayers, FiUploadCloud, FiCheck, FiTag, FiAlignLeft } from 'react-icons/fi';
 import { fileService } from '../services/fileService';
+import { sileo } from "sileo"; 
 
 const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) => {
   const tallesRopa = useMemo(() => ['U', 'S', 'M', 'L', 'XL', 'XXL'], []);
@@ -103,8 +104,17 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
       };
 
       await onSave(payload);
+
+      sileo.success({
+        title: "Pieza guardada",
+        description: "El producto se actualizó en el catálogo."
+      });
+
     } catch (error) {
-      alert("Error al procesar el producto");
+      sileo.error({
+        title: "Error de conexión",
+        description: "No pudimos guardar la pieza. Intentá nuevamente."
+      });
     } finally {
       setState(prev => ({ ...prev, uploading: false }));
     }

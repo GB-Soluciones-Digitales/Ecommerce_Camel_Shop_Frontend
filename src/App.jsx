@@ -18,44 +18,50 @@ import AdminCategorias from './pages/admin/AdminCategorias';
 import AdminUsuarios from './pages/admin/AdminUsuarios';
 import AdminOrders from './pages/admin/AdminPedidos'; 
 import AdminHero from './pages/admin/AdminHero';
+
 import { HelmetProvider } from 'react-helmet-async';
+import { ReactLenis } from '@studio-freight/react-lenis';
+import { Toaster } from "sileo";
 
 function App() {
   return (
-    <HelmetProvider>
-      <CartProvider>
-        <Router>
-          <Routes>
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/productos" element={<ProductosPage />} />
-              <Route path="/producto/:id" element={<ProductoDetallePage />} />
-              <Route path="/contacto" element={<Contacto />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-            </Route>
+    <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+      <HelmetProvider>
+        <Toaster position="bottom-right" />
+        <CartProvider>
+          <Router>
+            <Routes>
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/productos" element={<ProductosPage />} />
+                <Route path="/producto/:id" element={<ProductoDetallePage />} />
+                <Route path="/contacto" element={<Contacto />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+              </Route>
 
-            <Route path="/admin/login" element={<Login />} />
+              <Route path="/admin/login" element={<Login />} />
 
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <AdminLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Navigate to="/admin/dashboard" replace />} />
-              
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="categorias" element={<AdminCategorias />} />
-              <Route path="usuarios" element={<AdminUsuarios />} />
-              <Route path="pedidos" element={<AdminOrders />} />
-              <Route path="hero" element={<AdminHero />} />
-            </Route>
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="categorias" element={<AdminCategorias />} />
+                <Route path="usuarios" element={<AdminUsuarios />} />
+                <Route path="pedidos" element={<AdminOrders />} />
+                <Route path="hero" element={<AdminHero />} />
+              </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          
-          </Routes>
-        </Router>
-      </CartProvider>
-    </HelmetProvider>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            
+            </Routes>
+          </Router>
+        </CartProvider>
+      </HelmetProvider>
+    </ReactLenis>
   );
 }
 

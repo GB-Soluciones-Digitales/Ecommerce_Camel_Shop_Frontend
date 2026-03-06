@@ -5,6 +5,8 @@ import { fileService } from '../../services/fileService';
 import { FiSearch, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import Reveal from './Reveal';
+import { sileo } from 'sileo';
 
 const initialState = {
   productos: [],
@@ -64,6 +66,11 @@ const ProductosPage = () => {
         });
       } catch (err) {
         console.error(err);
+        sileo.error({
+          title: "Error de conexión",
+          description: "No pudimos cargar la colección. Por favor, recargá la página."
+        });
+        dispatch({ type: 'LOAD_PRODUCTS', productos: [], pagination: { totalPages: 0, currentPage: 0 } });
       }
     };
     fetchProducts();
@@ -136,8 +143,10 @@ const ProductosPage = () => {
           ) : state.productos.length === 0 ? (
              <div className="col-span-full text-center py-20 font-serif text-2xl text-brand-primary opacity-60">No se encontraron prendas</div>
           ) : (
-            state.productos.map(p => (
-              <ProductCard key={p.id} producto={p} getImgUrl={getImgUrl} />
+            state.productos.map((p, index) => (
+              <Reveal key={p.id} delay={index * 0.1}>
+                <ProductCard key={p.id} producto={p} getImgUrl={getImgUrl} />
+              </Reveal>
             ))
           )}
         </div>

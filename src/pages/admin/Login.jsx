@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
-import { FiArrowRight, FiAlertCircle, FiArrowLeft } from 'react-icons/fi';
+import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
+import { sileo } from 'sileo';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    
     try {
       await authService.login(username, password);
+      sileo.success({ 
+        title: "Acceso autorizado", 
+        description: "Bienvenido al espacio de trabajo de CAMEL." 
+      });
       navigate('/admin/dashboard');
     } catch (err) {
-      setError('Acceso denegado. Verifica tus credenciales.');
+      sileo.error({ 
+        title: "Acceso denegado", 
+        description: "Las credenciales ingresadas son incorrectas." 
+      });
     } finally {
       setLoading(false);
     }
@@ -44,13 +51,6 @@ const Login = () => {
         </div>
 
         <div className="bg-white p-10 shadow-2xl shadow-[#eaddd7]/50 border border-[#eaddd7]/50">
-          
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-800 text-xs uppercase tracking-widest flex items-center gap-3">
-              <FiAlertCircle size={16}/> {error}
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-1">
               <label className="text-[10px] font-bold uppercase tracking-widest text-[#a48e78]">Usuario Admin</label>

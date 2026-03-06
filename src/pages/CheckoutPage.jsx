@@ -5,6 +5,7 @@ import { fileService } from '../services/fileService';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiArrowLeft, FiShield, FiLock, FiImage, FiTruck, FiShoppingBag, FiInfo } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
+import { sileo } from 'sileo';
 
 const CheckoutPage = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
@@ -79,9 +80,21 @@ const CheckoutPage = () => {
       const mensaje = `Hola CAMEL. Pedido *#${response.data.id}*\n\n*Cliente:* ${formData.nombreCliente}\n*DNI:* ${formData.dniCliente}\n*Entrega:* ${metodoEntrega.toUpperCase()}\n*Dirección:* ${metodoEntrega === 'envio' ? `${formData.direccionEnvio} (CP: ${formData.codigoPostal})` : 'Retiro en Local'}\n*Pago:* ${formData.metodoPago}\n\n*Items:*\n${resumenProductos}\n\n${formData.notas ? `*Notas:* ${formData.notas}\n` : ''}${calculos.descuento > 0 ? `*Descuento:* $${calculos.descuento.toLocaleString()}\n` : ''}*Total Final: $${calculos.total.toLocaleString()}*`;
 
       clearCart();
-      window.location.href = `https://wa.me/5493434676232?text=${encodeURIComponent(mensaje)}`;
+
+      sileo.success({
+        title: "¡Pedido registrado!",
+        description: "Redirigiendo a WhatsApp para coordinar el pago."
+      });
+
+      setTimeout(() => {
+        window.location.href = `https://wa.me/5493434676232?text=${encodeURIComponent(mensaje)}`;
+      }, 1000);
+
     } catch (error) {
-      alert("Error al procesar pedido.");
+      sileo.error({
+        title: "Error al procesar",
+        description: "No pudimos generar tu pedido. Revisá tu conexión e intentá nuevamente."
+      });
     } finally {
       setLoading(false);
     }

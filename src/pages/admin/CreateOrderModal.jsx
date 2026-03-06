@@ -1,6 +1,7 @@
 import React, { useReducer, useId } from 'react';
 import { FiX, FiPlus, FiTrash2, FiCheck, FiUser, FiMapPin, FiSmartphone } from 'react-icons/fi';
 import { orderReducer, initialOrderState } from '../../components/OrderReducer';
+import { sileo } from 'sileo';
 
 const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
   const [state, dispatch] = useReducer(orderReducer, initialOrderState);
@@ -32,7 +33,12 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (state.items.length === 0) return alert("Agregá al menos un producto");
+    if (state.items.length === 0) {
+      return sileo.error({ 
+        title: "Selección vacía", 
+        description: "Agregá al menos un artículo para generar la orden." 
+      });
+    }
     onSave(state);
     dispatch({ type: 'RESET' });
   };

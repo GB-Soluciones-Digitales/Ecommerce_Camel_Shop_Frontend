@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { categoriaService } from '../../services/categoriaService';
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiLayers } from 'react-icons/fi';
 import { BiCategoryAlt } from "react-icons/bi";
+import { sileo } from 'sileo';
 
 const AdminCategorias = () => {
   const [categorias, setCategorias] = useState([]);
@@ -38,13 +39,15 @@ const AdminCategorias = () => {
       const payload = { nombre, descripcion };
       if (editingCat) {
         await categoriaService.actualizarCategoria(editingCat.id, payload);
+        sileo.success({ title: "Categoría actualizada", description: "Los cambios se guardaron correctamente." });
       } else {
         await categoriaService.crearCategoria(payload);
+        sileo.success({ title: "Categoría creada", description: "La nueva categoría ya está disponible." });
       }
       setShowModal(false);
       loadData();
     } catch (error) {
-      alert('Error al guardar categoría');
+      sileo.error({ title: "Error al guardar", description: "No se pudo guardar la categoría." });
     }
   };
 
@@ -52,9 +55,13 @@ const AdminCategorias = () => {
     if (window.confirm('¿Seguro que deseas eliminar esta categoría?')) {
       try {
         await categoriaService.eliminarCategoria(id);
+        sileo.success({ title: "Categoría eliminada", description: "Se ha borrado del catálogo." });
         loadData();
       } catch (error) {
-        alert('No se puede eliminar porque tiene productos asociados.');
+        sileo.error({ 
+          title: "Acción denegada", 
+          description: "No se puede eliminar esta categoría porque tiene piezas asociadas." 
+        });
       }
     }
   };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { heroService } from '../../services/heroService';
 import { fileService } from '../../services/fileService';
 import { FiPlus, FiEdit2, FiTrash2, FiImage, FiLayout, FiArrowRight, FiX } from 'react-icons/fi';
+import { sileo } from 'sileo';
 
 const AdminHero = () => {
   const [slides, setSlides] = useState([]);
@@ -57,8 +58,12 @@ const AdminHero = () => {
     try {
       const res = await fileService.uploadImage(file);
       setFormData(prev => ({ ...prev, imagenUrl: res.filename }));
-    } catch (error) { alert('Error al subir imagen'); }
-    finally { setUploading(false); }
+      sileo.success({ title: "Imagen lista", description: "La imagen se subió correctamente." });
+    } catch (error) { 
+      sileo.error({ title: "Error de carga", description: "No pudimos procesar la imagen." }); 
+    } finally { 
+      setUploading(false); 
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -66,12 +71,16 @@ const AdminHero = () => {
     try {
       if (editingSlide) {
         await heroService.actualizarSlide(editingSlide.id, formData);
+        sileo.success({ title: "Slide actualizado", description: "Los cambios ya son visibles en la tienda." });
       } else {
         await heroService.crearSlide(formData);
+        sileo.success({ title: "Slide publicado", description: "El nuevo banner está activo." });
       }
       setShowModal(false);
       loadData();
-    } catch (error) { alert('Error al guardar'); }
+    } catch (error) { 
+      sileo.error({ title: "Error al publicar", description: "No pudimos guardar los cambios del slide." }); 
+    }
   };
 
   const handleDelete = async (id) => {

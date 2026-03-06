@@ -6,6 +6,7 @@ import WhatsAppButton from '../components/WhatsAppButton';
 import { useCart } from '../context/CartContext';
 import { fileService } from '../services/fileService';
 import { FiX, FiMinus, FiPlus, FiTrash2, FiShoppingCart, FiArrowRight, FiImage } from 'react-icons/fi';
+import { sileo } from 'sileo'
 
 const PublicLayout = () => {
   const { cartItems, showCart, setShowCart, updateQuantity, removeFromCart, getCartTotal } = useCart();
@@ -14,6 +15,14 @@ const PublicLayout = () => {
   const handleCheckout = () => {
     setShowCart(false);
     navigate('/checkout');
+  };
+
+  const handleRemoveItem = (item) => {
+    removeFromCart(item.variantId);
+    sileo.info({
+      title: "Pieza removida",
+      description: `${item.nombre} se quitó de tu bolsa.`
+    });
   };
 
   const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
@@ -69,7 +78,7 @@ const PublicLayout = () => {
                         <div>
                           <div className="flex justify-between items-start gap-2">
                               <h3 className="font-serif font-bold text-brand-dark text-lg leading-tight line-clamp-2">{item.nombre}</h3>
-                              <button onClick={() => removeFromCart(item.variantId)} className="text-brand-secondary hover:text-red-500 transition-colors"><FiTrash2 size={18}/></button>
+                              <button onClick={() => handleRemoveItem(item)} className="text-brand-secondary hover:text-red-500 transition-colors"><FiTrash2 size={18}/></button>
                           </div>
                           <div className="flex flex-wrap items-center mt-2 gap-2">
                             {item.selectedColor && (

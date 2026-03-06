@@ -4,6 +4,7 @@ import { productoService } from '../../services/productoService';
 import { FiPlus, FiSearch, FiPackage, FiEye } from 'react-icons/fi';
 import CreateOrderModal from '../admin/CreateOrderModal';
 import OrderDetailModal from '../admin/OrderDetailModal';
+import { sileo } from 'sileo';
 
 const AdminOrders = () => {
   const [data, setData] = useState({ pedidos: [], productos: [], loading: true });
@@ -48,18 +49,31 @@ const AdminOrders = () => {
       await pedidoService.crearPedidoManual(payload);
       setModals({ ...modals, create: false });
       loadData();
-      alert("Pedido creado correctamente");
+      sileo.success({ title: "Pedido creado", description: "La orden manual se registró en el sistema." });
     } catch (error) {
-      alert("Error al crear pedido");
+      sileo.error({ title: "Error de registro", description: "No se pudo generar la orden." });
     }
   };
 
   const handleEstadoChange = async (id, nuevoEstado) => {
-    try {
-      await pedidoService.cambiarEstado(id, nuevoEstado);
+    sileo.promise(pedidoService.cambiarEstado(id, nuevoEstado), {
+      loading: { 
+        title: "Actualizando estado..." 
+      },
+      success: { 
+        title: "Pedido actualizado", 
+        description: `El pedido #${id} ahora está ${nuevoEstado}.` 
+      },
+      error: { 
+        title: "Error al actualizar", 
+        description: "Revisá tu conexión a internet." 
+      },
+    }).then(() => {
       loadData();
-      if (selectedOrder?.id === id) setSelectedOrder(prev => ({ ...prev, estado: nuevoEstado }));
-    } catch (error) { alert("Error al actualizar estado"); }
+      if (selectedOrder?.id === id) {
+        setSelectedOrder(prev => ({ ...prev, estado: nuevoEstado }));
+      }
+    });
   };
 
   const handleFileUpload = async (e, pedidoId) => {
@@ -68,8 +82,7 @@ const AdminOrders = () => {
 
     try {
       await pedidoService.subirFactura(pedidoId, file);
-      
-      alert('Comprobante subido con éxito');
+      sileo.success({ title: "Comprobante adjuntado", description: "El archivo se guardó en el pedido." });
       
       await loadData();
       
@@ -79,7 +92,7 @@ const AdminOrders = () => {
       }
     } catch (error) {
       console.error("Error al subir archivo:", error);
-      alert('Error al subir el archivo');
+      sileo.error({ title: "Error de carga", description: "No pudimos adjuntar el comprobante." });
     }
   };
 

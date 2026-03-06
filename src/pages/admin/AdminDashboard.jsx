@@ -5,6 +5,7 @@ import { FiEdit2, FiTrash2, FiPlus, FiSearch, FiToggleLeft, FiToggleRight, FiIma
 import { MdDashboard } from "react-icons/md";
 import ProductoModal from '../../components/ProductoModal'; 
 import { fileService } from '../../services/fileService';
+import { sileo } from 'sileo';
 
 const AdminDashboard = () => {
   const [productos, setProductos] = useState([]);
@@ -44,13 +45,15 @@ const AdminDashboard = () => {
     try {
       if (editingProduct) {
         await productoService.actualizarProducto(editingProduct.id, payload);
+        sileo.success({ title: "Pieza actualizada", description: "El catálogo ha sido actualizado." });
       } else {
         await productoService.crearProducto(payload);
+        sileo.success({ title: "Pieza creada", description: "El nuevo producto ya está en el sistema." });
       }
       setShowModal(false);
       loadData();
     } catch (error) {
-      alert("Error al guardar producto");
+      sileo.error({ title: "Error al guardar", description: "Hubo un problema al procesar la pieza." });
     }
   };
 
