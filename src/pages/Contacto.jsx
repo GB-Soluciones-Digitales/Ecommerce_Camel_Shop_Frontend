@@ -111,11 +111,11 @@ const Contacto = () => {
             
             <div className="flex flex-col sm:flex-row gap-12 sm:gap-20">
               <div>
-                <FaWhatsapp className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm font-bold uppercase tracking-[0.2em] py-5 flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl'>WhatsApp</p>
+                <FaWhatsapp className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm tracking-[0.2em] flex items-center justify-center'>WhatsApp</p>
                 <a href="https://wa.me/5493431234567" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-secondary/40 hover:border-brand-primary pb-1">+54 9 343 123 4567</a>
               </div>
               <div>
-                <FiMail className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm font-bold uppercase tracking-[0.2em] py-5 flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl'>Email</p>
+                <FiMail className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm tracking-[0.2em] flex items-center justify-center'>Email</p>
                 <a href="mailto:hola@camelshop.com.ar" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-secondary/40 hover:border-brand-primary pb-1">hola@camel.com</a>
               </div>
             </div>

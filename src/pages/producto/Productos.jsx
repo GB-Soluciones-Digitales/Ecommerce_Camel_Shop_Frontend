@@ -147,19 +147,19 @@ const ProductosPage = () => {
             <button 
               disabled={state.pagination.currentPage === 0}
               onClick={() => handlePageChange(state.pagination.currentPage - 1)}
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
+              className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
             >
               <FiArrowLeft /> Anterior
             </button>
             
-            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary">
+            <span className="text-sm font-bold uppercase tracking-widest text-brand-secondary">
               {state.pagination.currentPage + 1} / {state.pagination.totalPages}
             </span>
 
             <button 
               disabled={state.pagination.currentPage >= state.pagination.totalPages - 1}
               onClick={() => handlePageChange(state.pagination.currentPage + 1)}
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
+              className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
             >
               Siguiente <FiArrowRight />
             </button>
