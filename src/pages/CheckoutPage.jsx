@@ -99,7 +99,7 @@ const CheckoutPage = () => {
       <Helmet><title>Checkout | CAMEL</title></Helmet>
       
       <div className="max-w-[1200px] mx-auto px-6 md:px-12">
-        <button onClick={() => navigate(-1)} className="inline-flex items-center text-sm font-bold uppercase tracking-widest text-brand-primary hover:text-brand-dark mb-10 transition-colors">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center text-sm font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark mb-10 transition-colors">
           <FiArrowLeft className="mr-2" /> Volver
         </button>
 
@@ -110,18 +110,18 @@ const CheckoutPage = () => {
             <form id="checkout-form" onSubmit={handleSubmit} className="space-y-10">
               {/* DATOS PERSONALES */}
               <div className="space-y-6">
-                <h3 className="text-xl font-serif text-brand-dark">1. Datos Personales</h3>
+                <h3 className="text-2xl font-serif text-brand-dark">Datos Personales</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-1">Nombre Completo</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-brand-primary mb-1">Nombre Completo</label>
                     <input type="text" name="nombreCliente" required value={formData.nombreCliente} onChange={handleInputChange} className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-2 text-brand-dark" placeholder="Ej: Juan Pérez" />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-1">DNI / CUIL</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-brand-primary mb-1">DNI / CUIL</label>
                     <input type="text" name="dniCliente" required value={formData.dniCliente} onChange={handleInputChange} className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-2 text-brand-dark" placeholder="Sin puntos" />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-1">WhatsApp</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-brand-primary mb-1">WhatsApp</label>
                     <input type="tel" name="telefono" required value={formData.telefono} onChange={handleInputChange} className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-2 text-brand-dark" placeholder="Código de área + número" />
                   </div>
                 </div>
@@ -129,26 +129,26 @@ const CheckoutPage = () => {
 
               {/* METODO ENTREGA */}
               <div className="space-y-6">
-                <h3 className="text-xl font-serif text-brand-dark">2. Método de Entrega</h3>
+                <h3 className="text-2xl font-serif text-brand-dark">Método de Entrega</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <button type="button" onClick={() => setMetodoEntrega('envio')} className={`p-6 border flex flex-col items-center gap-2 transition-all ${metodoEntrega === 'envio' ? "border-brand-dark bg-brand-dark text-crema shadow-lg" : "border-brand-muted bg-brand-light text-brand-secondary"}`}>
+                  <button type="button" onClick={() => setMetodoEntrega('envio')} className={`p-6 border flex flex-col items-center gap-2 transition-all cursor-pointer hover:bg-brand-primary ${metodoEntrega === 'envio' ? "border-brand-dark bg-brand-dark text-crema shadow-lg" : "border-brand-muted bg-brand-light text-brand-secondary"}`}>
                     <FiTruck size={24} />
                     <span className="text-xs font-bold uppercase tracking-widest">Envío a Domicilio</span>
                   </button>
-                  <button type="button" onClick={() => setMetodoEntrega('retiro')} className={`p-6 border flex flex-col items-center gap-2 transition-all ${metodoEntrega === 'retiro' ? "border-brand-dark bg-brand-dark text-crema shadow-lg" : "border-brand-muted bg-brand-light text-brand-secondary"}`}>
+                  <button type="button" onClick={() => setMetodoEntrega('retiro')} className={`p-6 border flex flex-col items-center gap-2 transition-all cursor-pointer hover:bg-brand-primary ${metodoEntrega === 'retiro' ? "border-brand-dark bg-brand-dark text-crema shadow-lg" : "border-brand-muted bg-brand-light text-brand-secondary"}`}>
                     <FiShoppingBag size={24} />
-                    <span className="text-xs font-bold uppercase tracking-widest">Retiro en Local</span>
+                    <span className="text-xs font-bold uppercase tracking-widest">Retiro</span>
                   </button>
                 </div>
 
                 {metodoEntrega === 'envio' && (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="md:col-span-2">
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-1">Dirección Completa</label>
+                      <label className="block text-sm font-bold uppercase tracking-widest text-brand-primary mb-1">Dirección Completa</label>
                       <input type="text" name="direccionEnvio" required={metodoEntrega === 'envio'} value={formData.direccionEnvio} onChange={handleInputChange} className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-2 text-brand-dark" placeholder="Calle, número, depto..." />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-1">Cód. Postal</label>
+                      <label className="block text-sm font-bold uppercase tracking-widest text-brand-primary mb-1">Cód. Postal</label>
                       <input type="text" name="codigoPostal" required={metodoEntrega === 'envio'} value={formData.codigoPostal} onChange={handleInputChange} className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-2 text-brand-dark" placeholder="Ej: 3100" />
                     </div>
                   </div>
@@ -157,16 +157,16 @@ const CheckoutPage = () => {
 
               {/* METODO PAGO */}
               <div className="space-y-6">
-                <h3 className="text-xl font-serif text-brand-dark">3. Método de Pago</h3>
+                <h3 className="text-2xl font-serif text-brand-dark">Método de Pago</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {['Efectivo', 'Transferencia'].map((metodo) => {
-                    const isDisabled = metodo === 'Transferencia' && metodoEntrega === 'envio';
+                    const isDisabled = metodo === 'Efectivo' && metodoEntrega === 'envio';
                     return (
                       <label key={metodo} className={`border p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${isDisabled ? "opacity-40 cursor-not-allowed bg-gray-100" : formData.metodoPago === metodo ? "border-brand-dark bg-brand-dark text-crema" : "border-brand-muted bg-brand-light text-brand-secondary"}`}>
                         <input type="radio" name="metodoPago" value={metodo} disabled={isDisabled} checked={formData.metodoPago === metodo} onChange={handleInputChange} className="hidden" />
                         <span className="text-xs font-bold uppercase tracking-widest">{metodo}</span>
-                        {metodo === 'Efectivo' && metodoEntrega === 'retiro' && <span className="text-[9px] font-black bg-white/20 px-2 py-0.5 rounded">10% OFF</span>}
-                        {isDisabled && <span className="text-[9px] font-bold flex items-center gap-1"><FiInfo /> Solo retiro</span>}
+                        {metodo === 'Efectivo' && metodoEntrega === 'retiro' && <span className="text-[10px] font-black bg-white/20 px-2 py-0.5 rounded">10% OFF</span>}
+                        {isDisabled && <span className="text-[10px] font-bold flex items-center gap-1"><FiInfo /> Solo retiro</span>}
                       </label>
                     )
                   })}
@@ -175,7 +175,7 @@ const CheckoutPage = () => {
 
               {/* NOTAS */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-1">Notas del Pedido (Opcional)</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-brand-primary mb-1">Notas del Pedido (Opcional)</label>
                 <textarea name="notas" value={formData.notas} onChange={handleInputChange} rows="2" className="w-full bg-transparent border border-brand-muted focus:border-brand-dark outline-none p-3 text-sm text-brand-dark rounded-xl transition-colors" placeholder="Ej: Es para un regalo, dejar en portería..." />
               </div>
             </form>
@@ -184,7 +184,7 @@ const CheckoutPage = () => {
           {/* SIDEBAR RESUMEN */}
           <div className="lg:col-span-5">
             <div className="bg-crema border border-brand-muted p-8 lg:sticky lg:top-24 rounded-2xl shadow-sm">
-              <h2 className="text-2xl font-serif text-brand-dark mb-6 tracking-tight">Resumen</h2>
+              <h2 className="text-2 xl font-serif text-brand-dark mb-6 tracking-tight">Resumen</h2>
               
               <div className="space-y-4 mb-6 max-h-[30vh] overflow-y-auto pr-2 hide-scrollbar border-b border-brand-muted pb-6">
                 {cartItems.map((item) => (
@@ -193,10 +193,10 @@ const CheckoutPage = () => {
                       {item.imagenes?.[0] ? <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover" /> : <FiImage className="w-full h-full p-3 text-brand-muted"/>}
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-sm font-serif font-bold text-brand-dark leading-tight">{item.nombre}</h4>
-                      <p className="text-[9px] text-brand-secondary uppercase tracking-widest mt-1">{item.selectedColor} / {item.selectedSize}</p>
+                      <h4 className="text-base font-serif font-bold text-brand-dark leading-tight">{item.nombre}</h4>
+                      <p className="text-sm text-brand-secondary uppercase tracking-widest mt-1">{item.selectedColor} / {item.selectedSize}</p>
                       <div className="flex justify-between items-center mt-1">
-                        <span className="text-[10px] text-brand-secondary">Cant: {item.cantidad}</span>
+                        <span className="text-xs text-brand-secondary">Cant: {item.cantidad}</span>
                         <span className="text-sm font-bold text-brand-dark">${(item.cantidad * item.precio).toLocaleString()}</span>
                       </div>
                     </div>
@@ -221,11 +221,11 @@ const CheckoutPage = () => {
                   <div className="flex flex-col">
                     <span>Envío</span>
                     {metodoEntrega === 'envio' && !calculos.envioGratis && (
-                      <span className="text-[10px] text-brand-primary font-bold">Faltan ${(MIN_ENVIO_GRATIS - calculos.subtotal).toLocaleString()} para envío gratis</span>
+                      <span className="text-xs text-brand-primary font-bold">Faltan ${(MIN_ENVIO_GRATIS - calculos.subtotal).toLocaleString()} para envío gratis</span>
                     )}
                   </div>
                   <span className={calculos.costoEnvio === 0 ? "text-green-600 font-bold" : ""}>
-                    {metodoEntrega === 'envio' ? (calculos.costoEnvio === 0 ? '¡Gratis!' : `$${calculos.costoEnvio.toLocaleString()}`) : 'A coordinar'}
+                    {metodoEntrega === 'envio' ? (calculos.costoEnvio === 0 ? '¡Gratis!' : `$${calculos.costoEnvio.toLocaleString()}`) : ''}
                   </span>
                 </div>
 
@@ -235,7 +235,7 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              <button type="submit" form="checkout-form" disabled={loading} className="w-full mt-8 bg-brand-dark text-brand-light text-xs font-bold uppercase tracking-[0.2em] py-5 hover:bg-black transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl">
+              <button type="submit" form="checkout-form" disabled={loading} className="w-full mt-8 bg-brand-dark text-brand-light text-xs font-bold uppercase tracking-[0.2em] py-5 hover:bg-brand-dark/60 transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl">
                 {loading ? 'Procesando...' : 'Finalizar por WhatsApp'} <FiLock size={16} />
               </button>
               

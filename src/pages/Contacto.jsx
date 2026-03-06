@@ -67,7 +67,7 @@ const Contacto = () => {
 
       {/* Hero Editorial */}
       <div className="max-w-[900px] mx-auto px-6 text-center mb-24">
-        <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-[0.3em] mb-4 block">Asistencia</span>
+        <span className="text-xs font-bold text-brand-secondary uppercase tracking-[0.3em] mb-4 block">Asistencia</span>
         <h1 className="text-5xl md:text-7xl font-serif font-medium text-brand-dark mb-6 tracking-tight">Contacto</h1>
         <p className="text-brand-secondary text-lg font-light max-w-lg mx-auto">
           Estamos aquí para resolver tus dudas y asegurar que tu experiencia sea excepcional.
@@ -83,19 +83,19 @@ const Contacto = () => {
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary">Nombre y Apellido</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-brand-secondary">Nombre y Apellido</label>
                       <input name="nombre" required className="w-full bg-transparent border-b border-brand-primary/40 focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors" placeholder="Escribe tu nombre" />
                   </div>
                   <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary">Email (Opcional)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-brand-secondary">Email (Opcional)</label>
                       <input name="email" type="email" className="w-full bg-transparent border-b border-brand-primary/40 focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors" placeholder="tu@email.com" />
                   </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary">Mensaje</label>
+                <label className="text-xs font-bold uppercase tracking-widest text-brand-secondary">Mensaje</label>
                 <textarea name="mensaje" rows="4" required className="w-full bg-transparent border-b border-brand-primary/40 focus:border-brand-dark outline-none py-3 text-brand-dark resize-none transition-colors" placeholder="¿En qué podemos ayudarte?"></textarea>
               </div>
-              <button type="submit" className="bg-brand-dark text-crema text-xs font-bold uppercase tracking-[0.2em] py-5 px-10 hover:bg-brand-secondary transition-colors mt-4">
+              <button type="submit" className="bg-brand-dark text-brand-muted text-xs font-bold uppercase tracking-[0.2em] py-5 px-10 hover:bg-brand-secondary transition-colors mt-4">
                 Enviar a WhatsApp
               </button>
             </form>
@@ -111,12 +111,12 @@ const Contacto = () => {
             
             <div className="flex flex-col sm:flex-row gap-12 sm:gap-20">
               <div>
-                <FaWhatsapp className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary mb-2" size={28}></FaWhatsapp><p>WhatsApp</p>
-                <a href="https://wa.me/5493431234567" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-[#2c241b] hover:border-[#a48e78] pb-1">+54 9 343 123 4567</a>
+                <FaWhatsapp className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm font-bold uppercase tracking-[0.2em] py-5 flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl'>WhatsApp</p>
+                <a href="https://wa.me/5493431234567" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-secondary/40 hover:border-brand-primary pb-1">+54 9 343 123 4567</a>
               </div>
               <div>
-                <FiMail className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary mb-2" size={28}></FiMail><p>Email</p>
-                <a href="mailto:hola@camelshop.com.ar" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-[#2c241b] hover:border-[#a48e78] pb-1">hola@camel.com</a>
+                <FiMail className="text-brand-secondary" size={28} /><p className='text-brand-secondary text-sm font-bold uppercase tracking-[0.2em] py-5 flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl'>Email</p>
+                <a href="mailto:hola@camelshop.com.ar" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-brand-secondary/40 hover:border-brand-primary pb-1">hola@camel.com</a>
               </div>
             </div>
           </div>

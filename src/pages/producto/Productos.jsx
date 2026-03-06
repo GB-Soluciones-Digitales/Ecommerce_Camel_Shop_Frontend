@@ -102,7 +102,7 @@ const ProductosPage = () => {
           <div className="flex overflow-x-auto w-full md:w-auto gap-3 pb-2 md:pb-0 hide-scrollbar">
             <button 
               onClick={() => handleCategoryChange('')}
-              className={`whitespace-nowrap px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${!categoriaQuery ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark'}`}
+              className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all ${!categoriaQuery ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark'}`}
             >
               Ver Todo
             </button>
@@ -110,7 +110,7 @@ const ProductosPage = () => {
               <button 
                 key={c.id} 
                 onClick={() => handleCategoryChange(c.nombre.toLowerCase())}
-                className={`whitespace-nowrap px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${categoriaQuery === c.nombre.toLowerCase() ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark'}`}
+                className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all ${categoriaQuery === c.nombre.toLowerCase() ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark'}`}
               >
                 {c.nombre}
               </button>
@@ -121,7 +121,7 @@ const ProductosPage = () => {
              <FiSearch className="absolute left-0 top-1/2 -translate-y-1/2 opacity-50" />
              <input 
                type="text" 
-               placeholder="Buscar pieza..." 
+               placeholder="Buscar..." 
                className="w-full pl-8 py-2 bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none text-sm transition-colors"
                defaultValue={searchQuery}
                onKeyDown={(e) => e.key === 'Enter' && setSearchParams({ search: e.target.value, page: 0 })}
@@ -146,19 +146,19 @@ const ProductosPage = () => {
               <button 
                 disabled={state.pagination.currentPage === 0}
                 onClick={() => handlePageChange(state.pagination.currentPage - 1)}
-                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest disabled:opacity-20 hover:text-brand-primary transition-colors"
+                className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
               >
                 <FiArrowLeft /> Anterior
               </button>
               
-              <span className="text-xs font-medium tracking-tighter text-brand-secondary">
+              <span className="text-sm font-medium tracking-tighter text-brand-secondary">
                 Página {state.pagination.currentPage + 1} de {state.pagination.totalPages}
               </span>
 
               <button 
                 disabled={state.pagination.currentPage >= state.pagination.totalPages - 1}
                 onClick={() => handlePageChange(state.pagination.currentPage + 1)}
-                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest disabled:opacity-20 hover:text-brand-primary transition-colors"
+                className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
               >
                 Siguiente <FiArrowRight />
               </button>
