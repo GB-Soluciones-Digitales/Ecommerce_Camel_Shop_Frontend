@@ -114,7 +114,7 @@ const AdminOrders = () => {
           </div>
           <button onClick={() => setModals({ ...modals, create: true })} 
             className="bg-brand-dark text-crema px-6 py-3 rounded-2xl flex items-center gap-3 font-bold text-xs uppercase tracking-widest shadow-2xl hover:bg-brand-secondary transition transform hover:-translate-y-1">
-            <FiPlus size={18} /> Nuevo Pedido Manual
+            <FiPlus size={18} /> Nuevo Pedido
           </button>
         </div>
 

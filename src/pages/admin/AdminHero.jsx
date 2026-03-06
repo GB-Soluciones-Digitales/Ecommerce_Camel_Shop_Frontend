@@ -83,18 +83,17 @@ const AdminHero = () => {
 
   if (loading) return <div className="p-8 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-camel-600"></div></div>;
 
-  // ... lógica igual ...
   return (
-    <div className="p-8 bg-crema min-h-screen font-sans">
-      <div className="flex justify-between items-center mb-10">
+    <div className="p-6 md:p-10 bg-crema min-h-screen font-sans">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
-          <h2 className="text-3xl font-serif font-bold text-brand-dark flex items-center gap-3">
+          <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
             <FiLayout className="text-brand-primary" /> Hero Slider
           </h2>
-          <p className="text-brand-secondary">Impacto visual de la página principal</p>
+          <p className="text-brand-secondary text-sm mt-1 font-medium">Impacto visual de la página principal</p>
         </div>
-        <button onClick={() => openModal()} className="bg-brand-primary hover:bg-brand-dark text-brand-muted px-6 py-3 rounded-xl flex items-center gap-2 shadow-xl transition-all font-bold uppercase text-xs tracking-[0.2em]">
-          <FiPlus /> Crear Slide
+        <button onClick={() => openModal()} className="bg-brand-dark text-crema px-6 py-3 rounded-2xl flex items-center gap-3 font-bold text-xs uppercase tracking-widest shadow-2xl hover:bg-brand-secondary transition transform hover:-translate-y-1">
+          <FiPlus size={18}/> Crear Slide
         </button>
       </div>
 

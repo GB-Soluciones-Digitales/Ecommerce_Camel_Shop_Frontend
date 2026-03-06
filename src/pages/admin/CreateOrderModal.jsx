@@ -44,7 +44,7 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
         {/* Header */}
         <div className="px-8 py-6 border-b border-brand-muted flex justify-between items-center bg-white">
           <div>
-            <h3 className="font-serif font-bold text-2xl text-brand-dark">Registrar Pedido Manual</h3>
+            <h3 className="font-serif font-bold text-2xl text-brand-dark">Registrar Pedido</h3>
             <p className="text-[10px] text-brand-primary font-black uppercase tracking-widest">Gestión de Venta Interna</p>
           </div>
           <button onClick={onClose} className="text-brand-secondary hover:text-brand-dark p-2 hover:bg-brand-light rounded-full transition-all">
@@ -100,7 +100,7 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
                 <h4 className="font-bold text-xs text-brand-dark uppercase tracking-[0.2em]">Selección de Artículos</h4>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 bg-brand-dark p-6 rounded-[2rem] shadow-2xl items-end border-4 border-white">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 bg-brand-primary p-6 rounded-[2rem] shadow-2xl items-end border-4 border-white">
                 <div className="md:col-span-4 space-y-1.5">
                   <label className="text-[11px] font-black text-crema/60 uppercase tracking-widest ml-1">Producto</label>
                   <select className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-sm outline-none focus:bg-white/20 transition-all"
@@ -179,17 +179,17 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
                 </table>
               </div>
             )}
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black text-brand-secondary uppercase tracking-[0.2em]">Total Final</span>
+              <span className="text-3xl font-serif font-bold text-brand-dark">
+                ${state.items.reduce((acc, i) => acc + (i.precio * i.cantidad), 0).toLocaleString()}
+              </span>
+            </div>
           </form>
         </div>
 
         {/* Footer */}
         <div className="px-8 py-6 border-t border-brand-muted flex justify-between items-center bg-brand-light/50">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-black text-brand-secondary uppercase tracking-[0.2em]">Total Final</span>
-            <span className="text-3xl font-serif font-bold text-brand-dark">
-              ${state.items.reduce((acc, i) => acc + (i.precio * i.cantidad), 0).toLocaleString()}
-            </span>
-          </div>
           <div className="flex gap-4">
             <button onClick={onClose} className="px-6 py-3 text-brand-secondary font-bold text-xs uppercase tracking-widest hover:text-brand-dark transition-colors">
               Cancelar

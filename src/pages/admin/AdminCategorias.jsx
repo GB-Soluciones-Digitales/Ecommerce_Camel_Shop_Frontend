@@ -59,42 +59,46 @@ const AdminCategorias = () => {
   };
 
   return (
-    <div className="p-8 bg-crema min-h-screen font-sans">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-6 md:p-10 bg-crema min-h-screen font-sans">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
-          <h2 className="text-3xl font-serif font-bold text-brand-dark">Categorías</h2>
-          <p className="text-brand-secondary">Define las líneas de tu colección</p>
+          <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
+            Categorías
+          </h2>
+          <p className="text-brand-secondary text-sm mt-1 font-medium">Define las categorias de tu colección</p>
         </div>
-        <button onClick={() => openModal()} className="bg-brand-primary hover:bg-brand-dark text-crema px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition-all uppercase text-xs font-bold tracking-widest">
-          <FiPlus /> Nueva Categoría
+        <button onClick={() => openModal()} className="bg-brand-dark text-crema px-6 py-3 rounded-2xl flex items-center gap-3 font-bold text-xs uppercase tracking-widest shadow-2xl hover:bg-brand-secondary transition transform hover:-translate-y-1">
+          <FiPlus size={18}/> Nueva Categoría
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-brand-muted overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-brand-light border-b border-brand-muted">
-            <tr>
-              <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-widest text-brand-dark">Nombre</th>
-              <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-widest text-brand-dark">Descripción</th>
-              <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-widest text-brand-dark text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-brand-light">
-            {categorias.map((cat) => (
-              <tr key={cat.id} className="hover:bg-crema/40 transition">
-                <td className="px-6 py-4 font-serif font-bold text-brand-dark flex items-center gap-3">
-                  <div className="bg-brand-muted p-2 rounded-lg text-brand-dark"><FiLayers /></div>
-                  {cat.nombre}
-                </td>
-                <td className="px-6 py-4 text-brand-secondary text-sm">{cat.descripcion || '-'}</td>
-                <td className="px-6 py-4 text-right space-x-2">
-                  <button onClick={() => openModal(cat)} className="text-brand-primary hover:text-brand-dark transition p-2"><FiEdit2 /></button>
-                  <button onClick={() => handleDelete(cat.id)} className="text-brand-primary hover:text-red-600 transition p-2"><FiTrash2 /></button>
-                </td>
+      <div className="bg-white rounded-[2.5rem] shadow-xl shadow-brand-dark/5 overflow-hidden border border-brand-muted">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-brand-light/50 text-xs font-black text-brand-primary uppercase tracking-[0.2em] border-b border-brand-muted">
+              <tr>
+                <th className="px-6 py-4 text-xs">Nombre</th>
+                <th className="px-6 py-4 text-xs">Descripción</th>
+                <th className="px-6 py-4 text-xs text-center">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-brand-muted">
+              {categorias.map((cat) => (
+                <tr key={cat.id} className="hover:bg-crema/30 transition group">
+                  <td className="px-6 py-4 font-serif font-bold text-brand-dark flex items-center gap-3">
+                    <div className="bg-brand-muted p-2 rounded-lg text-brand-dark"><FiLayers /></div>
+                    {cat.nombre}
+                  </td>
+                  <td className="px-6 py-4 text-brand-secondary text-sm">{cat.descripcion || '-'}</td>
+                  <td className="px-6 py-4 text-right space-x-2">
+                    <button onClick={() => openModal(cat)} className="text-brand-primary hover:text-brand-dark transition p-2"><FiEdit2 /></button>
+                    <button onClick={() => handleDelete(cat.id)} className="text-brand-primary hover:text-red-600 transition p-2"><FiTrash2 /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {loading && <div className="p-4 text-center text-gray-500">Cargando...</div>}
       </div>
 
@@ -126,7 +130,7 @@ const AdminCategorias = () => {
                 <button type="button" onClick={() => setShowModal(false)} className="px-6 py-3 text-brand-secondary font-bold text-xs uppercase tracking-widest hover:text-brand-dark">
                   Cancelar
                 </button>
-                <button type="submit" className="bg-brand-dark text-crema px-10 py-3 rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all transform hover:-translate-y-1">
+                <button type="submit" className="bg-brand-dark text-crema px-10 py-3 rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-brand-secondary transition-all transform hover:-translate-y-1">
                   Guardar
                 </button>
               </div>
