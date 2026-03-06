@@ -20,14 +20,14 @@ import AdminOrders from './pages/admin/AdminPedidos';
 import AdminHero from './pages/admin/AdminHero';
 
 import { HelmetProvider } from 'react-helmet-async';
-import { ReactLenis } from '@studio-freight/react-lenis';
+import { ReactLenis } from 'lenis/react';
 import { Toaster } from "sileo";
 
 function App() {
   return (
     <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
       <HelmetProvider>
-        <Toaster position="bottom-right" />
+        <Toaster position="bottom-left" />
         <CartProvider>
           <Router>
             <Routes>
