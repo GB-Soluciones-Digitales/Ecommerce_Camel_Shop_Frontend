@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCart } from '../context/CartContext';
 import { pedidoService } from '../services/pedidoService';
 import { fileService } from '../services/fileService'
 import { useNavigate, Link } from 'react-router-dom';
-import { FiArrowLeft, FiShield, FiLock, FiImage } from 'react-icons/fi';
+import { FiArrowLeft, FiShield, FiLock, FiImage, FiTruck, FiShoppingBag } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
 
 const CheckoutPage = () => {
@@ -11,9 +11,42 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // Estados para envío y datos
+  const [metodoEntrega, setMetodoEntrega] = useState('envio'); // 'envio' o 'retiro'
   const [formData, setFormData] = useState({
-    nombreCliente: '', telefono: '', direccionEnvio: '', metodoPago: 'Transferencia',
+    nombreCliente: '', 
+    telefono: '', 
+    direccionEnvio: '', 
+    metodoPago: 'Transferencia',
   });
+
+  // Constantes de negocio
+  const COSTO_ENVIO = 5500;
+  const DESCUENTO_RETIRO_EFECTIVO = 0.10; // 10%
+
+  // Cálculos dinámicos
+  const calculos = useMemo(() => {
+    const subtotal = getCartTotal();
+    let descuento = 0;
+    let costoEnvio = 0;
+
+    // Lógica: Si es retiro Y pago en efectivo, aplica 10% OFF
+    if (metodoEntrega === 'retiro' && formData.metodoPago === 'Efectivo') {
+      descuento = subtotal * DESCUENTO_RETIRO_EFECTIVO;
+    } 
+    
+    // Si es envío, sumar costo (puedes poner 0 si es retiro)
+    if (metodoEntrega === 'envio') {
+      costoEnvio = COSTO_ENVIO;
+    }
+
+    return {
+      subtotal,
+      descuento,
+      costoEnvio,
+      total: subtotal - descuento + costoEnvio
+    };
+  }, [metodoEntrega, formData.metodoPago, cartItems, getCartTotal]);
 
   if (cartItems.length === 0) {
     return (
@@ -35,16 +68,28 @@ const CheckoutPage = () => {
     try {
       const pedidoPayload = {
         ...formData,
-        items: cartItems.map(item => ({ productoId: item.id, cantidad: item.cantidad, talle: `${item.selectedColor || ''} - ${item.selectedSize || 'Único'}` }))
+        metodoEntrega, // Enviamos si es envío o retiro
+        total: calculos.total,
+        items: cartItems.map(item => ({ 
+            productoId: item.id, 
+            cantidad: item.cantidad, 
+            talle: `${item.selectedColor || ''} - ${item.selectedSize || 'Único'}` 
+        }))
       };
+
       const response = await pedidoService.crearPedido(pedidoPayload);
+      
       const resumenProductos = cartItems.map(item => `• ${item.cantidad}x ${item.nombre}\n   Color: ${item.selectedColor || 'N/A'} | Talle: ${item.selectedSize || 'Único'}`).join('\n');
-      const mensaje = `Hola CAMEL. Acabo de realizar el pedido *#${response.data.id}*.\n\n*Cliente:* ${formData.nombreCliente}\n*Envío:* ${formData.direccionEnvio}\n*Pago:* ${formData.metodoPago}\n\n*Resumen:*\n${resumenProductos}\n\n*Total: $${getCartTotal().toLocaleString()}*`;
+      
+      const mensaje = `Hola CAMEL. Acabo de realizar el pedido *#${response.data.id}*.\n\n*Cliente:* ${formData.nombreCliente}\n*Entrega:* ${metodoEntrega.toUpperCase()}\n*Dirección:* ${metodoEntrega === 'envio' ? formData.direccionEnvio : 'Retiro en Local'}\n*Pago:* ${formData.metodoPago}\n\n*Resumen:*\n${resumenProductos}\n\n${calculos.descuento > 0 ? `*Descuento Aplicado:* $${calculos.descuento.toLocaleString()}\n` : ''}*Total Final: $${calculos.total.toLocaleString()}*`;
 
       clearCart();
       window.location.href = `https://wa.me/5493434676232?text=${encodeURIComponent(mensaje)}`;
-    } catch (error) { alert("Error al procesar pedido."); } 
-    finally { setLoading(false); }
+    } catch (error) { 
+        alert("Error al procesar pedido."); 
+    } finally { 
+        setLoading(false); 
+    }
   };
 
   return (
@@ -58,71 +103,121 @@ const CheckoutPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
           <div className="lg:col-span-7">
-            <h1 className="text-4xl font-serif text-brand-dark mb-10 pb-4 border-b border-brand-muted tracking-tight">Información de Envío</h1>
-            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-8">
+            <h1 className="text-4xl font-serif text-brand-dark mb-10 pb-4 border-b border-brand-muted tracking-tight">Finalizar Compra</h1>
+            
+            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-10">
+                {/* 1. Datos Personales */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <label className="block text-sm font-bold uppercase tracking-widest text-brand-primary mb-1">Nombre Completo</label>
                         <input type="text" name="nombreCliente" required value={formData.nombreCliente} onChange={handleInputChange}
-                            className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors placeholder:text-brand-secondary/40" placeholder="Ej: Juan Pérez" />
+                            className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors" placeholder="Ej: Juan Pérez" />
                     </div>
                     <div>
                         <label className="block text-sm font-bold uppercase tracking-widest text-brand-primary mb-1">Teléfono / WhatsApp</label>
                         <input type="tel" name="telefono" required value={formData.telefono} onChange={handleInputChange}
-                            className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors placeholder:text-brand-secondary/40" placeholder="Ej: 343 1234567" />
+                            className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors" placeholder="Ej: 343 1234567" />
                     </div>
                 </div>
+
+                {/* 2. Método de Entrega */}
                 <div>
-                    <label className="block text-sm font-bold uppercase tracking-widest text-brand-primary mb-1">Dirección de Entrega</label>
-                    <input type="text" name="direccionEnvio" required value={formData.direccionEnvio} onChange={handleInputChange}
-                        className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors placeholder:text-brand-secondary/40" placeholder="Calle, Número, Ciudad, Provincia" />
+                    <h3 className="text-2xl font-serif text-brand-dark mb-6 tracking-tight">Método de Entrega</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button type="button" onClick={() => setMetodoEntrega('envio')}
+                            className={`p-6 border flex flex-col items-center gap-2 transition-all ${metodoEntrega === 'envio' ? "border-brand-dark bg-brand-dark text-crema" : "border-brand-muted bg-brand-light text-brand-secondary"}`}>
+                            <FiTruck size={24} />
+                            <span className="text-xs font-bold uppercase tracking-widest">Envío a Domicilio</span>
+                        </button>
+                        <button type="button" onClick={() => setMetodoEntrega('retiro')}
+                            className={`p-6 border flex flex-col items-center gap-2 transition-all ${metodoEntrega === 'retiro' ? "border-brand-dark bg-brand-dark text-crema" : "border-brand-muted bg-brand-light text-brand-secondary"}`}>
+                            <FiShoppingBag size={24} />
+                            <span className="text-xs font-bold uppercase tracking-widest">Retiro en Local</span>
+                        </button>
+                    </div>
                 </div>
-                <div className="pt-8">
+
+                {/* 3. Dirección (Solo si es envío) */}
+                {metodoEntrega === 'envio' && (
+                    <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                        <label className="block text-sm font-bold uppercase tracking-widest text-brand-primary mb-1">Dirección de Entrega</label>
+                        <input type="text" name="direccionEnvio" required={metodoEntrega === 'envio'} value={formData.direccionEnvio} onChange={handleInputChange}
+                            className="w-full bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none py-3 text-brand-dark transition-colors" placeholder="Calle, Número, Ciudad, Provincia" />
+                    </div>
+                )}
+
+                {/* 4. Método de Pago */}
+                <div>
                     <h3 className="text-2xl font-serif text-brand-dark mb-6 tracking-tight">Método de Pago</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {['Transferencia', 'Efectivo'].map((metodo) => (
-                          <label key={metodo} className={`border p-5 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 ${formData.metodoPago === metodo ? "border-brand-dark bg-brand-dark text-crema" : "border-brand-muted bg-brand-light text-brand-secondary hover:border-brand-dark"}`}>
+                          <label key={metodo} className={`border p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 ${formData.metodoPago === metodo ? "border-brand-dark bg-brand-dark text-crema" : "border-brand-muted bg-brand-light text-brand-secondary hover:border-brand-dark"}`}>
                             <input type="radio" name="metodoPago" value={metodo} checked={formData.metodoPago === metodo} onChange={handleInputChange} className="hidden" />
                             <div className="text-xs font-bold uppercase tracking-widest">{metodo}</div>
-                            <div className={`text-sm ${formData.metodoPago === metodo ? "text-crema/70" : "text-brand-secondary"}`}>{metodo === 'Transferencia' ? '' : 'Al retirar'}</div>
+                            {metodo === 'Efectivo' && metodoEntrega === 'retiro' && (
+                                <div className="text-[10px] font-black text-brand-muted bg-white/20 px-2 py-0.5 rounded mt-1 uppercase">10% OFF EXTRA</div>
+                            )}
                           </label>
                       ))}
                     </div>
                 </div>
             </form>
-            <div className="mt-8 flex items-center gap-3 text-brand-secondary text-xs uppercase tracking-wider font-bold bg-brand-light p-4 border border-brand-muted"><FiShield size={16} /> Pago 100% seguro, se finaliza la compra por WhatsApp</div>
           </div>
 
+          {/* Resumen Sidebar */}
           <div className="lg:col-span-5">
-            <div className="bg-crema border border-brand-muted p-8 lg:sticky lg:top-24">
-              <h2 className="text-2xl font-serif text-brand-dark mb-8 tracking-tight">Resumen del Pedido</h2>
-              <div className="space-y-6 mb-8 max-h-[40vh] overflow-y-auto pr-2 hide-scrollbar">
+            <div className="bg-crema border border-brand-muted p-8 lg:sticky lg:top-24 rounded-2xl shadow-sm">
+              <h2 className="text-2xl font-serif text-brand-dark mb-8 tracking-tight">Resumen</h2>
+              
+              <div className="space-y-6 mb-8 max-h-[35vh] overflow-y-auto pr-2 hide-scrollbar border-b border-brand-muted pb-6">
                 {cartItems.map((item) => (
-                  <div key={item.variantId || item.id} className="flex gap-4 group">
-                    <div className="w-20 h-28 bg-crema flex-shrink-0 relative overflow-hidden border border-brand-muted">
-                      {item.imagenes?.[0] ? <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105" /> : <FiImage className="w-full h-full p-6 text-brand-muted"/>}
+                  <div key={item.variantId || item.id} className="flex gap-4">
+                    <div className="w-16 h-20 bg-crema flex-shrink-0 border border-brand-muted">
+                      {item.imagenes?.[0] ? <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover mix-blend-multiply" /> : <FiImage className="w-full h-full p-4 text-brand-muted"/>}
                     </div>
-                    <div className="flex-1 flex flex-col justify-between py-1">
-                      <div>
-                        <h4 className="text-base font-serif font-bold text-brand-dark line-clamp-1">{item.nombre}</h4>
-                        <p className="text-sm text-brand-secondary uppercase tracking-widest mt-1">{item.selectedColor} • Talle {item.selectedSize}</p>
-                      </div>
-                      <div className="flex justify-between items-end">
-                        <span className="text-sm text-brand-secondary">Cant: {item.cantidad}</span>
-                        <span className="text-base font-medium text-brand-dark">${(item.cantidad * item.precio).toLocaleString()}</span>
-                      </div>
+                    <div className="flex-1 flex flex-col justify-center">
+                        <h4 className="text-sm font-serif font-bold text-brand-dark line-clamp-1">{item.nombre}</h4>
+                        <p className="text-[10px] text-brand-secondary uppercase tracking-widest">{item.selectedColor} • Talle {item.selectedSize}</p>
+                        <div className="flex justify-between items-center mt-1">
+                            <span className="text-[11px] text-brand-secondary">Cant: {item.cantidad}</span>
+                            <span className="text-sm font-medium text-brand-dark">${(item.cantidad * item.precio).toLocaleString()}</span>
+                        </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="space-y-4 pt-6 border-t border-brand-muted">
-                <div className="flex justify-between text-base text-brand-secondary"><span>Subtotal</span><span>${getCartTotal().toLocaleString()}</span></div>
-                <div className="flex justify-between text-base text-brand-secondary"><span>Envío</span><span className="italic">A convenir</span></div>
-                <div className="flex justify-between items-end pt-6 border-t border-brand-muted"><span className="font-serif text-2xl text-brand-dark">Total</span><span className="text-3xl font-medium text-brand-dark">${getCartTotal().toLocaleString()}</span></div>
+
+              <div className="space-y-4 pt-2">
+                <div className="flex justify-between text-sm text-brand-secondary">
+                    <span>Subtotal</span>
+                    <span>${calculos.subtotal.toLocaleString()}</span>
+                </div>
+                
+                {calculos.descuento > 0 && (
+                    <div className="flex justify-between text-sm text-green-600 font-bold">
+                        <span>Descuento (Retiro + Efectivo)</span>
+                        <span>- ${calculos.descuento.toLocaleString()}</span>
+                    </div>
+                )}
+
+                <div className="flex justify-between text-sm text-brand-secondary">
+                    <span>Envío</span>
+                    <span>{metodoEntrega === 'envio' ? `$${calculos.costoEnvio.toLocaleString()}` : 'Gratis'}</span>
+                </div>
+
+                <div className="flex justify-between items-end pt-6 border-t border-brand-dark/20">
+                    <span className="font-serif text-2xl text-brand-dark">Total</span>
+                    <span className="text-3xl font-bold text-brand-dark">${calculos.total.toLocaleString()}</span>
+                </div>
               </div>
-              <button type="submit" form="checkout-form" disabled={loading} className="w-full mt-10 bg-brand-dark text-brand-light text-sm font-bold uppercase tracking-[0.2em] py-5 hover:bg-[#5a2e12] transition-colors flex items-center justify-center gap-3 disabled:opacity-50">
-                {loading ? 'Procesando...' : 'Confirmar Pedido'} <FiLock size={18} />
+
+              <button type="submit" form="checkout-form" disabled={loading} className="w-full mt-10 bg-brand-dark text-brand-light text-xs font-bold uppercase tracking-[0.2em] py-5 hover:bg-black transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-lg">
+                {loading ? 'Procesando...' : 'Finalizar por WhatsApp'} <FiLock size={16} />
               </button>
+              
+              <p className="mt-4 text-[10px] text-center text-brand-secondary uppercase tracking-widest leading-relaxed">
+                Al hacer clic, serás redirigido a WhatsApp para coordinar el pago y la entrega.
+              </p>
             </div>
           </div>
         </div>
