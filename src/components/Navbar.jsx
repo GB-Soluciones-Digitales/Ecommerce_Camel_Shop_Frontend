@@ -43,7 +43,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 bg-brand-primary ${scrolled ? 'py-3' : 'py-6'}`}>
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 bg-brand-primary ${scrolled ? 'py-3' : 'py-5'}`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
         <div className="flex justify-between items-center">
           

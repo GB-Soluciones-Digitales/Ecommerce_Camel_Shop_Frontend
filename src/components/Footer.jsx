@@ -56,7 +56,7 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-brand-muted pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-brand-secondary font-medium uppercase tracking-widest">
+        <div className="border-t border-brand-muted pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-brand-secondary font-medium uppercase tracking-widest flex-wrap">
           <p>© 2026 CAMEL. Todos los derechos reservados.</p>
           <p className="mt-4 md:mt-0">
             Hecho por <a href="https://www.gbsolucionesdigitales.com.ar" target="_blank" rel="noopener noreferrer" className="text-brand-dark hover:text-brand-primary transition-colors">GB Soluciones Digitales</a>

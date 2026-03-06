@@ -5,9 +5,9 @@ import HeroSlider from '../components/Hero';
 
 const LandingPage = () => {
   const categories = [
-    { title: "Cápsula de Invierno", image: "https://images.unsplash.com/photo-1599703678443-4fdafa9e1d0a?q=80&w=1125&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "abrigos", span: "md:col-span-2 md:row-span-2 h-[500px] md:h-[700px]" },
+    { title: "Cápsula de Invierno", image: "https://images.unsplash.com/photo-1599703678443-4fdafa9e1d0a?q=80&w=1125&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "buzos", span: "md:col-span-2 md:row-span-2 h-[500px] md:h-[700px]" },
     { title: "Esenciales", image: "https://plus.unsplash.com/premium_photo-1664202526075-7436b5325ef3?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "remeras", span: "h-[350px] md:h-auto" },
-    { title: "Vestidos", image: "https://plus.unsplash.com/premium_photo-1673977132687-53990d8cc715?q=80&w=679&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "pantalones", span: "h-[350px] md:h-auto" }
+    { title: "Vestidos", image: "https://plus.unsplash.com/premium_photo-1673977132687-53990d8cc715?q=80&w=679&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", slug: "vestidos", span: "h-[350px] md:h-auto" }
   ];
 
   return (
@@ -29,7 +29,7 @@ const LandingPage = () => {
           
           <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
             <div>
-              <h2 className="text-4xl md:text-6xl font-serif font-medium text-brand-dark tracking-tight">Descubre</h2>
+              <h2 className="text-4xl md:text-6xl font-serif font-medium text-brand-dark tracking-tight items-end">Descubre</h2>
               <p className="text-brand-primary mt-2 font-medium tracking-wide uppercase text-sm">Nuestras selecciones</p>
             </div>
             <Link to="/productos" className="border-b border-brand-dark text-brand-dark pb-1 text-sm font-bold uppercase tracking-widest hover:text-brand-primary hover:border-brand-primary transition-colors">
