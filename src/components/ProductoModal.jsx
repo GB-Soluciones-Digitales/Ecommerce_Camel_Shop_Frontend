@@ -116,11 +116,11 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-md" role="dialog" aria-modal="true" onClick={onClose}>
       <div className="bg-crema rounded-[2.5rem] shadow-2xl w-full max-w-5xl overflow-hidden max-h-[92vh] flex flex-col border border-brand-muted" onClick={e => e.stopPropagation()}>
         
-        {/* Header Premium */}
+        {/* Header */}
         <div className="px-8 py-6 border-b border-brand-muted flex justify-between items-center bg-white">
           <div>
             <h3 className="font-serif font-bold text-2xl text-brand-dark">
-              {editingProduct ? 'Editar Pieza' : 'Nueva Pieza'}
+              {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
             </h3>
             <p className="text-[10px] text-brand-primary font-black uppercase tracking-widest">Gestión de Catálogo</p>
           </div>
@@ -132,7 +132,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         <form id="prod-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-10">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Columna Izquierda: Galería */}
+            {/* Galería */}
             <section className="lg:col-span-4 bg-white p-6 rounded-[2rem] border border-brand-muted shadow-sm space-y-4 h-fit">
               <div className="flex items-center gap-3 border-b border-brand-muted pb-3">
                 <div className="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-primary">
@@ -152,6 +152,22 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                     </div>
                   </div>
                 ))}
+
+                {state.newFiles.map((fileObj, idx) => (
+                  <div key={`new-${idx}`} className="relative group aspect-[3/4] rounded-xl overflow-hidden border-2 border-brand-primary shadow-sm">
+                    <img src={fileObj.preview} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Preview Nueva" />
+                    
+                    <div className="absolute top-2 left-2 bg-brand-primary text-crema text-[9px] font-black uppercase px-2 py-1 rounded shadow-md tracking-widest">
+                      Nueva
+                    </div>
+
+                    <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                      <button type="button" onClick={() => setState(p => ({...p, newFiles: p.newFiles.filter((_, i) => i !== idx)}))} className="bg-rose-500 text-white p-3 rounded-full hover:bg-rose-600 transition-transform transform hover:scale-110 shadow-lg">
+                        <FiTrash2 size={16}/>
+                      </button>
+                    </div>
+                  </div>
+                ))}
                 
                 <label className="aspect-[3/4] flex flex-col items-center justify-center border-2 border-dashed border-brand-muted bg-brand-light/30 rounded-xl cursor-pointer hover:border-brand-primary hover:bg-brand-light transition-all group">
                   <FiUploadCloud className="text-brand-secondary group-hover:text-brand-primary transition-colors mb-2" size={28}/>
@@ -161,7 +177,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
               </div>
             </section>
 
-            {/* Columna Derecha: Información y Stock */}
+            {/* Información y Stock */}
             <section className="lg:col-span-8 space-y-8">
               
               {/* Información Básica */}
