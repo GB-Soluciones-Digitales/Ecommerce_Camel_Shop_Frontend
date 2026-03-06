@@ -36,9 +36,9 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/productos?search=${searchTerm.trim()}`);
+      navigate(`/productos?search=${encodeURIComponent(searchTerm.trim())}&page=0`);
       setSearchTerm(""); 
-      setIsOpen(false); 
+      setIsOpen(false);
     }
   };
 

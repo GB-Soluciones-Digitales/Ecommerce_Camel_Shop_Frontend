@@ -35,28 +35,28 @@ const ProductoDetallePage = () => {
 
   return (
     <div className="min-h-screen bg-crema font-sans pb-24 pt-32">
-      <Helmet><title>{`${producto.nombre} | CAMEL.`}</title></Helmet>
+      <Helmet><title>{`${producto?.nombre} | CAMEL.`}</title></Helmet>
 
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-[1400px] mx-auto px-6">
         <nav className="mb-10">
-          <Link to="/productos" className="inline-flex items-center text-[12px] font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
-            <FiArrowLeft className="mr-2" size={16} /> Volver a la colección
+          <Link to="/productos" className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
+            <FiArrowLeft className="mr-2" size={14} /> Volver a la colección
           </Link>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          <div className="lg:col-span-7 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+          <div className="lg:col-span-7">
             <ProductoGaleria producto={producto} />
           </div>
-          <div className="lg:col-span-5 py-4">
+          <div className="lg:col-span-5">
             <ProductoInfo 
               producto={producto} 
               onAddToCart={(variantData, qty) => {
-                const productoParaCarrito = {
+                const productoFinal = {
                   ...producto,
                   ...variantData
                 };
-                addToCart(productoParaCarrito, qty);
+                addToCart(productoFinal, qty);
                 setShowCart(true);
               }}
               onOpenSizeChart={() => setShowTablaTalles(true)}
@@ -64,7 +64,6 @@ const ProductoDetallePage = () => {
           </div>
         </div>
       </div>
-
       <TablaTallesModal isOpen={showTablaTalles} onClose={() => setShowTablaTalles(false)} />
     </div>
   );

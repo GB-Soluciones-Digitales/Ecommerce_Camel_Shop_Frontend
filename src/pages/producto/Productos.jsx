@@ -1,161 +1,201 @@
-import React, { useEffect, useReducer, useMemo } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { productoService } from '../../services/productoService';
 import { categoriaService } from '../../services/categoriaService';
 import { fileService } from '../../services/fileService';
-import { FiSearch, FiFilter, FiArrowRight } from 'react-icons/fi';
+import { FiSearch, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 const initialState = {
   productos: [],
   categorias: [],
-  selectedCategory: null,
-  searchTerm: '',
   loading: true,
+  pagination: {
+    currentPage: 0,
+    totalPages: 0,
+    totalElements: 0
+  }
 };
 
 function catalogReducer(state, action) {
   switch (action.type) {
     case 'START_LOADING': return { ...state, loading: true };
-    case 'LOAD_DATA': return { ...state, productos: action.productos, categorias: action.categorias, loading: false };
-    case 'SET_CATEGORY': return { ...state, selectedCategory: action.payload };
-    case 'SET_SEARCH': return { ...state, searchTerm: action.payload };
-    case 'RESET_FILTERS': return { ...state, searchTerm: '', selectedCategory: null };
+    case 'LOAD_CATEGORIES': return { ...state, categorias: action.payload };
+    case 'LOAD_PRODUCTS': return { 
+      ...state, 
+      productos: action.productos, 
+      pagination: action.pagination,
+      loading: false 
+    };
     default: return state;
   }
 }
 
 const ProductosPage = () => {
   const [state, dispatch] = useReducer(catalogReducer, initialState);
-  const [searchParams] = useSearchParams();
-  const categoriaQuery = searchParams.get('categoria');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const categoriaQuery = searchParams.get('categoria') || '';
+  const searchQuery = searchParams.get('search') || '';
+  const pageQuery = parseInt(searchParams.get('page')) || 0;
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        dispatch({ type: 'START_LOADING' });
-        const [prodRes, catRes] = await Promise.all([
-          productoService.getProductosActivos(),
-          categoriaService.getCategorias()
-        ]);
-        dispatch({ type: 'LOAD_DATA', productos: prodRes.data, categorias: catRes.data });
-      } catch (err) {
-        console.error(err);
-        dispatch({ type: 'LOAD_DATA', productos: [], categorias: [] });
-      }
+    const fetchCats = async () => {
+      const res = await categoriaService.getCategorias();
+      dispatch({ type: 'LOAD_CATEGORIES', payload: res.data });
     };
-    loadData();
+    fetchCats();
   }, []);
 
   useEffect(() => {
-    if (state.categorias.length > 0) {
-      if (categoriaQuery) {
-        const cat = state.categorias.find(c => c.nombre.toLowerCase() === categoriaQuery.toLowerCase());
-        if (cat) dispatch({ type: 'SET_CATEGORY', payload: cat.id });
-      } else {
-        dispatch({ type: 'SET_CATEGORY', payload: null });
+    const fetchProducts = async () => {
+      try {
+        dispatch({ type: 'START_LOADING' });
+        const res = await productoService.getProductosPublicos(searchQuery, categoriaQuery, pageQuery, 8);
+        
+        dispatch({ 
+          type: 'LOAD_PRODUCTS', 
+          productos: res.data.content, 
+          pagination: {
+            currentPage: res.data.number,
+            totalPages: res.data.totalPages,
+            totalElements: res.data.totalElements
+          } 
+        });
+      } catch (err) {
+        console.error(err);
       }
-    }
-  }, [categoriaQuery, state.categorias]);
+    };
+    fetchProducts();
+    window.scrollTo(0, 0);
+  }, [searchQuery, categoriaQuery, pageQuery]);
 
-  const filteredProducts = useMemo(() => {
-    return state.productos.filter(p => {
-      const matchCat = state.selectedCategory ? p.categoriaId === state.selectedCategory : true;
-      const matchSearch = p.nombre.toLowerCase().includes(state.searchTerm.toLowerCase());
-      return matchCat && matchSearch;
-    });
-  }, [state.productos, state.selectedCategory, state.searchTerm]);
+  const handlePageChange = (newPage) => {
+    searchParams.set('page', newPage);
+    setSearchParams(searchParams);
+  };
+
+  const handleCategoryChange = (catNombre) => {
+    const newParams = new URLSearchParams();
+    if (catNombre) newParams.set('categoria', catNombre);
+    if (searchQuery) newParams.set('search', searchQuery);
+    newParams.set('page', 0); // Reset a página 0
+    setSearchParams(newParams);
+  };
 
   const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
 
   return (
     <div className="min-h-screen bg-crema font-sans pb-24 pt-32">
-      <Helmet>
-        <title>Colección | CAMEL.</title>
-      </Helmet>
+      <Helmet><title>Colección | CAMEL.</title></Helmet>
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
-        
-        {/* Encabezado Editorial */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h1 className="text-5xl md:text-7xl font-serif font-medium text-brand-dark mb-4 tracking-tight">La Colección</h1>
-          <p className="text-brand-primary uppercase tracking-[0.2em] text-sm font-medium">Piezas esenciales para el día a día</p>
+          <p className="text-brand-primary uppercase tracking-[0.2em] text-sm font-medium">
+            {searchQuery ? `Resultados para "${searchQuery}"` : 'Piezas esenciales para el día a día'}
+          </p>
         </div>
 
-        {/* Barra de Filtros */}
+        {/* Filtros dinámicos */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 border-y border-brand-muted py-6">
           <div className="flex overflow-x-auto w-full md:w-auto gap-3 pb-2 md:pb-0 hide-scrollbar">
             <button 
-              onClick={() => dispatch({ type: 'SET_CATEGORY', payload: null })}
-              className={`whitespace-nowrap px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${!state.selectedCategory ? 'bg-brand-dark text-crema' : 'bg-transparent text-brand-dark border border-brand-muted hover:border-brand-dark'}`}
+              onClick={() => handleCategoryChange('')}
+              className={`whitespace-nowrap px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${!categoriaQuery ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark'}`}
             >
               Ver Todo
             </button>
             {state.categorias.map(c => (
               <button 
                 key={c.id} 
-                onClick={() => dispatch({ type: 'SET_CATEGORY', payload: c.id })}
-                className={`whitespace-nowrap px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${state.selectedCategory === c.id ? 'bg-brand-dark text-crema' : 'bg-transparent text-brand-dark border border-brand-muted hover:border-brand-dark'}`}
+                onClick={() => handleCategoryChange(c.nombre.toLowerCase())}
+                className={`whitespace-nowrap px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${categoriaQuery === c.nombre.toLowerCase() ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark'}`}
               >
                 {c.nombre}
               </button>
             ))}
           </div>
           
-          <div className="relative w-full md:w-64">
-            <FiSearch className="absolute left-0 top-1/2 -translate-y-1/2 text-brand-primary" size={18} />
-            <input 
-              type="text" 
-              placeholder="Buscar pieza..." 
-              className="w-full pl-8 pr-4 py-2 bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none text-sm text-brand-dark placeholder-brand-primary transition-colors"
-              value={state.searchTerm}
-              onChange={(e) => dispatch({ type: 'SET_SEARCH', payload: e.target.value })}
-            />
+          <div className="relative w-full md:w-64 text-brand-dark">
+             <FiSearch className="absolute left-0 top-1/2 -translate-y-1/2 opacity-50" />
+             <input 
+               type="text" 
+               placeholder="Buscar pieza..." 
+               className="w-full pl-8 py-2 bg-transparent border-b border-brand-muted focus:border-brand-dark outline-none text-sm transition-colors"
+               defaultValue={searchQuery}
+               onKeyDown={(e) => e.key === 'Enter' && setSearchParams({ search: e.target.value, page: 0 })}
+             />
           </div>
         </div>
 
-        {/* Grilla de Productos */}
         {state.loading ? (
            <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-dark"></div></div>
-        ) : filteredProducts.length === 0 ? (
-           <EmptyState onReset={() => dispatch({ type: 'RESET_FILTERS' })} />
+        ) : state.productos.length === 0 ? (
+           <div className="text-center py-20 font-serif text-2xl text-brand-primary opacity-60">No se encontraron piezas.</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-            {filteredProducts.map(p => (
-              <ProductCard key={p.id} producto={p} getImgUrl={getImgUrl} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+              {state.productos.map(p => (
+                <ProductCard key={p.id} producto={p} getImgUrl={getImgUrl} />
+              ))}
+            </div>
+
+            {/* Componente de Paginación */}
+            <div className="mt-20 flex justify-center items-center gap-8 border-t border-brand-muted pt-10">
+              <button 
+                disabled={state.pagination.currentPage === 0}
+                onClick={() => handlePageChange(state.pagination.currentPage - 1)}
+                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest disabled:opacity-20 hover:text-brand-primary transition-colors"
+              >
+                <FiArrowLeft /> Anterior
+              </button>
+              
+              <span className="text-xs font-medium tracking-tighter text-brand-secondary">
+                Página {state.pagination.currentPage + 1} de {state.pagination.totalPages}
+              </span>
+
+              <button 
+                disabled={state.pagination.currentPage >= state.pagination.totalPages - 1}
+                onClick={() => handlePageChange(state.pagination.currentPage + 1)}
+                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest disabled:opacity-20 hover:text-brand-primary transition-colors"
+              >
+                Siguiente <FiArrowRight />
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
   );
 };
 
-const EmptyState = ({ onReset }) => (
-  <div className="text-center py-32">
-    <p className="text-brand-primary font-serif text-2xl mb-4">No encontramos piezas con esos criterios.</p>
-    <button onClick={onReset} className="text-brand-dark font-bold text-xs uppercase tracking-widest border-b border-brand-dark pb-1 hover:text-brand-primary hover:border-brand-primary transition-colors">Explorar Colección Completa</button>
-  </div>
-);
-
 const ProductCard = ({ producto, getImgUrl }) => (
-  <Link to={`/producto/${producto.id}`} className="group flex flex-col">
-    <div className="relative aspect-[3/4] overflow-hidden bg-brand-light mb-5">
+  <Link to={`/producto/${producto.id}`} className="group flex flex-col relative">
+    <div className="relative aspect-[3/4] overflow-hidden bg-brand-light mb-5 rounded-[2rem]">
       <img 
         src={getImgUrl(producto.imagenes?.[0])} 
         alt={producto.nombre} 
-        className="w-full h-full object-cover transition duration-[1.5s] ease-out group-hover:scale-105"
+        className="w-full h-full object-cover transition duration-[1.5s] ease-out group-hover:scale-110"
         loading="lazy"
       />
+      
+      {/* Overlay al Hover */}
+      <div className="absolute inset-0 bg-brand-dark/20 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
+        <span className="bg-crema text-brand-dark px-6 py-2.5 rounded-full font-bold uppercase text-[10px] tracking-widest transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 shadow-xl">
+          Ver Detalles
+        </span>
+      </div>
+
       {producto.stock === 0 && (
         <div className="absolute inset-0 bg-crema/80 backdrop-blur-sm flex items-center justify-center">
-          <span className="text-brand-dark text-xs font-bold uppercase tracking-[0.2em]">Agotado</span>
+          <span className="text-brand-dark text-[10px] font-bold uppercase tracking-[0.2em]">Agotado</span>
         </div>
       )}
     </div>
-    <div className="flex flex-col items-center text-center">
-      <h3 className="text-lg font-serif text-brand-dark mb-1">{producto.nombre}</h3>
-      <p className="text-brand-primary text-sm font-medium tracking-wide">${parseFloat(producto.precio).toLocaleString()}</p>
+    <div className="flex flex-col items-center text-center px-2">
+      <h3 className="text-lg font-serif text-brand-dark mb-1 group-hover:text-brand-primary transition-colors">{producto.nombre}</h3>
+      <p className="text-brand-primary text-sm font-bold tracking-widest">${parseFloat(producto.precio).toLocaleString()}</p>
     </div>
   </Link>
 );

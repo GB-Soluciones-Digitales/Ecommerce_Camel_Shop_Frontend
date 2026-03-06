@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiMail } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -110,11 +111,11 @@ const Contacto = () => {
             
             <div className="flex flex-col sm:flex-row gap-12 sm:gap-20">
               <div>
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary mb-2">WhatsApp</h3>
+                <FaWhatsapp className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary mb-2">WhatsApp</FaWhatsapp>
                 <a href="https://wa.me/5493431234567" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-[#2c241b] hover:border-[#a48e78] pb-1">+54 9 343 123 4567</a>
               </div>
               <div>
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary mb-2">Email</h3>
+                <FiMail className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary mb-2">Email</FiMail>
                 <a href="mailto:hola@camelshop.com.ar" className="text-lg font-medium text-brand-dark hover:text-brand-secondary transition-colors border-b border-[#2c241b] hover:border-[#a48e78] pb-1">hola@camel.com</a>
               </div>
             </div>
