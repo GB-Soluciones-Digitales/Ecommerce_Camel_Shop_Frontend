@@ -21,7 +21,7 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
 
   return (
     <div className="flex flex-col">
-      <span className="text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mb-2">{producto.categoriaNombre}</span>
+      <span className="text-xs font-bold text-brand-primary uppercase tracking-[0.2em] mb-2">{producto.categoriaNombre}</span>
       <h1 className="text-4xl md:text-5xl font-serif text-brand-dark leading-tight mb-4">{producto.nombre}</h1>
       <p className="text-2xl text-brand-dark font-medium tracking-wide mb-8">${parseFloat(producto.precio).toLocaleString()}</p>
       

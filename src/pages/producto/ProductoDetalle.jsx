@@ -37,9 +37,9 @@ const ProductoDetallePage = () => {
     <div className="min-h-screen bg-crema font-sans pb-24 pt-32">
       <Helmet><title>{`${producto?.nombre} | CAMEL.`}</title></Helmet>
 
-      <div className="max-w-[1400px] mx-auto px-6">
+      <div className="max-w-[1200px] mx-auto px-6">
         <nav className="mb-10">
-          <Link to="/productos" className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
+          <Link to="/productos" className="inline-flex items-center text-sm font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-dark transition-colors">
             <FiArrowLeft className="mr-2" size={14} /> Volver a la colección
           </Link>
         </nav>
