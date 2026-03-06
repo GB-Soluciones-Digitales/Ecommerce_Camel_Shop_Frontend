@@ -150,7 +150,7 @@ const AdminOrders = () => {
               <tbody className="divide-y divide-brand-muted">
                 {filteredOrders.map((pedido) => (
                   <tr key={pedido.id} className="hover:bg-crema/30 transition group">
-                    <td className="px-8 py-5 font-mono text-xs font-bold text-brand-primary bg-brand-light/20 tracking-tighter">#{pedido.id}</td>
+                    <td className="px-8 py-5 font-mono text-sm font-bold text-brand-primary bg-brand-light/20 tracking-tighter">#{pedido.id}</td>
                     <td className="px-8 py-5">
                       <div className="font-bold text-brand-dark text-sm">{pedido.nombreCliente || 'Cliente Mostrador'}</div>
                       <div className="text-xs text-brand-secondary mt-0.5">{pedido.telefono || '-'}</div>

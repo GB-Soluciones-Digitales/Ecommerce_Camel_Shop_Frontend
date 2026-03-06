@@ -42,14 +42,19 @@ const AdminUsuarios = () => {
   if (state.loading) return <div className="p-8 text-gray-500 animate-pulse">Cargando usuarios...</div>;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-6 md:p-10 bg-crema min-h-screen font-sans">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
-          <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">Usuarios</h2>
-          <p className="text-sm text-gray-500">Gestión de accesos y credenciales.</p>
+          <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
+            <FiUser className="text-brand-primary" /> Usuarios
+          </h2>
+          <p className="text-brand-secondary text-sm mt-1 font-medium">Gestión de accesos y credenciales.</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm text-xs font-bold text-gray-400">
-          TOTAL: {state.usuarios.length}
+      </div>
+
+      <div className='bg-white p-2 rounded-[2rem] shadow-sm border border-brand-muted mb-8 flex flex-col md:flex-row gap-2'>
+        <div className="flex-1 relative">
+          <p className="w-full pl-12 pr-6 py-4 bg-transparent outline-none text-sm font-medium">TOTAL: {state.usuarios.length}</p>
         </div>
       </div>
       

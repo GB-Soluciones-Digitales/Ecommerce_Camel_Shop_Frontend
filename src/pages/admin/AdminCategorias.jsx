@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { categoriaService } from '../../services/categoriaService';
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiLayers } from 'react-icons/fi';
+import { BiCategoryAlt } from "react-icons/bi";
 
 const AdminCategorias = () => {
   const [categorias, setCategorias] = useState([]);
@@ -63,7 +64,7 @@ const AdminCategorias = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
           <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
-            Categorías
+            <BiCategoryAlt className="text-brand-primary"/>Categorías
           </h2>
           <p className="text-brand-secondary text-sm mt-1 font-medium">Define las categorias de tu colección</p>
         </div>

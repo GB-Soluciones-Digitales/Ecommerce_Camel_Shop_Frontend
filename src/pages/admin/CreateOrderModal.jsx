@@ -151,7 +151,7 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
             {state.items.length > 0 && (
               <div className="bg-white border border-brand-muted rounded-[2rem] overflow-hidden shadow-inner">
                 <table className="w-full text-sm">
-                  <thead className="bg-brand-light/30 text-[10px] font-black text-brand-secondary uppercase tracking-widest">
+                  <thead className="bg-brand-light/30 text-xs font-black text-brand-secondary uppercase tracking-widest">
                     <tr>
                       <th className="px-8 py-5 text-left">Producto</th>
                       <th className="px-8 py-5 text-center">Unidades</th>
@@ -164,7 +164,7 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
                       <tr key={item.uniqueKey} className="hover:bg-crema/20 transition-colors">
                         <td className="px-8 py-5">
                           <p className="font-bold text-brand-dark">{item.nombre}</p>
-                          <p className="text-[10px] text-brand-primary font-black uppercase tracking-tighter">{item.selectedSize}</p>
+                          <p className="text-xs text-brand-primary font-black uppercase tracking-tighter">{item.selectedSize}</p>
                         </td>
                         <td className="px-8 py-5 text-center font-bold text-brand-dark text-lg">{item.cantidad}</td>
                         <td className="px-8 py-5 text-right font-serif font-bold text-brand-dark text-xl">${(item.precio * item.cantidad).toLocaleString()}</td>
@@ -180,7 +180,7 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
               </div>
             )}
             <div className="flex flex-col">
-              <span className="text-[10px] font-black text-brand-secondary uppercase tracking-[0.2em]">Total Final</span>
+              <span className="text-xs font-black text-brand-secondary uppercase tracking-[0.2em]">Total Final</span>
               <span className="text-3xl font-serif font-bold text-brand-dark">
                 ${state.items.reduce((acc, i) => acc + (i.precio * i.cantidad), 0).toLocaleString()}
               </span>
