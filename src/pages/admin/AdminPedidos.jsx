@@ -105,7 +105,7 @@ const AdminOrders = () => {
   return (
     <div className="p-6 md:p-10 bg-crema min-h-screen font-sans">
       <div className="max-w-7xl mx-auto">
-        <header className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
           <div>
             <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
               <FiPackage className="text-brand-primary" /> Gestión de Pedidos
@@ -114,9 +114,9 @@ const AdminOrders = () => {
           </div>
           <button onClick={() => setModals({ ...modals, create: true })} 
             className="bg-brand-dark text-crema px-6 py-3 rounded-2xl flex items-center gap-3 font-bold text-xs uppercase tracking-widest shadow-2xl hover:bg-brand-secondary transition transform hover:-translate-y-1">
-            <FiPlus size={18} /> Nuevo Pedido
+            <FiPlus size={18} /> Nuevo Pedido Manual
           </button>
-        </header>
+        </div>
 
         <div className="bg-white p-2 rounded-[2rem] shadow-sm border border-brand-muted mb-8 flex flex-col md:flex-row gap-2">
           <div className="flex-1 relative">
@@ -138,7 +138,7 @@ const AdminOrders = () => {
         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-brand-dark/5 overflow-hidden border border-brand-muted">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-brand-light/50 text-[10px] font-black text-brand-primary uppercase tracking-[0.2em] border-b border-brand-muted">
+              <thead className="bg-brand-light/50 text-xs font-black text-brand-primary uppercase tracking-[0.2em] border-b border-brand-muted">
                 <tr>
                   <th className="px-8 py-5">Referencia</th>
                   <th className="px-8 py-5">Cliente</th>
@@ -148,13 +148,12 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-muted">
-                {/* Mapeo de pedidos con estilo mejorado */}
                 {filteredOrders.map((pedido) => (
                   <tr key={pedido.id} className="hover:bg-crema/30 transition group">
-                    <td className="px-8 py-5 font-mono text-[11px] font-bold text-brand-primary bg-brand-light/20 tracking-tighter">#{pedido.id}</td>
+                    <td className="px-8 py-5 font-mono text-xs font-bold text-brand-primary bg-brand-light/20 tracking-tighter">#{pedido.id}</td>
                     <td className="px-8 py-5">
                       <div className="font-bold text-brand-dark text-sm">{pedido.nombreCliente || 'Cliente Mostrador'}</div>
-                      <div className="text-[11px] text-brand-secondary mt-0.5">{pedido.telefono || '-'}</div>
+                      <div className="text-xs text-brand-secondary mt-0.5">{pedido.telefono || '-'}</div>
                     </td>
                     <td className="px-8 py-5 font-serif font-bold text-brand-dark text-lg">${pedido.total?.toLocaleString()}</td>
                     <td className="px-8 py-5 text-center">{getStatusBadge(pedido.estado)}</td>
@@ -164,7 +163,7 @@ const AdminOrders = () => {
                           className="text-brand-secondary hover:text-brand-dark p-3 bg-brand-light rounded-xl transition-all hover:shadow-md">
                           <FiEye size={18} />
                         </button>
-                        <select className="text-[10px] font-bold border border-brand-muted rounded-lg px-2 py-2 bg-white outline-none focus:border-brand-primary uppercase tracking-tighter"
+                        <select className="text-xs font-bold border border-brand-muted rounded-lg px-2 py-2 bg-white outline-none focus:border-brand-primary uppercase tracking-tighter"
                           value={pedido.estado} onChange={(e) => handleEstadoChange(pedido.id, e.target.value)}>
                           <option value="PENDIENTE">Pendiente</option>
                           <option value="CONFIRMADO">Confirmado</option>

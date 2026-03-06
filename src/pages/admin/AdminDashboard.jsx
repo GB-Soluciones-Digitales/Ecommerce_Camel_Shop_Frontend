@@ -66,8 +66,8 @@ const AdminDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-crema p-8 font-sans">
-      <header className="flex justify-between items-center mb-8">
+    <div className="p-6 md:p-10 bg-crema min-h-screen font-sans">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
           <h2 className="text-3xl font-bold text-brand-dark flex items-center gap-3 font-serif">
             <MdDashboard className="text-brand-primary" /> Panel de Control
@@ -80,80 +80,82 @@ const AdminDashboard = () => {
         >
           <FiPlus size={18} /> Nuevo Producto
         </button>
-      </header>
+      </div>
 
-      <div className="bg-brand-light p-4 rounded-2xl shadow-sm mb-6 flex items-center gap-4 border border-brand-primary/10">
-        <div className="relative flex-1">
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-primary" />
+      <div className="bg-white p-2 rounded-[2rem] shadow-sm border border-brand-muted mb-8 flex flex-col md:flex-row gap-2">
+        <div className="flex-1 relative">
+          <FiSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-brand-secondary" />
           <input 
             type="text" 
             placeholder="Buscar por nombre o categoría..." 
-            className="w-full pl-10 pr-4 py-2 bg-crema/30 border border-brand-muted rounded-lg outline-none focus:ring-2 focus:ring-brand-primary/20 transition"
+            className="w-full pl-12 pr-6 py-4 bg-transparent outline-none text-sm font-medium"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
         </div>
       </div>
 
-      <div className="bg-brand-light rounded-3xl shadow-sm overflow-hidden border border-brand-muted">
-        <table className="w-full text-left">
-          <thead className="bg-brand-light text-brand-dark text-[12px] uppercase font-bold tracking-[0.15em] border-b border-brand-muted">
-            <tr>
-              <th className="px-6 py-5">Producto</th>
-              <th className="px-6 py-5">Categoria</th>
-              <th className="px-6 py-5">Precio</th>
-              <th className="px-6 py-5">Stock</th>
-              <th className="px-6 py-5 text-center">Estado</th>
-              <th className="px-6 py-5 text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-brand-light">
-            {filteredProducts.map((producto) => (
-              <tr key={producto.id} className="hover:bg-crema/50 transition-colors">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-xl bg-brand-light overflow-hidden border border-brand-muted">
-                      {producto.imagenes?.[0] ? (
-                        <img 
-                          src={producto.imagenes[0].startsWith('http') 
-                            ? producto.imagenes[0] 
-                            : fileService.getImageUrl(producto.imagenes[0])} 
-                          alt={producto.nombre} 
-                          className="h-full w-full object-cover"
-                          onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Camel'; }}
-                        />
-                      ) : (
-                        <div className="h-full w-full flex items-center justify-center bg-gray-100">
-                          <FiImage className="text-gray-300" size={20} />
-                        </div>
-                      )}
-                    </div>
-                    <span className="font-serif text-brand-dark text-lg">{producto.nombre}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-brand-secondary font-medium">{producto.categoriaNombre}</td>
-                <td className="px-6 py-4 font-bold text-brand-dark">${parseFloat(producto.precio).toLocaleString()}</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-md text-[12px] font-black uppercase tracking-tighter ${producto.stock > 5 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                    {producto.stock} u.
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-center">
-                  <button
-                    onClick={() => productoService.toggleEstadoProducto(producto.id).then(loadData)}
-                    className={`text-2xl transition ${producto.activo ? 'text-brand-primary' : 'text-gray-300'}`}
-                  >
-                    {producto.activo ? <FiToggleRight /> : <FiToggleLeft />}
-                  </button>
-                </td>
-                <td className="px-6 py-4 text-right space-x-3">
-                  <button onClick={() => handleOpenModal(producto)} className="text-brand-secondary hover:text-brand-dark transition"><FiEdit2 size={18}/></button>
-                  <button onClick={() => handleDelete(producto.id)} className="text-brand-secondary hover:text-red-700 transition"><FiTrash2 size={18}/></button>
-                </td>
+      <div className="bg-white rounded-[2.5rem] shadow-xl shadow-brand-dark/5 overflow-hidden border border-brand-muted">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-brand-light/50 text-xs font-black text-brand-primary uppercase tracking-[0.2em] border-b border-brand-muted">
+              <tr>
+                <th className="px-6 py-5">Producto</th>
+                <th className="px-6 py-5">Categoria</th>
+                <th className="px-6 py-5">Precio</th>
+                <th className="px-6 py-5">Stock</th>
+                <th className="px-6 py-5 text-center">Estado</th>
+                <th className="px-6 py-5 text-right">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-brand-muted">
+              {filteredProducts.map((producto) => (
+                <tr key={producto.id} className="hover:bg-crema/30 transition group">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-xl bg-brand-light overflow-hidden border border-brand-muted">
+                        {producto.imagenes?.[0] ? (
+                          <img 
+                            src={producto.imagenes[0].startsWith('http') 
+                              ? producto.imagenes[0] 
+                              : fileService.getImageUrl(producto.imagenes[0])} 
+                            alt={producto.nombre} 
+                            className="h-full w-full object-cover"
+                            onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Camel'; }}
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center bg-gray-100">
+                            <FiImage className="text-gray-300" size={20} />
+                          </div>
+                        )}
+                      </div>
+                      <span className="font-serif text-brand-dark text-lg">{producto.nombre}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-brand-secondary font-medium">{producto.categoriaNombre}</td>
+                  <td className="px-6 py-4 font-bold text-brand-dark">${parseFloat(producto.precio).toLocaleString()}</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 rounded-md text-[12px] font-black uppercase tracking-tighter ${producto.stock > 5 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {producto.stock} u.
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={() => productoService.toggleEstadoProducto(producto.id).then(loadData)}
+                      className={`text-2xl transition ${producto.activo ? 'text-brand-primary' : 'text-gray-300'}`}
+                    >
+                      {producto.activo ? <FiToggleRight /> : <FiToggleLeft />}
+                    </button>
+                  </td>
+                  <td className="px-6 py-4 text-right space-x-3">
+                    <button onClick={() => handleOpenModal(producto)} className="text-brand-secondary hover:text-brand-dark transition"><FiEdit2 size={18}/></button>
+                    <button onClick={() => handleDelete(producto.id)} className="text-brand-secondary hover:text-red-700 transition"><FiTrash2 size={18}/></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ProductoModal 
