@@ -67,19 +67,20 @@ const ProductosPage = () => {
       }
     };
     fetchProducts();
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [searchQuery, categoriaQuery, pageQuery]);
 
   const handlePageChange = (newPage) => {
-    searchParams.set('page', newPage);
-    setSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
+    params.set('page', newPage);
+    setSearchParams(params);
   };
 
   const handleCategoryChange = (catNombre) => {
     const newParams = new URLSearchParams();
     if (catNombre) newParams.set('categoria', catNombre);
     if (searchQuery) newParams.set('search', searchQuery);
-    newParams.set('page', 0); // Reset a página 0
+    newParams.set('page', 0);
     setSearchParams(newParams);
   };
 
@@ -93,7 +94,7 @@ const ProductosPage = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h1 className="text-5xl md:text-7xl font-serif font-medium text-brand-dark mb-4 tracking-tight">La Colección</h1>
           <p className="text-brand-primary uppercase tracking-[0.2em] text-sm font-medium">
-            {searchQuery ? `Resultados para "${searchQuery}"` : 'Piezas esenciales para el día a día'}
+            {searchQuery ? `Resultados para "${searchQuery}"` : 'Prendas esenciales para el día a día'}
           </p>
         </div>
 
@@ -102,7 +103,7 @@ const ProductosPage = () => {
           <div className="flex overflow-x-auto w-full md:w-auto gap-3 pb-2 md:pb-0 hide-scrollbar">
             <button 
               onClick={() => handleCategoryChange('')}
-              className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all ${!categoriaQuery ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark hover:bg-brand-primary'}`}
+              className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all ${!categoriaQuery ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark hover:bg-brand-primary hover:text-brand-muted'}`}
             >
               Ver Todo
             </button>
@@ -110,7 +111,7 @@ const ProductosPage = () => {
               <button 
                 key={c.id} 
                 onClick={() => handleCategoryChange(c.nombre.toLowerCase())}
-                className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all ${categoriaQuery === c.nombre.toLowerCase() ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark'}`}
+                className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all ${categoriaQuery === c.nombre.toLowerCase() ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark hover:bg-brand-primary hover:text-brand-muted'}`}
               >
                 {c.nombre}
               </button>
@@ -129,53 +130,61 @@ const ProductosPage = () => {
           </div>
         </div>
 
-        {state.loading ? (
-           <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-dark"></div></div>
-        ) : state.productos.length === 0 ? (
-           <div className="text-center py-20 font-serif text-2xl text-brand-primary opacity-60">No se encontraron piezas.</div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-              {state.productos.map(p => (
-                <ProductCard key={p.id} producto={p} getImgUrl={getImgUrl} />
-              ))}
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+          {state.loading ? (
+             Array(8).fill(0).map((_, i) => <SkeletonCard key={i} />)
+          ) : state.productos.length === 0 ? (
+             <div className="col-span-full text-center py-20 font-serif text-2xl text-brand-primary opacity-60">No se encontraron prendas</div>
+          ) : (
+            state.productos.map(p => (
+              <ProductCard key={p.id} producto={p} getImgUrl={getImgUrl} />
+            ))
+          )}
+        </div>
 
-            {/* Componente de Paginación */}
-            <div className="mt-20 flex justify-center items-center gap-8 border-t border-brand-muted pt-10">
-              <button 
-                disabled={state.pagination.currentPage === 0}
-                onClick={() => handlePageChange(state.pagination.currentPage - 1)}
-                className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
-              >
-                <FiArrowLeft /> Anterior
-              </button>
-              
-              <span className="text-sm font-medium tracking-tighter text-brand-secondary">
-                Página {state.pagination.currentPage + 1} de {state.pagination.totalPages}
-              </span>
+        {!state.loading && state.pagination.totalPages > 1 && (
+          <div className="mt-20 flex justify-center items-center gap-8 border-t border-brand-muted pt-10">
+            <button 
+              disabled={state.pagination.currentPage === 0}
+              onClick={() => handlePageChange(state.pagination.currentPage - 1)}
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
+            >
+              <FiArrowLeft /> Anterior
+            </button>
+            
+            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary">
+              {state.pagination.currentPage + 1} / {state.pagination.totalPages}
+            </span>
 
-              <button 
-                disabled={state.pagination.currentPage >= state.pagination.totalPages - 1}
-                onClick={() => handlePageChange(state.pagination.currentPage + 1)}
-                className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
-              >
-                Siguiente <FiArrowRight />
-              </button>
-            </div>
-          </>
+            <button 
+              disabled={state.pagination.currentPage >= state.pagination.totalPages - 1}
+              onClick={() => handlePageChange(state.pagination.currentPage + 1)}
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] disabled:opacity-20 text-brand-dark hover:text-brand-primary transition-colors"
+            >
+              Siguiente <FiArrowRight />
+            </button>
+          </div>
         )}
       </div>
     </div>
   );
 };
 
+const SkeletonCard = () => (
+  <div className="flex flex-col animate-pulse">
+    <div className="aspect-[3/4] bg-brand-muted rounded-[2rem] mb-5"></div>
+    <div className="h-4 bg-brand-muted rounded w-3/4 mx-auto mb-2"></div>
+    <div className="h-3 bg-brand-muted rounded w-1/4 mx-auto"></div>
+  </div>
+);
+
 const ProductCard = ({ producto, getImgUrl }) => (
   <Link to={`/producto/${producto.id}`} className="group flex flex-col relative">
     <div className="relative aspect-[3/4] overflow-hidden bg-brand-light mb-5 rounded-[2rem]">
       <img 
         src={getImgUrl(producto.imagenes?.[0])} 
-        alt={producto.nombre} 
+        alt={producto.nombre}
+        decoding="async"
         className="w-full h-full object-cover transition duration-[1.5s] ease-out group-hover:scale-110"
         loading="lazy"
       />
