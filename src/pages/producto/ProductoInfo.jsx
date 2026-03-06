@@ -30,7 +30,7 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
     navigator.clipboard.writeText(window.location.href);
     sileo.info({
       title: "Enlace copiado",
-      description: "Ya podés compartir esta pieza con quien quieras."
+      description: "Ya podés compartir este producto con quien quieras."
     });
   };
 

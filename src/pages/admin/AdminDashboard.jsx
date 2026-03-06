@@ -53,16 +53,27 @@ const AdminDashboard = () => {
       setShowModal(false);
       loadData();
     } catch (error) {
-      sileo.error({ title: "Error al guardar", description: "Hubo un problema al procesar la pieza." });
+      sileo.error({ title: "Error al guardar", description: "Hubo un problema al procesar el producto." });
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Eliminar producto definitivamente?')) {
+  if (window.confirm('¿Eliminar producto definitivamente?')) {
+    try {
       await productoService.eliminarProducto(id);
+      sileo.success({
+        title: "Pieza eliminada",
+        description: "El producto se borró del catálogo correctamente."
+      });
       loadData();
+    } catch (error) {
+      sileo.error({
+        title: "No se puede eliminar",
+        description: "El producto ya está asociado a un pedido o variante. Borrá los registros asociados primero."
+      });
     }
-  };
+  }
+};
 
   const filteredProducts = productos.filter(p => 
     p.nombre.toLowerCase().includes(searchTerm.toLowerCase())

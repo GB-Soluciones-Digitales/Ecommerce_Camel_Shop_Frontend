@@ -21,7 +21,7 @@ const PublicLayout = () => {
     removeFromCart(item.variantId);
     sileo.info({
       title: "Pieza removida",
-      description: `${item.nombre} se quitó de tu bolsa.`
+      description: `${item.nombre} se quitó de tu carrito.`
     });
   };
 
