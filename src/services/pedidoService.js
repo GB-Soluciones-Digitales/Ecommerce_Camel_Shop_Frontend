@@ -3,7 +3,10 @@ import api from './api';
 export const pedidoService = {
   crearPedido: (datosPedido) => api.post('/pedidos/publico', datosPedido),
 
-  getPedidosAdmin: () => api.get('/pedidos/admin'),
+  getPedidosAdmin: (page = 0, size = 10, search = '', estado = 'TODOS') => {
+    const estadoParam = estado !== 'TODOS' ? `&estado=${estado}` : '';
+    return api.get(`/pedidos/admin?page=${page}&size=${size}&search=${search}${estadoParam}`);
+  },
 
   cambiarEstado: (id, estado) => api.patch(`/pedidos/admin/${id}/estado`, null, {
     params: { estado }

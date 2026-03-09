@@ -50,7 +50,7 @@ const AdminLayout = () => {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <div className="flex h-screen bg-crema overflow-hidden font-sans">
+    <div className="flex min-h-screen bg-crema font-sans" data-lenis-prevent="true">
       
       {/* SIDEBAR DESKTOP */}
       <aside className="w-64 bg-brand-primary flex-col shadow-2xl z-20 hidden md:flex border-r border-brand-secondary/30">

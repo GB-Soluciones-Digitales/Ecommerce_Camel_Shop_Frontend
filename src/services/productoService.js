@@ -25,7 +25,9 @@ export const productoService = {
 
   // ===== ENDPOINTS ADMIN =====
   
-  getAllProductos: () => api.get('/productos/admin'),
+  getAllProductosAdmin: (page = 0, size = 10, search = '') => {
+    return api.get(`/productos/admin?page=${page}&size=${size}&search=${search}`);
+  },
   
   getProductoAdminById: (id) => api.get(`/productos/admin/${id}`),
 

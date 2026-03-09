@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { productoService } from '../../services/productoService';
 import { categoriaService } from '../../services/categoriaService';
-import { FiEdit2, FiTrash2, FiPlus, FiSearch, FiToggleLeft, FiToggleRight, FiImage } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiPlus, FiSearch, FiToggleLeft, FiToggleRight, FiImage, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { MdDashboard } from "react-icons/md";
 import ProductoModal from '../../components/ProductoModal'; 
 import { fileService } from '../../services/fileService';
@@ -14,6 +14,9 @@ const AdminDashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
   const colors = {
     bgPage: 'bg-[#f9f5f0]',
@@ -21,16 +24,27 @@ const AdminDashboard = () => {
     buttonPrimary: 'bg-[#4a3b2a] hover:bg-black text-[#d8bf9f]',
   };
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { 
+    setCurrentPage(0); 
+    loadData(); 
+  }, [searchTerm]);
+
+  useEffect(() => {
+    loadData();
+  }, [currentPage]);
 
   const loadData = async () => {
     try {
       setLoading(true);
       const [prodRes, catRes] = await Promise.all([
-        productoService.getAllProductos(),
+        productoService.getAllProductosAdmin(currentPage, 10, searchTerm),
         categoriaService.getCategoriasAdmin(),
       ]);
-      setProductos(prodRes.data);
+
+      setProductos(prodRes.data.content || []); 
+      setTotalPages(prodRes.data.totalPages || 0);
+      setTotalElements(prodRes.data.totalElements || 0);
+
       setCategorias(catRes.data);
     } catch (error) { console.error('Error cargando datos'); } 
     finally { setLoading(false); }
@@ -51,29 +65,40 @@ const AdminDashboard = () => {
         sileo.success({ title: "Pieza creada", description: "El nuevo producto ya está en el sistema." });
       }
       setShowModal(false);
-      loadData();
+      await loadData();
+
     } catch (error) {
       sileo.error({ title: "Error al guardar", description: "Hubo un problema al procesar el producto." });
     }
   };
 
   const handleDelete = async (id) => {
-  if (window.confirm('¿Eliminar producto definitivamente?')) {
-    try {
-      await productoService.eliminarProducto(id);
-      sileo.success({
-        title: "Pieza eliminada",
-        description: "El producto se borró del catálogo correctamente."
-      });
-      loadData();
-    } catch (error) {
-      sileo.error({
-        title: "No se puede eliminar",
-        description: "El producto ya está asociado a un pedido o variante. Borrá los registros asociados primero."
-      });
+    if (window.confirm('¿Eliminar producto definitivamente?')) {
+      try {
+        await productoService.eliminarProducto(id);
+        sileo.success({
+          title: "Pieza eliminada",
+          description: "El producto se borró del catálogo correctamente."
+        });
+        await loadData();
+        
+      } catch (error) {
+        sileo.error({
+          title: "No se puede eliminar",
+          description: "El producto ya está asociado a un pedido o variante. Borrá los registros asociados primero."
+        });
+      }
     }
-  }
-};
+  };
+
+  const handleToggleEstado = async (id) => {
+    try {
+      await productoService.toggleEstadoProducto(id);
+      await loadData();
+    } catch (error) {
+      sileo.error({ title: "Error", description: "No se pudo cambiar el estado." });
+    }
+  };
 
   const filteredProducts = productos.filter(p => 
     p.nombre.toLowerCase().includes(searchTerm.toLowerCase())
@@ -123,7 +148,7 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-muted">
-              {filteredProducts.map((producto) => (
+              {productos.map((producto) => (
                 <tr key={producto.id} className="hover:bg-crema/30 transition group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
@@ -135,6 +160,9 @@ const AdminDashboard = () => {
                               : fileService.getImageUrl(producto.imagenes[0])} 
                             alt={producto.nombre} 
                             className="h-full w-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                            fetchpriority="low"
                             onError={(e) => { e.target.src = 'https://via.placeholder.com/100?text=Camel'; }}
                           />
                         ) : (
@@ -155,7 +183,7 @@ const AdminDashboard = () => {
                   </td>
                   <td className="px-6 py-4 text-center">
                     <button
-                      onClick={() => productoService.toggleEstadoProducto(producto.id).then(loadData)}
+                      onClick={() => handleToggleEstado(producto.id)}
                       className={`text-2xl transition ${producto.activo ? 'text-brand-primary' : 'text-gray-300'}`}
                     >
                       {producto.activo ? <FiToggleRight /> : <FiToggleLeft />}
@@ -170,6 +198,37 @@ const AdminDashboard = () => {
             </tbody>
           </table>
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-8 py-5 border-t border-brand-muted bg-brand-light/30">
+            <span className="text-xs font-bold text-brand-secondary uppercase tracking-widest">
+              Mostrando {productos.length} de {totalElements} piezas
+            </span>
+            
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                disabled={currentPage === 0 || loading}
+                className="p-2 rounded-xl border border-brand-muted text-brand-dark hover:bg-brand-primary hover:text-crema disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-brand-dark transition-all"
+              >
+                <FiChevronLeft size={20} />
+              </button>
+              
+              <span className="text-sm font-black text-brand-dark">
+                {totalPages > 0 ? currentPage + 1 : 0} <span className="text-brand-secondary font-medium mx-1">/</span> {totalPages}
+              </span>
+              
+              <button 
+                onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                disabled={currentPage >= totalPages - 1 || loading || totalPages === 0}
+                className="p-2 rounded-xl border border-brand-muted text-brand-dark hover:bg-brand-primary hover:text-crema disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-brand-dark transition-all"
+              >
+                <FiChevronRight size={20} />
+              </button>
+            </div>
+          </div>
+        )}
+        
       </div>
 
       <ProductoModal 

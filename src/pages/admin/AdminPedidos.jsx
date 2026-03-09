@@ -13,20 +13,35 @@ const AdminOrders = () => {
   const [modals, setModals] = useState({ create: false, detail: false });
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  useEffect(() => { loadData(); }, []);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+
+  useEffect(() => { 
+    setCurrentPage(0); 
+    loadData(); 
+  }, [searchTerm, filtroEstado]);
+
+  useEffect(() => {
+    loadData();
+  }, [currentPage]);
 
   const loadData = async () => {
     try {
       setData(prev => ({ ...prev, loading: true }));
       const [pedRes, prodRes] = await Promise.all([
-        pedidoService.getPedidosAdmin(),
-        productoService.getAllProductos()
+        pedidoService.getPedidosAdmin(currentPage, 10, searchTerm, filtroEstado),
+        productoService.getAllProductosAdmin(0, 1000)
       ]);
       setData({
-        pedidos: Array.isArray(pedRes.data) ? pedRes.data : [],
-        productos: Array.isArray(prodRes.data) ? prodRes.data : [],
+        pedidos: pedRes.data.content || [],
+        productos: prodRes.data.content || prodRes.data || [],
         loading: false
       });
+
+      setTotalPages(pedRes.data.totalPages || 0);
+      setTotalElements(pedRes.data.totalElements || 0);
+
     } catch (error) {
       console.error("Error cargando datos", error);
       setData(prev => ({ ...prev, loading: false, pedidos: [] }));
@@ -48,7 +63,7 @@ const AdminOrders = () => {
       };
       await pedidoService.crearPedidoManual(payload);
       setModals({ ...modals, create: false });
-      loadData();
+      await loadData();
       sileo.success({ title: "Pedido creado", description: "La orden manual se registró en el sistema." });
     } catch (error) {
       sileo.error({ title: "Error de registro", description: "No se pudo generar la orden." });
@@ -68,8 +83,10 @@ const AdminOrders = () => {
         title: "Error al actualizar", 
         description: "Revisá tu conexión a internet." 
       },
-    }).then(() => {
-      loadData();
+    }).then(async () => {
+      
+      await loadData();
+      
       if (selectedOrder?.id === id) {
         setSelectedOrder(prev => ({ ...prev, estado: nuevoEstado }));
       }
@@ -161,7 +178,7 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-muted">
-                {filteredOrders.map((pedido) => (
+                {data.pedidos.map((pedido) => (
                   <tr key={pedido.id} className="hover:bg-crema/30 transition group">
                     <td className="px-8 py-5 font-mono text-sm font-bold text-brand-primary bg-brand-light/20 tracking-tighter">#{pedido.id}</td>
                     <td className="px-8 py-5">
@@ -191,6 +208,36 @@ const AdminOrders = () => {
               </tbody>
             </table>
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-8 py-5 border-t border-brand-muted bg-brand-light/30">
+              <span className="text-xs font-bold text-brand-secondary uppercase tracking-widest">
+                Mostrando {data.pedidos.length} de {totalElements} pedidos
+              </span>
+              
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                  disabled={currentPage === 0 || data.loading}
+                  className="p-2 rounded-xl border border-brand-muted text-brand-dark hover:bg-brand-primary hover:text-crema disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-brand-dark transition-all"
+                >
+                  <FiChevronLeft size={20} />
+                </button>
+                
+                <span className="text-sm font-black text-brand-dark">
+                  {totalPages > 0 ? currentPage + 1 : 0} <span className="text-brand-secondary font-medium mx-1">/</span> {totalPages}
+                </span>
+                
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                  disabled={currentPage >= totalPages - 1 || data.loading || totalPages === 0}
+                  className="p-2 rounded-xl border border-brand-muted text-brand-dark hover:bg-brand-primary hover:text-crema disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-brand-dark transition-all"
+                >
+                  <FiChevronRight size={20} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <CreateOrderModal 
