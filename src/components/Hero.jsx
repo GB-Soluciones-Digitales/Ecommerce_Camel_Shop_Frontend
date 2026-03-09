@@ -49,20 +49,23 @@ const HeroSlider = () => {
         className="h-full w-full hero-swiper"
       >
         {slides.map((slide, index) => {
-          const imgBase = slide.imagenUrl || defaultSlide.imagenUrl;
-          
-          const img400 = fileService.getImageUrl(imgBase, 400);
-          const img800 = fileService.getImageUrl(imgBase, 800);
-          const img1200 = fileService.getImageUrl(imgBase, 1200);
-          const img1600 = fileService.getImageUrl(imgBase, 1600);
+          const isDefault = slide.id === 'default-hero';
+
+          const imgSrc = isDefault 
+             ? window.location.origin + '/hero.jpg' 
+             : fileService.getImageUrl(slide.imagenUrl, 1600);
+             
+          const srcSetString = isDefault 
+            ? undefined 
+            : `${fileService.getImageUrl(slide.imagenUrl, 400)} 400w, ${fileService.getImageUrl(slide.imagenUrl, 800)} 800w, ${fileService.getImageUrl(slide.imagenUrl, 1200)} 1200w, ${fileService.getImageUrl(slide.imagenUrl, 1600)} 1600w`;
 
           return (
             <SwiperSlide key={slide.id} className="relative h-full w-full">
               
               <div className="absolute inset-0">
                 <img 
-                  src={img1600}
-                  srcSet={`${img400} 400w, ${img800} 800w, ${img1200} 1200w, ${img1600} 1600w`}
+                  src={imgSrc}
+                  srcSet={srcSetString}
                   sizes="100vw"
                   alt={slide.titulo || 'Camel Shop Hero'} 
                   className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-[10000ms]"
