@@ -188,7 +188,7 @@ const SkeletonCard = () => (
 );
 
 const ProductCard = ({ producto, getImgUrl }) => (
-  <Link to={`/producto/${producto.id}`} className="group flex flex-col relative">
+  <Link to={`/producto/${producto.slug}`} className="group flex flex-col relative">
     <div className="relative aspect-[3/4] overflow-hidden bg-brand-light mb-5 rounded-[2rem]">
       <img 
         src={getImgUrl(producto.imagenes?.[0])} 

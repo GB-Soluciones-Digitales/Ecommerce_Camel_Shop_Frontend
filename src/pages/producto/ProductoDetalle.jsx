@@ -10,7 +10,7 @@ import ProductoInfo from './ProductoInfo';
 import TablaTallesModal from '../../components/TablaTallesModal';
 
 const ProductoDetallePage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const { addToCart, setShowCart } = useCart();
   
   const [producto, setProducto] = useState(null);
@@ -21,14 +21,14 @@ const ProductoDetallePage = () => {
     const fetchProducto = async () => {
       try {
         setLoading(true);
-        const res = await productoService.getProductoById(id);
+        const res = await productoService.getProductoBySlug(slug);
         setProducto(res.data);
       } catch (err) { console.error(err); }
       finally { setLoading(false); }
     };
     fetchProducto();
     window.scrollTo(0,0);
-  }, [id]);
+  }, [slug]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-crema"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-dark"></div></div>;
   if (!producto) return <div className="min-h-screen bg-crema flex items-center justify-center font-serif text-2xl text-brand-primary">Pieza no encontrada.</div>;

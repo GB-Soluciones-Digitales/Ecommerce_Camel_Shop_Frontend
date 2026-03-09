@@ -23,6 +23,8 @@ export const productoService = {
 
   getProductoById: (id) => api.get(`/productos/publico/${id}`),
 
+  getProductoBySlug: (slug) => api.get(`/productos/publico/detalle/${slug}`),
+
   // ===== ENDPOINTS ADMIN =====
   
   getAllProductosAdmin: (page = 0, size = 10, search = '') => {

@@ -34,7 +34,7 @@ function App() {
               <Route element={<PublicLayout />}>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/productos" element={<ProductosPage />} />
-                <Route path="/producto/:id" element={<ProductoDetallePage />} />
+                <Route path="/producto/:slug" element={<ProductoDetallePage />} />
                 <Route path="/contacto" element={<Contacto />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
               </Route>
