@@ -10,7 +10,7 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 
 const HeroSlider = () => {
-  const [slides, setSlides] = useState([]);
+  const [slides, setSlides] = useState([defaultSlide]);
   const [loading, setLoading] = useState(true);
 
   const defaultSlide = {
@@ -28,21 +28,15 @@ const HeroSlider = () => {
     const fetchSlides = async () => {
       try {
         const res = await heroService.getPublicSlides();
-        if (Array.isArray(res.data)) {
+        if (Array.isArray(res.data) && res.data.length > 0) {
           setSlides(res.data);
         }
       } catch (error) {
         console.error("Error cargando hero slides:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchSlides();
   }, []);
-
-  if (loading) return <div className="h-[90vh] md:h-screen w-full bg-crema animate-pulse"></div>;
-
-  const displaySlides = slides.length > 0 ? slides : [defaultSlide];
 
   return (
     <section className="relative h-[90vh] md:h-screen w-full bg-crema overflow-hidden">
@@ -55,18 +49,22 @@ const HeroSlider = () => {
         loop={displaySlides.length > 1} 
         className="h-full w-full hero-swiper"
       >
-        {displaySlides.map((slide, index) => {
-          const mobileUrl = fileService.getImageUrl(slide.imagenUrl || defaultSlide.imagenUrl, 800);
-          const desktopUrl = fileService.getImageUrl(slide.imagenUrl || defaultSlide.imagenUrl, 1600);
+        {slides.map((slide, index) => {
+          const imgBase = slide.imagenUrl || defaultSlide.imagenUrl;
+          
+          const img400 = fileService.getImageUrl(imgBase, 400);
+          const img800 = fileService.getImageUrl(imgBase, 800);
+          const img1200 = fileService.getImageUrl(imgBase, 1200);
+          const img1600 = fileService.getImageUrl(imgBase, 1600);
 
           return (
             <SwiperSlide key={slide.id} className="relative h-full w-full">
               
               <div className="absolute inset-0">
                 <img 
-                  src={desktopUrl}
-                  srcSet={`${mobileUrl} 800w, ${desktopUrl} 1600w`}
-                  sizes="(max-width: 768px) 800px, 1600px" 
+                  src={img1600}
+                  srcSet={`${img400} 400w, ${img800} 800w, ${img1200} 1200w, ${img1600} 1600w`}
+                  sizes="100vw"
                   alt={slide.titulo || 'Camel Shop Hero'} 
                   className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-[10000ms]"
                   fetchpriority={index === 0 ? "high" : "low"}
