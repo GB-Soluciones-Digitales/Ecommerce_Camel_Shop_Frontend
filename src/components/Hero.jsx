@@ -44,13 +44,6 @@ const HeroSlider = () => {
 
   const displaySlides = slides.length > 0 ? slides : [defaultSlide];
 
-  const getImgUrl = (url) => {
-    if (!url) return defaultSlide.imagenUrl;
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    const optimalWidth = isMobile ? 800 : 1600;
-    return fileService.getImageUrl(url, optimalWidth);
-  };
-
   return (
     <section className="relative h-[90vh] md:h-screen w-full bg-crema overflow-hidden">
       <Swiper
@@ -62,60 +55,67 @@ const HeroSlider = () => {
         loop={displaySlides.length > 1} 
         className="h-full w-full hero-swiper"
       >
-        {displaySlides.map((slide, index) => (
-          <SwiperSlide key={slide.id} className="relative h-full w-full">
-            
-            <div className="absolute inset-0">
-               <img 
-                 src={getImgUrl(slide.imagenUrl)} 
-                 alt={slide.titulo || 'Camel Shop Hero'} 
-                 className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-[10000ms]"
-                 fetchpriority={index === 0 ? "high" : "low"}
-                 loading={index === 0 ? "eager" : "lazy"}
-                 decoding="async"
-               />
-               <div className="absolute inset-0 bg-gradient-to-l from-black/40 via-black/20 to-crema"></div>
-            </div>
+        {displaySlides.map((slide, index) => {
+          const mobileUrl = fileService.getImageUrl(slide.imagenUrl || defaultSlide.imagenUrl, 800);
+          const desktopUrl = fileService.getImageUrl(slide.imagenUrl || defaultSlide.imagenUrl, 1600);
 
-            {/* Contenido */}
-            <div className="relative h-full max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-center pb-20 md:pb-0">
-              <div className={`w-full md:w-3/4 space-y-6 
-                  ${slide.alineacion === 'right' ? 'text-right flex flex-col items-end' : ''}
-                  ${slide.alineacion === 'center' ? 'text-center flex flex-col items-center' : ''}
-                  ${slide.alineacion === 'left' ? 'text-left flex flex-col items-start' : ''}
-              `}>
-                
-                {slide.subtitulo && (
-                  <span className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-brand-primary bg-brand-muted/50 rounded-2xl border p-2 drop-shadow-md">
-                    {slide.subtitulo}
-                  </span>
-                )}
-                
-                <h1 className="text-5xl md:text-7xl lg:text-[6rem] font-serif font-bold text-brand-dark leading-[1.1] drop-shadow-lg">
-                  {slide.titulo}
-                </h1>
-                
-                {slide.descripcion && (
-                  <p className="text-lg md:text-2xl text-black/50 max-w-2xl font-light">
-                    {slide.descripcion}
-                  </p>
-                )}
-
-                {slide.botonTexto && (
-                  <div className="pt-6">
-                    <Link 
-                      to={slide.botonLink || '/productos'} 
-                      className="inline-block bg-crema text-brand-dark px-10 py-4 rounded-sm font-medium tracking-widest uppercase text-xs md:text-sm hover:bg-brand-dark hover:text-crema transition-colors duration-300 shadow-lg"
-                    >
-                      {slide.botonTexto}
-                    </Link>
-                  </div>
-                )}
+          return (
+            <SwiperSlide key={slide.id} className="relative h-full w-full">
+              
+              <div className="absolute inset-0">
+                <img 
+                  src={desktopUrl}
+                  srcSet={`${mobileUrl} 800w, ${desktopUrl} 1600w`}
+                  sizes="(max-width: 768px) 800px, 1600px" 
+                  alt={slide.titulo || 'Camel Shop Hero'} 
+                  className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-[10000ms]"
+                  fetchpriority={index === 0 ? "high" : "low"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-l from-black/40 via-black/20 to-crema"></div>
               </div>
-            </div>
 
-          </SwiperSlide>
-        ))}
+              {/* Contenido */}
+              <div className="relative h-full max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-center pb-20 md:pb-0">
+                <div className={`w-full md:w-3/4 space-y-6 
+                    ${slide.alineacion === 'right' ? 'text-right flex flex-col items-end' : ''}
+                    ${slide.alineacion === 'center' ? 'text-center flex flex-col items-center' : ''}
+                    ${slide.alineacion === 'left' ? 'text-left flex flex-col items-start' : ''}
+                `}>
+                  
+                  {slide.subtitulo && (
+                    <span className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-brand-primary bg-brand-muted/50 rounded-2xl border p-2 drop-shadow-md">
+                      {slide.subtitulo}
+                    </span>
+                  )}
+                  
+                  <h1 className="text-5xl md:text-7xl lg:text-[6rem] font-serif font-bold text-brand-dark leading-[1.1] drop-shadow-lg">
+                    {slide.titulo}
+                  </h1>
+                  
+                  {slide.descripcion && (
+                    <p className="text-lg md:text-2xl text-black/50 max-w-2xl font-light">
+                      {slide.descripcion}
+                    </p>
+                  )}
+
+                  {slide.botonTexto && (
+                    <div className="pt-6">
+                      <Link 
+                        to={slide.botonLink || '/productos'} 
+                        className="inline-block bg-crema text-brand-dark px-10 py-4 rounded-sm font-medium tracking-widest uppercase text-xs md:text-sm hover:bg-brand-dark hover:text-crema transition-colors duration-300 shadow-lg"
+                      >
+                        {slide.botonTexto}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
 
       <style>{`
