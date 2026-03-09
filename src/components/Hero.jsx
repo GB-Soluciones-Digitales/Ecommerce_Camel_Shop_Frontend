@@ -12,7 +12,7 @@ import 'swiper/css/pagination';
 const HeroSlider = () => {
   const defaultSlide = {
     id: 'default-hero',
-    imagenUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2000',
+    imagenUrl: '/hero.jpg',
     titulo: 'Estilo Urbano Redefinido.',
     subtitulo: 'NUEVA TEMPORADA',
     descripcion: 'Descubre la fusión perfecta entre comodidad y tendencia. Prendas diseñadas para conquistar la ciudad.',
