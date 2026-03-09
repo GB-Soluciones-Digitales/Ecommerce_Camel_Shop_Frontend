@@ -10,9 +10,6 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 
 const HeroSlider = () => {
-  const [slides, setSlides] = useState([defaultSlide]);
-  const [loading, setLoading] = useState(true);
-
   const defaultSlide = {
     id: 'default-hero',
     imagenUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2000',
@@ -23,6 +20,8 @@ const HeroSlider = () => {
     botonLink: '/productos',
     alineacion: 'left'
   };
+
+  const [slides, setSlides] = useState([defaultSlide]);
 
   useEffect(() => {
     const fetchSlides = async () => {
