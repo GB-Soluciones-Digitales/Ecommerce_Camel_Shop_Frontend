@@ -16,8 +16,15 @@ export const fileService = {
     return response.data;
   },
 
-  getImageUrl: (filename) => {
+  getImageUrl: (filename, width = null) => {
     if (!filename) return 'https://placehold.co/600x400?text=Sin+Imagen';
+    if (filename.includes('res.cloudinary.com') && filename.includes('/upload/')) {
+      if (!filename.includes('f_auto')) {
+        const transform = width ? `f_auto,q_auto,w_${width}` : 'f_auto,q_auto';
+        return filename.replace('/upload/', `/upload/${transform}/`);
+      }
+      return filename;
+    }
     if (filename.startsWith('http')) return filename;
     return `${API_BASE_URL}/uploads/${filename}`;
   },

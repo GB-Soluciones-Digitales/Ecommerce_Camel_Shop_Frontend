@@ -46,7 +46,7 @@ const HeroSlider = () => {
 
   const getImgUrl = (url) => {
     if (!url) return defaultSlide.imagenUrl;
-    return url.startsWith('http') ? url : fileService.getImageUrl(url);
+    return fileService.getImageUrl(url, 1600);
   };
 
   return (
@@ -60,14 +60,17 @@ const HeroSlider = () => {
         loop={displaySlides.length > 1} 
         className="h-full w-full hero-swiper"
       >
-        {displaySlides.map((slide) => (
+        {displaySlides.map((slide, index) => (
           <SwiperSlide key={slide.id} className="relative h-full w-full">
             
             <div className="absolute inset-0">
                <img 
                  src={getImgUrl(slide.imagenUrl)} 
                  alt={slide.titulo || 'Camel Shop Hero'} 
-                 className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-[10000ms]" 
+                 className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-[10000ms]"
+                 fetchpriority={index === 0 ? "high" : "low"}
+                 loading={index === 0 ? "eager" : "lazy"}
+                 decoding="async"
                />
                <div className="absolute inset-0 bg-gradient-to-l from-black/40 via-black/20 to-crema"></div>
             </div>
