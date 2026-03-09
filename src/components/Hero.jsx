@@ -46,7 +46,9 @@ const HeroSlider = () => {
 
   const getImgUrl = (url) => {
     if (!url) return defaultSlide.imagenUrl;
-    return fileService.getImageUrl(url, 1600);
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const optimalWidth = isMobile ? 800 : 1600;
+    return fileService.getImageUrl(url, optimalWidth);
   };
 
   return (
