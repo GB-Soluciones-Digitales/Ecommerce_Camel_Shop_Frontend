@@ -194,8 +194,9 @@ const ProductCard = ({ producto, getImgUrl }) => (
         src={getImgUrl(producto.imagenes?.[0])} 
         alt={producto.nombre}
         decoding="async"
-        className="w-full h-full object-cover transition duration-[1.5s] ease-out group-hover:scale-110"
+        className="w-full h-full object-cover transition duration-[1.5s] ease-out group-hover:scale-110 will-change-transform"
         loading="lazy"
+        fetchpriority="low"
       />
       
       {/* Overlay al Hover */}
