@@ -45,7 +45,7 @@ const HeroSlider = () => {
         speed={1500}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
-        loop={displaySlides.length > 1} 
+        loop={slides.length > 1} 
         className="h-full w-full hero-swiper"
       >
         {slides.map((slide, index) => {
