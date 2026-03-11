@@ -105,7 +105,7 @@ const ProductosPage = () => {
           </p>
         </div>
 
-        {/* Filtros dinámicos */}
+        {/* Filtros */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 border-y border-brand-muted py-6">
           <div className="flex overflow-x-auto w-full md:w-auto gap-3 pb-2 md:pb-0 hide-scrollbar">
             <button 
@@ -199,7 +199,7 @@ const ProductCard = ({ producto, getImgUrl }) => (
         fetchpriority="low"
       />
       
-      {/* Overlay al Hover */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-brand-dark/20 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
         <span className="bg-crema text-brand-dark px-6 py-2.5 rounded-full font-bold uppercase text-[10px] tracking-widest transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 shadow-xl">
           Ver Detalles

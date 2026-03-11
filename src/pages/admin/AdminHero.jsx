@@ -141,7 +141,7 @@ const AdminHero = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/60 backdrop-blur-md overflow-y-auto">
           <div className="bg-crema rounded-[2.5rem] shadow-2xl w-full max-w-4xl my-8 relative flex flex-col max-h-[95vh] border border-brand-muted/50 overflow-hidden font-sans">
             
-            {/* Header del Modal */}
+            {/* Header */}
             <div className="px-8 py-6 border-b border-brand-muted flex justify-between items-center bg-white">
               <div>
                 <h3 className="font-serif font-bold text-2xl text-brand-dark">
@@ -159,7 +159,7 @@ const AdminHero = () => {
 
             <div className="flex-1 overflow-y-auto p-8 space-y-10">
               
-              {/* Vista Previa mejorada */}
+              {/* Vista Previa */}
               <div className="space-y-3">
                 <div className="flex justify-between items-end px-1">
                   <label className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em]">Vista Previa en Vivo</label>
@@ -176,7 +176,7 @@ const AdminHero = () => {
                         </div>
                     )}
                     
-                    {/* Overlay Gradiente */}
+                    {/* Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
                     <div className="absolute inset-0 p-10 md:p-16 flex items-center">
@@ -294,7 +294,7 @@ const AdminHero = () => {
                   </div>
                 </div>
 
-                {/* Botones de acción Footer */}
+                {/* Footer */}
                 <div className="flex justify-end gap-4 pt-10 border-t border-brand-muted">
                   <button 
                     type="button" 

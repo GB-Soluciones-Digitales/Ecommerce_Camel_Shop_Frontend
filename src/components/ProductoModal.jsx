@@ -267,7 +267,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
           </div>
         </form>
 
-        {/* Footer Premium */}
+        {/* Footer */}
         <div className="px-8 py-6 border-t border-brand-muted flex justify-between items-center bg-brand-light/50">
           <div className="hidden md:block">
             <span className="text-[10px] text-brand-secondary uppercase tracking-widest font-bold">Asegurate de guardar los cambios</span>

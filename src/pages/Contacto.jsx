@@ -74,7 +74,7 @@ const Contacto = () => {
         <meta name="description" content="Contactanos por WhatsApp, visitá nuestro showroom en Paraná o consultá nuestras políticas de envío." />
       </Helmet>
 
-      {/* Hero Editorial */}
+      {/* Hero */}
       <div className="max-w-[900px] mx-auto px-6 text-center mb-24">
         <span className="text-xs font-bold text-brand-secondary uppercase tracking-[0.3em] mb-4 block">Asistencia</span>
         <h1 className="text-5xl md:text-7xl font-serif font-medium text-brand-dark mb-6 tracking-tight">Contacto</h1>
@@ -137,7 +137,7 @@ const Contacto = () => {
           </div>
         </div>
 
-        {/* Acordeón FAQ Editorial */}
+        {/* Acordeón FAQ */}
         <div id="envios" className="mt-32 max-w-[900px] mx-auto scroll-mt-32">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-serif text-brand-dark tracking-tight">Preguntas Frecuentes</h2>

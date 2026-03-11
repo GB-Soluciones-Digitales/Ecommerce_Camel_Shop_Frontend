@@ -46,7 +46,7 @@ const PublicLayout = () => {
           <div className="absolute inset-y-0 right-0 max-w-md w-full flex">
             <div className="w-full bg-crema shadow-2xl flex flex-col h-full transform transition-transform border-l border-brand-muted">
               
-              {/* Header Carrito */}
+              {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-brand-muted bg-brand-light">
                 <h2 className="text-2xl font-serif text-brand-dark uppercase tracking-tight">Tu Carrito</h2>
                 <button onClick={() => setShowCart(false)} className="p-2 hover:bg-brand-muted/30 rounded-full text-brand-dark transition-colors">
@@ -108,7 +108,7 @@ const PublicLayout = () => {
                 )}
               </div>
 
-              {/* Checkout Footer */}
+              {/* Footer */}
               {cartItems.length > 0 && (
                 <div className="border-t border-brand-muted p-6 bg-brand-light/50">
                   <div className="flex justify-between items-end mb-6">

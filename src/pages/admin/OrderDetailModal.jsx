@@ -22,7 +22,7 @@ const OrderDetailModal = ({ isOpen, pedido, onClose, onStatusChange, onFileUploa
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-md" onClick={onClose}>
       <div className="bg-crema rounded-[2.5rem] shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col border border-brand-muted max-h-[92vh]" onClick={e => e.stopPropagation()}>
         
-        {/* Header Premium */}
+        {/* Header */}
         <div className="px-8 py-6 border-b border-brand-muted flex justify-between items-center bg-white">
           <div>
             <div className="flex items-center gap-4 mb-1">
@@ -72,7 +72,7 @@ const OrderDetailModal = ({ isOpen, pedido, onClose, onStatusChange, onFileUploa
             </div>
           </div>
 
-          {/* Items a Preparar */}
+          {/* Items */}
           <div className="space-y-4">
              <div className="flex items-center gap-3 px-2">
                 <div className="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-primary"><FiPackage size={14}/></div>
@@ -116,7 +116,7 @@ const OrderDetailModal = ({ isOpen, pedido, onClose, onStatusChange, onFileUploa
           </div>
         </div>
 
-        {/* Footer Premium y Acciones */}
+        {/* Footer */}
         <div className="px-8 py-6 border-t border-brand-muted flex justify-between items-center bg-brand-light/50 flex-wrap gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] font-black text-brand-secondary uppercase tracking-[0.2em]">Total Bruto</span>
@@ -124,7 +124,6 @@ const OrderDetailModal = ({ isOpen, pedido, onClose, onStatusChange, onFileUploa
           </div>
           
           <div className="flex gap-4 flex-wrap items-center">
-            {/* Upload File Button */}
             <div className="relative flex items-center">
               <input type="file" id="modal-upload" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onChange={(e) => onFileUpload(e, pedido.id)} accept="image/*,.pdf"/>
               <label htmlFor="modal-upload" className={`px-6 py-3.5 bg-white border ${pedido.facturaUrl ? 'border-brand-primary text-brand-primary' : 'border-brand-muted text-brand-dark'} rounded-2xl font-bold uppercase text-[10px] tracking-widest transition-all hover:border-brand-dark hover:shadow-md flex items-center gap-2`}>
@@ -137,7 +136,7 @@ const OrderDetailModal = ({ isOpen, pedido, onClose, onStatusChange, onFileUploa
               </a>
             )}
 
-            {/* Action Buttons based on Status */}
+            {/* Botones de accion */}
             {pedido.estado === 'PENDIENTE' && (
               <button onClick={() => onStatusChange(pedido.id, 'CONFIRMADO')} className="bg-brand-dark text-crema px-8 py-4 rounded-2xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-2xl hover:bg-black transition-all transform hover:-translate-y-1 flex items-center gap-2">
                 <FiCheck size={18}/> Confirmar Pedido

@@ -1,7 +1,11 @@
 # 🐫 Camel Shop - Frontend
 
-Interfaz de usuario moderna y responsiva para la tienda de indumentaria **Camel Shop**.  
-Desarrollada con **React** y **Tailwind CSS**, enfocada en brindar una experiencia de compra fluida (*Mobile First*) y un panel de administración potente para la gestión de inventario complejo.
+Interfaz de usuario moderna y responsiva para la tienda online **Camel Moda Shop**. Desarrollada con **React 18** y **Tailwind CSS**, enfocada en brindar una experiencia de compra fluida (Mobile First) y un panel de administración potente para la gestión de un inventario complejo.
+
+![React](https://img.shields.io/badge/React-18-blue)
+![Vite](https://img.shields.io/badge/Vite-5.0-646CFF)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC)
+![Deploy](https://img.shields.io/badge/Deploy-Vercel-000000)
 
 ---
 
@@ -9,39 +13,23 @@ Desarrollada con **React** y **Tailwind CSS**, enfocada en brindar una experienc
 
 ### 🛍️ Para el Cliente
 
-- **Catálogo Inteligente**  
-  Filtrado dinámico por categorías vía URL (*SEO Friendly*) y buscador en tiempo real.
+- **Catálogo Inteligente:** Filtrado dinámico por categorías vía URL (SEO Friendly) y buscador en tiempo real.
 
-- **Detalle de Producto Inmersivo**
-  - Galería de imágenes tipo *slider* con miniaturas.
-  - Selector de variantes con lógica inteligente que deshabilita combinaciones de **Color / Talle** sin stock.
+- **Detalle Inmersivo:** Galería de imágenes tipo *slider* con miniaturas. Selector de variantes con lógica inteligente que deshabilita combinaciones de **Color / Talle** sin stock.
 
-- **Carrito de Compras (Context API)**  
-  Persistencia local y agrupación de ítems por variante única  
-  *(ej: Remera Gris M ≠ Remera Gris L)*.
+- **Carrito de Compras:** Gestionado con Context API. Persistencia local y agrupación de ítems por variante exacta (ej: Remera Gris M ≠ Remera Gris L).
 
-- **Checkout vía WhatsApp**  
-  Generación automática de un mensaje detallado con el pedido para finalizar la compra de forma personalizada.
+- **Checkout vía WhatsApp:** Generación automática de un mensaje detallado con el pedido para finalizar la compra de forma ágil y personalizada.
 
 ---
 
-## 🔐 Panel de Administración (Back-office)
+### 🔐 Panel de Administración (Back-office)
 
-- **Autenticación Segura**  
-  Login contra API desarrollada en Java con Spring Security y JWT.
+- **Gestión Avanzada de Productos:** Matriz de stock visual para cargar múltiples variantes (Color y Talle) y cálculo automático del stock total.
 
-- **Gestión Avanzada de Productos**
-  - Matriz de stock visual para cargar múltiples variantes (Color y Talle).
-  - Cálculo automático del stock total.
-  - Subida de imágenes con previsualización.
+- **Gestión de Pedidos:** Tablero de control con estados (*Pendiente, Enviado, Entregado, Cancelado*), modal de preparación y carga de comprobantes.
 
-- **Gestión de Pedidos**
-  - Tablero de control con estados: *Pendiente*, *Enviado* y *Entregado*.
-  - Modal de preparación de pedidos.
-  - Carga de comprobantes y facturas.
-
-- **Hero Slider**
-  - Configuración dinámica de banners de la Home desde el panel de administración.
+- **Personalización (CMS):** Configuración dinámica de banners e imágenes del Hero de la Home.
 
 ---
 
@@ -49,10 +37,11 @@ Desarrollada con **React** y **Tailwind CSS**, enfocada en brindar una experienc
 
 - **Core:** React 18 + Vite
 - **Estilos:** Tailwind CSS + Framer Motion
+- **Estado Global:** React Context API
 - **Routing:** React Router DOM v6
 - **HTTP Client:** Axios
 - **UI Components:** React Icons, Swiper
-- **Estado Global:** React Context API
+- **Despliegue:** Vercel
 
 ---
 
@@ -88,22 +77,6 @@ npm run dev
 
 ---
 
-## 📱 Diseño y UX
-
-El diseño sigue una paleta de colores Tierra / Urbano:
-
-Camel Oscuro: #4a3b2a
-
-Arena: #d8bf9f
-
-Se priorizó la experiencia Mobile First, con botones grandes, navegación intuitiva y feedback visual constante mediante loaders y skeletons.
-
----
-
-## 🌐 Despliegue
-
-El frontend está optimizado para su despliegue en Vercel.
-
-Requiere un archivo vercel.json para el correcto manejo de rutas en SPAs (Single Page Applications).
-
----
+## 👤 Autor
+**Brian Battauz** - *Full Stack Developer*
+[Portfolio](https://portfoliobrianbattauz.vercel.app/) | [LinkedIn](www.linkedin.com/in/brian-battauz-75691a217)

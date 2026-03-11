@@ -47,12 +47,12 @@ const Navbar = () => {
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
         <div className="flex justify-between items-center">
           
-          {/* LOGO TIPOGRÁFICO */}
+          {/* LOGO */}
           <Link to="/" className={`text-3xl md:text-4xl font-serif font-black tracking-tighter text-brand-muted`}>
             CAMEL<span className='text-brand-dark text-5xl'>.</span>
           </Link>
 
-          {/* ENLACES CENTRALES (Desktop) */}
+          {/* ENLACES CENTRALES */}
           <div className="hidden md:flex items-center space-x-10">
             <Link to="/" className={`text-sm tracking-widest uppercase font-medium transition-colors text-brand-muted hover:text-brand-secondary`}>
               Inicio
