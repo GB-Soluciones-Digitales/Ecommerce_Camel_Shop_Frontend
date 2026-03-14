@@ -5,19 +5,15 @@ export const fileService = {
 
   uploadImage: async (file) => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', file); 
 
     const token = localStorage.getItem('token');
     
-    const headers = {
-      'Content-Type': 'multipart/form-data',
-    };
-    
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-    
-    const response = await axios.post(`${API_BASE_URL}/uploads`, formData, { headers });
+    const response = await axios.post(`${API_BASE_URL}/uploads`, formData, {
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
+    });
     
     return response.data;
   },
