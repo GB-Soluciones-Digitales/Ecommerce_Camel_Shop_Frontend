@@ -2,17 +2,23 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081/api';
 
 export const fileService = {
+
   uploadImage: async (file) => {
     const formData = new FormData();
     formData.append('file', file);
+
     const token = localStorage.getItem('token');
     
-    const response = await axios.post(`${API_BASE_URL}/uploads`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': token ? `Bearer ${token}` : '',
-      },
-    });
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const response = await axios.post(`${API_BASE_URL}/uploads`, formData, { headers });
+    
     return response.data;
   },
 

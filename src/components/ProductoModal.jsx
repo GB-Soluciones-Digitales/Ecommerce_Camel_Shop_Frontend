@@ -72,10 +72,15 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
   };
 
   const handleFileSelect = (e) => {
-    if (e.target.files?.[0]) {
-      const file = e.target.files[0];
-      const preview = URL.createObjectURL(file);
-      setState(prev => ({ ...prev, newFiles: [...prev.newFiles, { file, preview }] }));
+    if (e.target.files && e.target.files.length > 0) {
+      const filesArray = Array.from(e.target.files);
+      
+      const newPreviews = filesArray.map(file => ({
+        file,
+        preview: URL.createObjectURL(file)
+      }));
+
+      setState(prev => ({ ...prev, newFiles: [...prev.newFiles, ...newPreviews] }));
     }
   };
 
@@ -83,11 +88,10 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     e.preventDefault();
     setState(prev => ({ ...prev, uploading: true }));
     try {
-      const uploadedUrls = [];
-      for (const item of state.newFiles) {
-        const uploadRes = await fileService.uploadImage(item.file);
-        uploadedUrls.push(uploadRes.filename);
-      }
+      const uploadPromises = state.newFiles.map(item => fileService.uploadImage(item.file));
+      const uploadResponses = await Promise.all(uploadPromises);
+
+      const uploadedUrls = uploadResponses.map(res => res.filename || res);
 
       const totalStock = state.variantes.reduce((acc, v) => 
         acc + Object.values(v.stock).reduce((sum, val) => sum + (parseInt(val) || 0), 0), 0
@@ -182,7 +186,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                 <label className="aspect-[3/4] flex flex-col items-center justify-center border-2 border-dashed border-brand-muted bg-brand-light/30 rounded-xl cursor-pointer hover:border-brand-primary hover:bg-brand-light transition-all group">
                   <FiUploadCloud className="text-brand-secondary group-hover:text-brand-primary transition-colors mb-2" size={28}/>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary group-hover:text-brand-primary">Subir</span>
-                  <input type="file" onChange={handleFileSelect} className="hidden" accept="image/*" />
+                  <input type="file" multiple onChange={handleFileSelect} className="hidden" accept="image/*" />
                 </label>
               </div>
             </section>
