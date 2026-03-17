@@ -228,17 +228,17 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                     <label htmlFor={`${baseId}-desc`} className="text-[10px] font-black text-brand-secondary uppercase tracking-widest ml-1 flex items-center gap-2"><FiAlignLeft/> Descripción</label>
                     <textarea id={`${baseId}-desc`} rows="3" className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-sm text-brand-dark" placeholder="Detalles de la tela, calce, cuidados..." value={state.descripcion} onChange={e => setState({...state, descripcion: e.target.value})} />
                   </div>
-                  {/* Aca dentro un checkbox/switch para marcar como oferta y activar un input para agregar el porcentaje de descuento */}
                   <div>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <div className="relative flex items-center">
                         <input
                           type="checkbox"
+                          className="sr-only peer"
                           checked={state.enOferta}
                           onChange={(e) => setState({ ...state, enOferta: e.target.checked })}
                         />
+                        <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
                       </div>
-                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
                       <span className="text-[10px] font-black text-brand-secondary uppercase tracking-widest flex items-center gap-2">
                         <FiTag className={state.enOferta ? "text-rose-500" : ""} />
                         Prenda en Oferta (Sale)
