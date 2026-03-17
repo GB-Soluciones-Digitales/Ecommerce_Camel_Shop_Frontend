@@ -40,6 +40,12 @@ const ProductoGaleria = ({ producto }) => {
             </div>
           </div>
 
+          {producto.enOferta && (
+            <div className="absolute top-3 left-3 bg-rose-500 text-white text-[10px] font-black tracking-widest px-3 py-1.5 rounded-full z-10 shadow-lg">
+              SALE {producto.porcentajeDescuento}%
+            </div>
+          )}
+          
           <Swiper
             style={{ '--swiper-navigation-color': 'var(--color-brand-dark)', '--swiper-navigation-size': '20px' }}
             navigation={true}

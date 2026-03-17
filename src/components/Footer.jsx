@@ -23,7 +23,7 @@ const Footer = () => {
             <h4 className="font-bold text-[10px] uppercase tracking-widest text-brand-dark mb-6">Tienda</h4>
             <ul className="space-y-4 text-sm text-brand-secondary font-medium">
               <li><Link to="/productos" className="hover:text-brand-primary transition-colors">Catálogo</Link></li>
-              <li><Link to="/productos" className="hover:text-brand-primary transition-colors">Novedades</Link></li>
+              <li><Link to="/productos?categoria=ofertas" className="hover:text-brand-primary transition-colors">🔥Sale</Link></li>
               <li><Link to="/contacto" className="hover:text-brand-primary transition-colors">Contacto</Link></li>
             </ul>
           </div>
@@ -33,8 +33,9 @@ const Footer = () => {
             <h4 className="font-bold text-[10px] uppercase tracking-widest text-brand-dark mb-6">Asistencia</h4>
             <ul className="space-y-4 text-sm text-brand-secondary font-medium">
               <li><Link to="/contacto#envios" className="hover:text-brand-primary transition-colors">Envíos y Devoluciones</Link></li>
-              <li><Link to="/contacto" className="hover:text-brand-primary transition-colors">Guía de Talles</Link></li>
-              <li><Link to="/contacto" className="hover:text-brand-primary transition-colors">Preguntas Frecuentes</Link></li>
+              {/* Abrir la modal de guia de talles? */}
+              <li><Link to="/contacto" className="hover:text-brand-primary transition-colors">Guía de Talles</Link></li> 
+              <li><Link to="/contacto#envios" className="hover:text-brand-primary transition-colors">Preguntas Frecuentes</Link></li>
             </ul>
           </div>
 

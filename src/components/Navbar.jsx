@@ -80,6 +80,8 @@ const Navbar = () => {
                   </Link>
                 ))}
                 <div className="h-px bg-brand-primary/30 my-2 mx-4"></div>
+                <Link to="/productos?categoria=ofertas" className={`block px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-brand-primary/20 transition-colors`}>SALE</Link>
+                <div className="h-px bg-brand-primary/30 my-2 mx-4"></div>
                 <Link to="/productos" className={`block px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-brand-primary/20 transition-colors`}>Ver Todo</Link>
               </div>
             </div>
@@ -151,6 +153,10 @@ const Navbar = () => {
                  {cat.nombre}
                </Link>
              ))}
+             <div className="h-px bg-brand-primary/30 my-2 mx-4"></div>
+              <Link to="/productos?categoria=ofertas" className={`block px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-brand-primary/20 transition-colors`}>SALE</Link>
+              <div className="h-px bg-brand-primary/30 my-2 mx-4"></div>
+              <Link to="/productos" className={`block px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-brand-primary/20 transition-colors`}>Ver Todo</Link>
           </div>
 
           <Link to="/contacto" onClick={() => setIsOpen(false)} className="text-xl font-serif text-brand-dark">Contacto</Link>

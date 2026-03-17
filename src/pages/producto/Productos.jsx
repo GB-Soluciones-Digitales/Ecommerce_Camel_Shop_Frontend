@@ -114,6 +114,12 @@ const ProductosPage = () => {
             >
               Ver Todo
             </button>
+            <button 
+              onClick={() => handleCategoryChange('ofertas')}
+              className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all ${!categoriaQuery ? 'bg-brand-dark text-crema' : 'border border-brand-muted text-brand-dark hover:bg-brand-primary hover:text-brand-muted'}`}
+            >
+              🔥 SALE
+            </button>
             {state.categorias.map(c => (
               <button 
                 key={c.id} 

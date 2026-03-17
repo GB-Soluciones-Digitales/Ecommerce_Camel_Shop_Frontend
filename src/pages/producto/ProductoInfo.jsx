@@ -47,7 +47,18 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
         </button>
       </div>
       <h1 className="text-4xl md:text-5xl font-serif text-brand-dark leading-tight mb-4">{producto.nombre}</h1>
-      <p className="text-2xl text-brand-dark font-medium tracking-wide mb-8">${parseFloat(producto.precio).toLocaleString()}</p>
+      {producto.enOferta ? (
+        <>
+          <span className="text-brand-secondary line-through text-2xl font-medium tracking-wide mb-8">
+            ${parseFloat(producto.precio).toLocaleString()}
+          </span>
+          <span className="text-brand-dark text-2xl font-medium tracking-wide mb-8">
+            ${parseFloat(producto.precioFinal).toLocaleString()}
+          </span>
+        </>
+      ) : (
+        <span className="text-brand-dark text-2xl font-medium tracking-wide mb-8">${parseFloat(producto.precio).toLocaleString()}</span>
+      )}
       
       <p className="text-brand-secondary text-sm leading-relaxed mb-10">{producto.descripcion}</p>
 
