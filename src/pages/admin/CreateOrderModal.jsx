@@ -44,7 +44,7 @@ const CreateOrderModal = ({ isOpen, onClose, productos, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-md" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-md">
       <div className="bg-crema rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[92vh] overflow-hidden flex flex-col border border-brand-muted" onClick={e => e.stopPropagation()}>
         
         {/* Header */}

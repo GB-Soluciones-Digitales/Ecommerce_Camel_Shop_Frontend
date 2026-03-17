@@ -11,6 +11,8 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     nombre: '',
     descripcion: '',
     precio: '',
+    enOferta: false,
+    porcentajeDescuento: '',
     categoriaId: '',
     variantes: [{ color: '', stock: {}, tempId: crypto.randomUUID() }],
     existingImages: [],
@@ -27,6 +29,8 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         nombre: editingProduct.nombre,
         descripcion: editingProduct.descripcion || '',
         precio: editingProduct.precio,
+        enOferta: editingProduct.enOferta || false,
+        porcentajeDescuento: editingProduct.porcentajeDescuento || '',
         categoriaId: editingProduct.categoriaId,
         existingImages: editingProduct.imagenes || [],
         newFiles: [],
@@ -41,6 +45,8 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         nombre: '',
         descripcion: '',
         precio: '',
+        enOferta: false,
+        porcentajeDescuento: '',
         categoriaId: categorias[0]?.id || '',
         variantes: [{ color: '', stock: {}, tempId: crypto.randomUUID() }],
         existingImages: [],
@@ -101,6 +107,8 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         nombre: state.nombre,
         descripcion: state.descripcion,
         precio: parseFloat(state.precio),
+        enOferta: state.enOferta,
+        porcentajeDescuento: state.enOferta ? (parseInt(state.porcentajeDescuento) || 0) : 0,
         categoriaId: parseInt(state.categoriaId),
         imagenes: [...state.existingImages, ...uploadedUrls],
         stock: totalStock,
@@ -127,7 +135,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-md" role="dialog" aria-modal="true" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-md" role="dialog" aria-modal="true">
       <div className="bg-crema rounded-[2.5rem] shadow-2xl w-full max-w-5xl overflow-hidden max-h-[92vh] flex flex-col border border-brand-muted" onClick={e => e.stopPropagation()}>
         
         {/* Header */}
@@ -219,6 +227,41 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                   <div className="space-y-2 md:col-span-2">
                     <label htmlFor={`${baseId}-desc`} className="text-[10px] font-black text-brand-secondary uppercase tracking-widest ml-1 flex items-center gap-2"><FiAlignLeft/> Descripción</label>
                     <textarea id={`${baseId}-desc`} rows="3" className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-sm text-brand-dark" placeholder="Detalles de la tela, calce, cuidados..." value={state.descripcion} onChange={e => setState({...state, descripcion: e.target.value})} />
+                  </div>
+                  {/* Aca dentro un checkbox/switch para marcar como oferta y activar un input para agregar el porcentaje de descuento */}
+                  <div>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <div className="relative flex items-center">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={state.enOferta}
+                          onChange={(e) => setState({ ...state, enOferta: e.target.checked })}
+                        />
+                      </div>
+                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
+                      <span className="text-[10px] font-black text-brand-secondary uppercase tracking-widest flex items-center gap-2">
+                        <FiTag className={state.enOferta ? "text-rose-500" : ""} />
+                        Pieza en Oferta (Sale)
+                      </span>
+                    </label>
+
+                    {state.enOferta && (
+                      <div className="flex items-center gap-2 animate-in fade-in slide-in-from-left-4 duration-300">
+                        <span className="text-xs font-bold text-brand-dark ml-2">Descuento:</span>
+                        <input
+                          type="number"
+                          min="1"
+                          max="99"
+                          placeholder="Ej: 20"
+                          className="w-20 bg-white border border-brand-muted rounded-xl px-3 py-2 outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all font-bold text-brand-dark text-center"
+                          value={state.porcentajeDescuento}
+                          onChange={(e) => setState({ ...state, porcentajeDescuento: e.target.value })}
+                          required={state.enOferta}
+                        />
+                        <span className="text-xs font-black text-rose-500">% OFF</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
