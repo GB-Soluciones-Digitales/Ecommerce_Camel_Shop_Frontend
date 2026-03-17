@@ -190,6 +190,13 @@ const SkeletonCard = () => (
 const ProductCard = ({ producto, getImgUrl }) => (
   <Link to={`/producto/${producto.slug}`} className="group flex flex-col relative">
     <div className="relative aspect-[3/4] overflow-hidden bg-brand-light mb-5 rounded-[2rem]">
+      
+      {producto.enOferta && (
+        <div className="absolute top-3 left-3 bg-rose-500 text-white text-[10px] font-black tracking-widest px-3 py-1.5 rounded-full z-10 shadow-lg">
+          SALE {producto.porcentajeDescuento}%
+        </div>
+      )}
+
       <img 
         src={getImgUrl(producto.imagenes?.[0])} 
         alt={producto.nombre}
@@ -214,7 +221,18 @@ const ProductCard = ({ producto, getImgUrl }) => (
     </div>
     <div className="flex flex-col items-center text-center px-2">
       <h3 className="text-lg font-serif text-brand-dark mb-1 group-hover:text-brand-primary transition-colors">{producto.nombre}</h3>
-      <p className="text-brand-primary text-sm font-bold tracking-widest">${parseFloat(producto.precio).toLocaleString()}</p>
+      {producto.enOferta ? (
+        <>
+          <span className="text-brand-secondary line-through text-sm font-medium tracking-widest">
+            ${parseFloat(producto.precio).toLocaleString()}
+          </span>
+          <span className="text-brand-primary text-sm font-bold tracking-widest">
+            ${parseFloat(producto.precioFinal).toLocaleString()}
+          </span>
+        </>
+      ) : (
+        <span className="text-brand-primary text-sm font-bold tracking-widest">${parseFloat(producto.precio).toLocaleString()}</span>
+      )}
     </div>
   </Link>
 );
