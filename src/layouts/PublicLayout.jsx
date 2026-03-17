@@ -77,7 +77,14 @@ const PublicLayout = () => {
                       <div className="flex-1 flex flex-col justify-between py-1">
                         <div>
                           <div className="flex justify-between items-start gap-2">
-                              <h3 className="font-serif font-bold text-brand-dark text-lg leading-tight line-clamp-2">{item.nombre}</h3>
+                              <div className="flex flex-col">
+                                <h3 className="font-serif font-bold text-brand-dark text-lg leading-tight line-clamp-2">{item.nombre}</h3>
+                                {item.enOferta && (
+                                  <span className="bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm w-fit mt-1">
+                                    SALE {item.porcentajeDescuento}%
+                                  </span>
+                                )}
+                              </div>
                               <button onClick={() => handleRemoveItem(item)} className="text-brand-secondary hover:text-red-500 transition-colors"><FiTrash2 size={18}/></button>
                           </div>
                           <div className="flex flex-wrap items-center mt-2 gap-2">
@@ -100,7 +107,22 @@ const PublicLayout = () => {
                             <span className="w-8 text-center text-sm font-medium text-brand-dark">{item.cantidad}</span>
                             <button onClick={() => updateQuantity(item.variantId, item.cantidad + 1)} className="p-2 text-brand-dark hover:bg-brand-muted/30 transition-colors"><FiPlus size={12}/></button>
                           </div>
-                          <p className="font-bold text-brand-dark text-lg">${parseFloat(item.precio).toLocaleString()}</p>
+                          <div className="flex flex-col items-end">
+                            {item.enOferta ? (
+                              <>
+                                <span className="text-brand-secondary line-through text-xs font-medium mb-[-4px]">
+                                  ${parseFloat(item.precio).toLocaleString()}
+                                </span>
+                                <p className="font-black text-rose-500 text-lg">
+                                  ${parseFloat(item.precioFinal).toLocaleString()}
+                                </p>
+                              </>
+                            ) : (
+                              <p className="font-bold text-brand-dark text-lg">
+                                ${parseFloat(item.precio).toLocaleString()}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

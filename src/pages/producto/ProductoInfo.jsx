@@ -19,10 +19,13 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
       });
     }
 
+    const precioACobrar = producto.enOferta ? producto.precioFinal : producto.precio;
+
     onAddToCart({ 
       selectedColor, 
       selectedSize: selectedTalle, 
-      variantId: `${producto.id}-${selectedColor}-${selectedTalle}` 
+      variantId: `${producto.id}-${selectedColor}-${selectedTalle}`,
+      precio: precioACobrar 
     }, cantidad);
   };
 
@@ -49,7 +52,7 @@ const ProductoInfo = ({ producto, onAddToCart, onOpenSizeChart }) => {
       <h1 className="text-4xl md:text-5xl font-serif text-brand-dark leading-tight mb-4">{producto.nombre}</h1>
       {producto.enOferta ? (
         <>
-          <span className="text-brand-secondary line-through text-2xl font-medium tracking-wide mb-8">
+          <span className="text-brand-secondary line-through text-2xl font-medium tracking-wide mb-2">
             ${parseFloat(producto.precio).toLocaleString()}
           </span>
           <span className="text-brand-dark text-2xl font-medium tracking-wide mb-8">
