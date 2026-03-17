@@ -25,6 +25,14 @@ const PublicLayout = () => {
     });
   };
 
+  const getMaxStock = (item) => {
+    if (item.variantes?.length > 0 && item.selectedColor && item.selectedSize) {
+      const variante = item.variantes.find(v => v.color === item.selectedColor);
+      return variante?.stockPorTalle?.[item.selectedSize] || 0;
+    }
+    return item.stock || 0;
+  };
+
   const getImgUrl = (img) => img?.startsWith('http') ? img : fileService.getImageUrl(img);
 
   return (
@@ -65,68 +73,72 @@ const PublicLayout = () => {
                     </button>
                   </div>
                 ) : (
-                  cartItems.map((item) => (
-                    <div key={String(item.variantId || item.id)} className="flex gap-5 group">
-                      <div className="w-24 h-32 bg-brand-light rounded-none overflow-hidden flex-shrink-0 border border-brand-muted relative">
-                        {item.imagenes?.[0] ? (
-                           <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"/>
-                        ) : (
-                           <FiImage className="w-full h-full p-6 text-brand-muted"/>
-                        )}
-                      </div>
-                      <div className="flex-1 flex flex-col justify-between py-1">
-                        <div>
-                          <div className="flex justify-between items-start gap-2">
-                              <div className="flex flex-col">
-                                <h3 className="font-serif font-bold text-brand-dark text-lg leading-tight line-clamp-2">{item.nombre}</h3>
-                                {item.enOferta && (
-                                  <span className="bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm w-fit mt-1">
-                                    SALE {item.porcentajeDescuento}%
-                                  </span>
-                                )}
-                              </div>
-                              <button onClick={() => handleRemoveItem(item)} className="text-brand-secondary hover:text-red-500 transition-colors"><FiTrash2 size={18}/></button>
-                          </div>
-                          <div className="flex flex-wrap items-center mt-2 gap-2">
-                            {item.selectedColor && (
-                              <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest">
-                                Color: {typeof item.selectedColor === 'object' ? JSON.stringify(item.selectedColor) : item.selectedColor}
-                              </span>
-                            )}
-                            {item.selectedSize && (
-                              <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest before:content-['|'] before:mx-2 before:text-brand-muted">
-                                Talle: {typeof item.selectedSize === 'object' ? JSON.stringify(item.selectedSize) : item.selectedSize}
-                              </span>
-                            )}
-                          </div>
+                  cartItems.map((item) => {
+                    const maxStock = getMaxStock(item);
+                    return (
+                      <div key={String(item.variantId || item.id)} className="flex gap-5 group">
+                        <div className="w-24 h-32 bg-brand-light rounded-none overflow-hidden flex-shrink-0 border border-brand-muted relative">
+                          {item.imagenes?.[0] ? (
+                            <img src={getImgUrl(item.imagenes[0])} alt={item.nombre} className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"/>
+                          ) : (
+                            <FiImage className="w-full h-full p-6 text-brand-muted"/>
+                          )}
                         </div>
-                        
-                        <div className="flex items-end justify-between mt-4">
-                          <div className="flex items-center border border-brand-muted bg-brand-light">
-                            <button onClick={() => updateQuantity(item.variantId, item.cantidad - 1)} className="p-2 text-brand-dark hover:bg-brand-muted/30 transition-colors"><FiMinus size={12}/></button>
-                            <span className="w-8 text-center text-sm font-medium text-brand-dark">{item.cantidad}</span>
-                            <button onClick={() => updateQuantity(item.variantId, item.cantidad + 1)} className="p-2 text-brand-dark hover:bg-brand-muted/30 transition-colors"><FiPlus size={12}/></button>
-                          </div>
-                          <div className="flex flex-col items-end">
-                            {item.enOferta ? (
-                              <>
-                                <span className="text-brand-secondary line-through text-xs font-medium mb-[-4px]">
-                                  ${parseFloat(item.precio).toLocaleString()}
+                        <div className="flex-1 flex flex-col justify-between py-1">
+                          <div>
+                            <div className="flex justify-between items-start gap-2">
+                                <div className="flex flex-col">
+                                  <h3 className="font-serif font-bold text-brand-dark text-lg leading-tight line-clamp-2">{item.nombre}</h3>
+                                  {item.enOferta && (
+                                    <span className="bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm w-fit mt-1">
+                                      SALE
+                                    </span>
+                                  )}
+                                </div>
+                                <button onClick={() => handleRemoveItem(item)} className="text-brand-secondary hover:text-red-500 transition-colors"><FiTrash2 size={18}/></button>
+                            </div>
+                            <div className="flex flex-wrap items-center mt-2 gap-2">
+                              {item.selectedColor && (
+                                <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest">
+                                  Color: {typeof item.selectedColor === 'object' ? JSON.stringify(item.selectedColor) : item.selectedColor}
                                 </span>
+                              )}
+                              {item.selectedSize && (
+                                <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest before:content-['|'] before:mx-2 before:text-brand-muted">
+                                  Talle: {typeof item.selectedSize === 'object' ? JSON.stringify(item.selectedSize) : item.selectedSize}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-end justify-between mt-4">
+                            <div className="flex items-center border border-brand-muted bg-brand-light">
+                              <button onClick={() => updateQuantity(item.variantId, item.cantidad - 1)} className="p-2 text-brand-dark hover:bg-brand-muted/30 transition-colors"><FiMinus size={12}/></button>
+                              <span className="w-8 text-center text-sm font-medium text-brand-dark">{item.cantidad}</span>
+                              <button 
+                                onClick={() => updateQuantity(item.variantId, item.cantidad + 1)} 
+                                disabled={item.cantidad >= maxStock}
+                                className="p-2 text-brand-dark hover:bg-brand-muted/30 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+                              >
+                                <FiPlus size={12}/>
+                              </button>
+                            </div>
+                            <div className="flex flex-col items-end">
+                              {item.enOferta ? (
                                 <p className="font-black text-rose-500 text-lg">
                                   ${parseFloat(item.precioFinal).toLocaleString()}
                                 </p>
-                              </>
-                            ) : (
-                              <p className="font-bold text-brand-dark text-lg">
-                                ${parseFloat(item.precio).toLocaleString()}
-                              </p>
-                            )}
+                              ) : (
+                                <p className="font-bold text-brand-dark text-lg">
+                                  ${parseFloat(item.precio).toLocaleString()}
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    )
+                  })
                 )}
               </div>
 
