@@ -1,7 +1,43 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
 import { FiX, FiPlus, FiTrash2, FiImage, FiLayers, FiUploadCloud, FiCheck, FiTag, FiAlignLeft } from 'react-icons/fi';
 import { fileService } from '../services/fileService';
-import { sileo } from "sileo"; 
+import { sileo } from "sileo";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+const SortableImage = ({ id, src, onRemove, isNew }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  
+  const style = { 
+    transform: CSS.Transform.toString(transform), 
+    transition,
+    zIndex: transform ? 50 : 1, 
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="relative group aspect-[3/4] rounded-xl overflow-hidden border border-brand-muted shadow-sm cursor-grab active:cursor-grabbing bg-white">
+      <img src={src} className="w-full h-full object-cover" alt="Gallery" />
+      
+      {isNew && (
+        <div className="absolute top-2 left-2 bg-brand-primary text-crema text-[9px] font-black uppercase px-2 py-1 rounded shadow-md tracking-widest">
+          Nueva
+        </div>
+      )}
+
+      <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+        <button 
+          type="button" 
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => onRemove(id)} 
+          className="bg-rose-500 text-white p-3 rounded-full hover:bg-rose-600 transition-transform transform hover:scale-110 shadow-lg cursor-pointer"
+        >
+          <FiTrash2 size={16}/>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) => {
   const tallesRopa = useMemo(() => ['U', 'S', 'M', 'L', 'XL', 'XXL'], []);
@@ -15,8 +51,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     porcentajeDescuento: '',
     categoriaId: '',
     variantes: [{ color: '', stock: {}, tempId: crypto.randomUUID() }],
-    existingImages: [],
-    newFiles: [],
+    imagenes: [], 
     uploading: false
   });
 
@@ -32,8 +67,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         enOferta: editingProduct.enOferta || false,
         porcentajeDescuento: editingProduct.porcentajeDescuento || '',
         categoriaId: editingProduct.categoriaId,
-        existingImages: editingProduct.imagenes || [],
-        newFiles: [],
+        imagenes: editingProduct.imagenes?.map(url => ({ id: url, type: 'existing', url })) || [],
         variantes: editingProduct.variantes?.map(v => ({
           color: v.color || '',
           stock: v.stockPorTalle || {},
@@ -49,8 +83,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         porcentajeDescuento: '',
         categoriaId: categorias[0]?.id || '',
         variantes: [{ color: '', stock: {}, tempId: crypto.randomUUID() }],
-        existingImages: [],
-        newFiles: [],
+        imagenes: [],
         uploading: false
       });
     }
@@ -82,11 +115,33 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
       const filesArray = Array.from(e.target.files);
       
       const newPreviews = filesArray.map(file => ({
+        id: crypto.randomUUID(), 
+        type: 'new',
         file,
-        preview: URL.createObjectURL(file)
+        url: URL.createObjectURL(file)
       }));
 
-      setState(prev => ({ ...prev, newFiles: [...prev.newFiles, ...newPreviews] }));
+      setState(prev => ({ ...prev, imagenes: [...prev.imagenes, ...newPreviews] }));
+    }
+  };
+
+  const removeImage = (idToRemove) => {
+    setState(prev => ({ ...prev, imagenes: prev.imagenes.filter(img => img.id !== idToRemove) }));
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setState((prev) => {
+        const oldIndex = prev.imagenes.findIndex((img) => img.id === active.id);
+        const newIndex = prev.imagenes.findIndex((img) => img.id === over.id);
+        return { ...prev, imagenes: arrayMove(prev.imagenes, oldIndex, newIndex) };
+      });
     }
   };
 
@@ -94,10 +149,15 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
     e.preventDefault();
     setState(prev => ({ ...prev, uploading: true }));
     try {
-      const uploadPromises = state.newFiles.map(item => fileService.uploadImage(item.file));
-      const uploadResponses = await Promise.all(uploadPromises);
-
-      const uploadedUrls = uploadResponses.map(res => res.filename || res);
+      const uploadPromises = state.imagenes.map(async (img) => {
+        if (img.type === 'new') {
+          const res = await fileService.uploadImage(img.file);
+          return res.filename || res;
+        }
+        return img.url; 
+      });
+      
+      const finalImagesUrls = await Promise.all(uploadPromises);
 
       const totalStock = state.variantes.reduce((acc, v) => 
         acc + Object.values(v.stock).reduce((sum, val) => sum + (parseInt(val) || 0), 0), 0
@@ -110,7 +170,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         enOferta: state.enOferta,
         porcentajeDescuento: state.enOferta ? (parseInt(state.porcentajeDescuento) || 0) : 0,
         categoriaId: parseInt(state.categoriaId),
-        imagenes: [...state.existingImages, ...uploadedUrls],
+        imagenes: finalImagesUrls,
         stock: totalStock,
         variantes: state.variantes.map(v => ({ color: v.color, stockPorTalle: v.stock })),
       };
@@ -154,7 +214,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
         <form id="prod-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-10">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Galería */}
+            {/* Galería Drag and Drop */}
             <section className="lg:col-span-4 bg-white p-6 rounded-[2rem] border border-brand-muted shadow-sm space-y-4 h-fit">
               <div className="flex items-center gap-3 border-b border-brand-muted pb-3">
                 <div className="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-primary">
@@ -163,40 +223,28 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                 <h4 className="font-bold text-xs text-brand-dark uppercase tracking-[0.2em]">Galería</h4>
               </div>
               
-              <div className="grid grid-cols-2 gap-3">
-                {state.existingImages.map((img) => (
-                  <div key={img} className="relative group aspect-[3/4] rounded-xl overflow-hidden border border-brand-muted shadow-sm">
-                    <img src={img.startsWith('http') ? img : fileService.getImageUrl(img)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Producto" />
-                    <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                      <button type="button" onClick={() => setState(p => ({...p, existingImages: p.existingImages.filter(url => url !== img)}))} className="bg-rose-500 text-white p-3 rounded-full hover:bg-rose-600 transition-transform transform hover:scale-110 shadow-lg">
-                        <FiTrash2 size={16}/>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-
-                {state.newFiles.map((fileObj, idx) => (
-                  <div key={`new-${idx}`} className="relative group aspect-[3/4] rounded-xl overflow-hidden border-2 border-brand-primary shadow-sm">
-                    <img src={fileObj.preview} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Preview Nueva" />
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={state.imagenes.map(img => img.id)} strategy={rectSortingStrategy}>
+                  <div className="grid grid-cols-2 gap-3">
                     
-                    <div className="absolute top-2 left-2 bg-brand-primary text-crema text-[9px] font-black uppercase px-2 py-1 rounded shadow-md tracking-widest">
-                      Nueva
-                    </div>
-
-                    <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                      <button type="button" onClick={() => setState(p => ({...p, newFiles: p.newFiles.filter((_, i) => i !== idx)}))} className="bg-rose-500 text-white p-3 rounded-full hover:bg-rose-600 transition-transform transform hover:scale-110 shadow-lg">
-                        <FiTrash2 size={16}/>
-                      </button>
-                    </div>
+                    {state.imagenes.map((img) => (
+                      <SortableImage 
+                        key={img.id} 
+                        id={img.id} 
+                        src={img.type === 'existing' ? (img.url.startsWith('http') ? img.url : fileService.getImageUrl(img.url)) : img.url} 
+                        isNew={img.type === 'new'}
+                        onRemove={removeImage} 
+                      />
+                    ))}
+                    
+                    <label className="aspect-[3/4] flex flex-col items-center justify-center border-2 border-dashed border-brand-muted bg-brand-light/30 rounded-xl cursor-pointer hover:border-brand-primary hover:bg-brand-light transition-all group">
+                      <FiUploadCloud className="text-brand-secondary group-hover:text-brand-primary transition-colors mb-2" size={28}/>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary group-hover:text-brand-primary">Subir</span>
+                      <input type="file" multiple onChange={handleFileSelect} className="hidden" accept="image/*" />
+                    </label>
                   </div>
-                ))}
-                
-                <label className="aspect-[3/4] flex flex-col items-center justify-center border-2 border-dashed border-brand-muted bg-brand-light/30 rounded-xl cursor-pointer hover:border-brand-primary hover:bg-brand-light transition-all group">
-                  <FiUploadCloud className="text-brand-secondary group-hover:text-brand-primary transition-colors mb-2" size={28}/>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary group-hover:text-brand-primary">Subir</span>
-                  <input type="file" multiple onChange={handleFileSelect} className="hidden" accept="image/*" />
-                </label>
-              </div>
+                </SortableContext>
+              </DndContext>
             </section>
 
             {/* Información y Stock */}
@@ -228,7 +276,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                     <label htmlFor={`${baseId}-desc`} className="text-[10px] font-black text-brand-secondary uppercase tracking-widest ml-1 flex items-center gap-2"><FiAlignLeft/> Descripción</label>
                     <textarea id={`${baseId}-desc`} rows="3" className="w-full bg-white border border-brand-muted rounded-xl px-4 py-3 outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-sm text-brand-dark" placeholder="Detalles de la tela, calce, cuidados..." value={state.descripcion} onChange={e => setState({...state, descripcion: e.target.value})} />
                   </div>
-                  <div>
+                  <div className="md:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-brand-light/40 p-5 rounded-2xl border border-brand-muted transition-all">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <div className="relative flex items-center">
                         <input
@@ -237,10 +285,10 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                           checked={state.enOferta}
                           onChange={(e) => setState({ ...state, enOferta: e.target.checked })}
                         />
-                        <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
+                        <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
                       </div>
                       <span className="text-[10px] font-black text-brand-secondary uppercase tracking-widest flex items-center gap-2">
-                        <FiTag className={state.enOferta ? "text-brand-primary" : ""} />
+                        <FiTag className={state.enOferta ? "text-rose-500 transition-colors" : "transition-colors"} />
                         Prenda en Oferta (Sale)
                       </span>
                     </label>
@@ -258,7 +306,7 @@ const ProductoModal = ({ show, onClose, onSave, editingProduct, categorias }) =>
                           onChange={(e) => setState({ ...state, porcentajeDescuento: e.target.value })}
                           required={state.enOferta}
                         />
-                        <span className="text-xs font-black text-brand-dark">% OFF</span>
+                        <span className="text-xs font-black text-rose-500">% OFF</span>
                       </div>
                     )}
                   </div>
